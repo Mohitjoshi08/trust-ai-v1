@@ -1,0 +1,105 @@
+{
+  "anomaly_window": {
+    "start_time": "2025-08-05 00:00:00",
+    "end_time": "2025-08-05 23:59:59",
+    "severity": 3.66,
+    "direction": "drop",
+    "metric_name": "revenue",
+    "aggregate_actual_mean": 30237.35,
+    "aggregate_expected_mean": 44438.28,
+    "aggregate_deviation_pct": -31.96,
+    "detection_method": "bsts"
+  },
+  "primary_driver": {
+    "dimension": "device",
+    "segment_value": "iOS",
+    "baseline_mean": 313.69,
+    "anomaly_mean": 129.76,
+    "absolute_change": -183.94,
+    "segment_percent_change": -58.64,
+    "contribution_to_total": 1.0
+  },
+  "secondary_driver": null,
+  "is_ambiguous": false,
+  "level2_drilldowns": [
+    {
+      "parent_segment": "device=iOS",
+      "sub_dimension": "region",
+      "is_uniform": false,
+      "dominant_subsegment": null,
+      "sub_contributions": [
+        {
+          "dimension": "region",
+          "segment_value": "APAC",
+          "baseline_mean": 281.78,
+          "anomaly_mean": 115.74,
+          "absolute_change": -166.04,
+          "segment_percent_change": -58.92,
+          "contribution_to_total": 0.5031
+        },
+        {
+          "dimension": "region",
+          "segment_value": "EMEA",
+          "baseline_mean": 282.03,
+          "anomaly_mean": 118.03,
+          "absolute_change": -163.99,
+          "segment_percent_change": -58.15,
+          "contribution_to_total": 0.4969
+        }
+      ]
+    }
+  ],
+  "all_segments": [
+    {
+      "dimension": "device",
+      "segment_value": "iOS",
+      "baseline_mean": 313.69,
+      "anomaly_mean": 129.76,
+      "absolute_change": -183.94,
+      "segment_percent_change": -58.64,
+      "contribution_to_total": 1.0
+    },
+    {
+      "dimension": "region",
+      "segment_value": "APAC",
+      "baseline_mean": 176.11,
+      "anomaly_mean": 124.91,
+      "absolute_change": -51.2,
+      "segment_percent_change": -29.07,
+      "contribution_to_total": 0.5088
+    },
+    {
+      "dimension": "region",
+      "segment_value": "EMEA",
+      "baseline_mean": 176.28,
+      "anomaly_mean": 126.85,
+      "absolute_change": -49.44,
+      "segment_percent_change": -28.04,
+      "contribution_to_total": 0.4912
+    },
+    {
+      "dimension": "device",
+      "segment_value": "Android",
+      "baseline_mean": 156.51,
+      "anomaly_mean": 165.91,
+      "absolute_change": 9.41,
+      "segment_percent_change": 6.01,
+      "contribution_to_total": 0.0
+    },
+    {
+      "dimension": "device",
+      "segment_value": "Web",
+      "baseline_mean": 117.55,
+      "anomaly_mean": 124.29,
+      "absolute_change": 6.74,
+      "segment_percent_change": 5.73,
+      "contribution_to_total": 0.0
+    }
+  ],
+  "drill_down_paths": [
+    [
+      "revenue",
+      "device=iOS"
+    ]
+  ]
+}

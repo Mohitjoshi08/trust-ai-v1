@@ -1,0 +1,1248 @@
+{
+  "data": [
+    {
+      "timestamp": "2025-04-01 00:00:00",
+      "actual": 44896.44,
+      "predicted_mean": 0.0,
+      "upper_bound": 2002.9667249259046,
+      "lower_bound": -2002.9667249259046
+    },
+    {
+      "timestamp": "2025-04-02 00:00:00",
+      "actual": 44912.58,
+      "predicted_mean": 0.0,
+      "upper_bound": 4059.3113296054357,
+      "lower_bound": -4059.3113296054357
+    },
+    {
+      "timestamp": "2025-04-03 00:00:00",
+      "actual": 45074.42,
+      "predicted_mean": 32675.220378930608,
+      "upper_bound": 36747.06380059531,
+      "lower_bound": 28603.37695726591
+    },
+    {
+      "timestamp": "2025-04-04 00:00:00",
+      "actual": 44905.27,
+      "predicted_mean": 47084.72580548759,
+      "upper_bound": 50828.87313109081,
+      "lower_bound": 43340.578479884374
+    },
+    {
+      "timestamp": "2025-04-05 00:00:00",
+      "actual": 36170.35,
+      "predicted_mean": 49737.657296429534,
+      "upper_bound": 53421.53573056206,
+      "lower_bound": 46053.77886229701
+    },
+    {
+      "timestamp": "2025-04-06 00:00:00",
+      "actual": 35807.17,
+      "predicted_mean": 43097.804258213815,
+      "upper_bound": 46757.778042019905,
+      "lower_bound": 39437.830474407725
+    },
+    {
+      "timestamp": "2025-04-07 00:00:00",
+      "actual": 45080.06,
+      "predicted_mean": 40116.34013174754,
+      "upper_bound": 43757.80488202208,
+      "lower_bound": 36474.87538147301
+    },
+    {
+      "timestamp": "2025-04-08 00:00:00",
+      "actual": 44924.54,
+      "predicted_mean": 57899.89962213399,
+      "upper_bound": 61495.39787222326,
+      "lower_bound": 54304.401372044726
+    },
+    {
+      "timestamp": "2025-04-09 00:00:00",
+      "actual": 44609.27,
+      "predicted_mean": 44810.10156256261,
+      "upper_bound": 48693.17689925518,
+      "lower_bound": 40927.02622587004
+    },
+    {
+      "timestamp": "2025-04-10 00:00:00",
+      "actual": 45326.28,
+      "predicted_mean": 41488.57028600997,
+      "upper_bound": 45223.17272207466,
+      "lower_bound": 37753.96784994528
+    },
+    {
+      "timestamp": "2025-04-11 00:00:00",
+      "actual": 45078.71,
+      "predicted_mean": 46378.14203791802,
+      "upper_bound": 50041.51798129673,
+      "lower_bound": 42714.76609453931
+    },
+    {
+      "timestamp": "2025-04-12 00:00:00",
+      "actual": 36111.7,
+      "predicted_mean": 45429.12464708096,
+      "upper_bound": 49058.506045489004,
+      "lower_bound": 41799.74324867291
+    },
+    {
+      "timestamp": "2025-04-13 00:00:00",
+      "actual": 36064.25,
+      "predicted_mean": 40746.402217044495,
+      "upper_bound": 44366.394831284284,
+      "lower_bound": 37126.409602804706
+    },
+    {
+      "timestamp": "2025-04-14 00:00:00",
+      "actual": 45127.93,
+      "predicted_mean": 42206.7746442639,
+      "upper_bound": 45820.89545355136,
+      "lower_bound": 38592.653834976445
+    },
+    {
+      "timestamp": "2025-04-15 00:00:00",
+      "actual": 44922.08,
+      "predicted_mean": 53205.82609263363,
+      "upper_bound": 56802.82524862114,
+      "lower_bound": 49608.82693664612
+    },
+    {
+      "timestamp": "2025-04-16 00:00:00",
+      "actual": 44785.07,
+      "predicted_mean": 44363.4745221942,
+      "upper_bound": 48075.99492435812,
+      "lower_bound": 40650.95412003028
+    },
+    {
+      "timestamp": "2025-04-17 00:00:00",
+      "actual": 44952.78,
+      "predicted_mean": 42092.920080636795,
+      "upper_bound": 45736.180018282656,
+      "lower_bound": 38449.660142990935
+    },
+    {
+      "timestamp": "2025-04-18 00:00:00",
+      "actual": 45038.62,
+      "predicted_mean": 45496.80293549269,
+      "upper_bound": 49130.80895370883,
+      "lower_bound": 41862.79691727655
+    },
+    {
+      "timestamp": "2025-04-19 00:00:00",
+      "actual": 36017.19,
+      "predicted_mean": 42601.21394955828,
+      "upper_bound": 46213.45320451537,
+      "lower_bound": 38988.974694601195
+    },
+    {
+      "timestamp": "2025-04-20 00:00:00",
+      "actual": 35998.93,
+      "predicted_mean": 39555.53184126746,
+      "upper_bound": 43161.286171000196,
+      "lower_bound": 35949.777511534725
+    },
+    {
+      "timestamp": "2025-04-21 00:00:00",
+      "actual": 44792.29,
+      "predicted_mean": 43734.24788524501,
+      "upper_bound": 47336.94537700947,
+      "lower_bound": 40131.550393480546
+    },
+    {
+      "timestamp": "2025-04-22 00:00:00",
+      "actual": 44869.91,
+      "predicted_mean": 49993.10924676001,
+      "upper_bound": 53592.29300906163,
+      "lower_bound": 46393.92548445839
+    },
+    {
+      "timestamp": "2025-04-23 00:00:00",
+      "actual": 44829.11,
+      "predicted_mean": 44318.53659572062,
+      "upper_bound": 47966.106963478924,
+      "lower_bound": 40670.96622796232
+    },
+    {
+      "timestamp": "2025-04-24 00:00:00",
+      "actual": 44956.27,
+      "predicted_mean": 42553.96968217946,
+      "upper_bound": 46164.13533321097,
+      "lower_bound": 38943.80403114794
+    },
+    {
+      "timestamp": "2025-04-25 00:00:00",
+      "actual": 45113.08,
+      "predicted_mean": 45343.38867929623,
+      "upper_bound": 48959.32686485167,
+      "lower_bound": 41727.45049374079
+    },
+    {
+      "timestamp": "2025-04-26 00:00:00",
+      "actual": 36296.58,
+      "predicted_mean": 40874.501590811036,
+      "upper_bound": 44476.800309539605,
+      "lower_bound": 37272.20287208247
+    },
+    {
+      "timestamp": "2025-04-27 00:00:00",
+      "actual": 35988.4,
+      "predicted_mean": 39136.2861738707,
+      "upper_bound": 42733.18514396963,
+      "lower_bound": 35539.38720377177
+    },
+    {
+      "timestamp": "2025-04-28 00:00:00",
+      "actual": 45239.0,
+      "predicted_mean": 44758.79546825314,
+      "upper_bound": 48353.727772614155,
+      "lower_bound": 41163.86316389213
+    },
+    {
+      "timestamp": "2025-04-29 00:00:00",
+      "actual": 44888.46,
+      "predicted_mean": 48542.34185103377,
+      "upper_bound": 52139.31032131049,
+      "lower_bound": 44945.37338075705
+    },
+    {
+      "timestamp": "2025-04-30 00:00:00",
+      "actual": 44883.95,
+      "predicted_mean": 44553.78795004335,
+      "upper_bound": 48170.95693801921,
+      "lower_bound": 40936.618962067485
+    },
+    {
+      "timestamp": "2025-05-01 00:00:00",
+      "actual": 44812.94,
+      "predicted_mean": 43082.241976933685,
+      "upper_bound": 46677.66698775562,
+      "lower_bound": 39486.81696611175
+    },
+    {
+      "timestamp": "2025-05-02 00:00:00",
+      "actual": 44997.88,
+      "predicted_mean": 45195.26764913307,
+      "upper_bound": 48798.742185069044,
+      "lower_bound": 41591.7931131971
+    },
+    {
+      "timestamp": "2025-05-03 00:00:00",
+      "actual": 36080.74,
+      "predicted_mean": 39615.14136349093,
+      "upper_bound": 43210.43117301695,
+      "lower_bound": 36019.851553964916
+    },
+    {
+      "timestamp": "2025-05-04 00:00:00",
+      "actual": 35962.64,
+      "predicted_mean": 38382.593087656496,
+      "upper_bound": 41973.23916508751,
+      "lower_bound": 34791.947010225485
+    },
+    {
+      "timestamp": "2025-05-05 00:00:00",
+      "actual": 44994.55,
+      "predicted_mean": 45372.582323313094,
+      "upper_bound": 48961.90788655192,
+      "lower_bound": 41783.25676007427
+    },
+    {
+      "timestamp": "2025-05-06 00:00:00",
+      "actual": 45173.47,
+      "predicted_mean": 47135.373720973854,
+      "upper_bound": 50728.39025695061,
+      "lower_bound": 43542.3571849971
+    },
+    {
+      "timestamp": "2025-05-07 00:00:00",
+      "actual": 45192.03,
+      "predicted_mean": 44768.67005250096,
+      "upper_bound": 48369.74947849528,
+      "lower_bound": 41167.59062650664
+    },
+    {
+      "timestamp": "2025-05-08 00:00:00",
+      "actual": 45005.08,
+      "predicted_mean": 43700.959765424996,
+      "upper_bound": 47288.75969348774,
+      "lower_bound": 40113.159837362255
+    },
+    {
+      "timestamp": "2025-05-09 00:00:00",
+      "actual": 45051.02,
+      "predicted_mean": 45404.172111314234,
+      "upper_bound": 48998.921256373455,
+      "lower_bound": 41809.42296625501
+    },
+    {
+      "timestamp": "2025-05-10 00:00:00",
+      "actual": 36159.1,
+      "predicted_mean": 38877.20369601191,
+      "upper_bound": 42467.26252449586,
+      "lower_bound": 35287.14486752795
+    },
+    {
+      "timestamp": "2025-05-11 00:00:00",
+      "actual": 35945.99,
+      "predicted_mean": 38119.48398402211,
+      "upper_bound": 41705.610244990705,
+      "lower_bound": 34533.357723053516
+    },
+    {
+      "timestamp": "2025-05-12 00:00:00",
+      "actual": 45013.94,
+      "predicted_mean": 45657.20230470951,
+      "upper_bound": 49242.452338562696,
+      "lower_bound": 42071.95227085633
+    },
+    {
+      "timestamp": "2025-05-13 00:00:00",
+      "actual": 44813.51,
+      "predicted_mean": 46514.43102379962,
+      "upper_bound": 50103.389818881675,
+      "lower_bound": 42925.47222871756
+    },
+    {
+      "timestamp": "2025-05-14 00:00:00",
+      "actual": 45214.53,
+      "predicted_mean": 44589.23961908714,
+      "upper_bound": 48181.02187164798,
+      "lower_bound": 40997.457366526294
+    },
+    {
+      "timestamp": "2025-05-15 00:00:00",
+      "actual": 34416.37,
+      "predicted_mean": 43891.179533958515,
+      "upper_bound": 47474.53421808252,
+      "lower_bound": 40307.82484983451
+    },
+    {
+      "timestamp": "2025-05-16 00:00:00",
+      "actual": 34165.75,
+      "predicted_mean": 38194.71651554871,
+      "upper_bound": 41783.343520639944,
+      "lower_bound": 34606.089510457474
+    },
+    {
+      "timestamp": "2025-05-17 00:00:00",
+      "actual": 27498.19,
+      "predicted_mean": 28156.728611025334,
+      "upper_bound": 31742.803301334447,
+      "lower_bound": 24570.65392071622
+    },
+    {
+      "timestamp": "2025-05-18 00:00:00",
+      "actual": 27505.17,
+      "predicted_mean": 28325.830144676358,
+      "upper_bound": 31908.657782415175,
+      "lower_bound": 24743.00250693754
+    },
+    {
+      "timestamp": "2025-05-19 00:00:00",
+      "actual": 44996.57,
+      "predicted_mean": 36884.130486590584,
+      "upper_bound": 40466.386217185034,
+      "lower_bound": 33301.874755996134
+    },
+    {
+      "timestamp": "2025-05-20 00:00:00",
+      "actual": 45040.99,
+      "predicted_mean": 43077.5963043959,
+      "upper_bound": 46663.013950804474,
+      "lower_bound": 39492.17865798732
+    },
+    {
+      "timestamp": "2025-05-21 00:00:00",
+      "actual": 44899.07,
+      "predicted_mean": 45297.41136306306,
+      "upper_bound": 48883.44303502741,
+      "lower_bound": 41711.37969109871
+    },
+    {
+      "timestamp": "2025-05-22 00:00:00",
+      "actual": 45182.7,
+      "predicted_mean": 41388.460804015005,
+      "upper_bound": 44968.971859604986,
+      "lower_bound": 37807.949748425024
+    },
+    {
+      "timestamp": "2025-05-23 00:00:00",
+      "actual": 45157.98,
+      "predicted_mean": 45252.48177287809,
+      "upper_bound": 48836.79239830024,
+      "lower_bound": 41668.17114745594
+    },
+    {
+      "timestamp": "2025-05-24 00:00:00",
+      "actual": 35801.88,
+      "predicted_mean": 38627.33579912179,
+      "upper_bound": 42210.34900817091,
+      "lower_bound": 35044.322590072676
+    },
+    {
+      "timestamp": "2025-05-25 00:00:00",
+      "actual": 36078.41,
+      "predicted_mean": 36552.59974404271,
+      "upper_bound": 40132.99550969541,
+      "lower_bound": 32972.20397839001
+    },
+    {
+      "timestamp": "2025-05-26 00:00:00",
+      "actual": 44760.71,
+      "predicted_mean": 47782.25841496239,
+      "upper_bound": 51362.28280433212,
+      "lower_bound": 44202.234025592654
+    },
+    {
+      "timestamp": "2025-05-27 00:00:00",
+      "actual": 44992.21,
+      "predicted_mean": 45591.94022571505,
+      "upper_bound": 49174.47249552926,
+      "lower_bound": 42009.40795590084
+    },
+    {
+      "timestamp": "2025-05-28 00:00:00",
+      "actual": 44770.28,
+      "predicted_mean": 45106.51355306014,
+      "upper_bound": 48688.791112141866,
+      "lower_bound": 41524.235993978415
+    },
+    {
+      "timestamp": "2025-05-29 00:00:00",
+      "actual": 44914.54,
+      "predicted_mean": 42427.311687036636,
+      "upper_bound": 46005.87573579848,
+      "lower_bound": 38848.74763827479
+    },
+    {
+      "timestamp": "2025-05-30 00:00:00",
+      "actual": 45277.15,
+      "predicted_mean": 44872.77278630715,
+      "upper_bound": 48454.01433076394,
+      "lower_bound": 41291.53124185036
+    },
+    {
+      "timestamp": "2025-05-31 00:00:00",
+      "actual": 35973.68,
+      "predicted_mean": 37859.71783311351,
+      "upper_bound": 41440.36881216335,
+      "lower_bound": 34279.06685406366
+    },
+    {
+      "timestamp": "2025-06-01 00:00:00",
+      "actual": 35949.2,
+      "predicted_mean": 37104.971832735515,
+      "upper_bound": 40683.55468580885,
+      "lower_bound": 33526.38897966218
+    },
+    {
+      "timestamp": "2025-06-02 00:00:00",
+      "actual": 44936.87,
+      "predicted_mean": 47041.419274122934,
+      "upper_bound": 50619.758277676214,
+      "lower_bound": 43463.080270569655
+    },
+    {
+      "timestamp": "2025-06-03 00:00:00",
+      "actual": 44802.4,
+      "predicted_mean": 45791.2005140788,
+      "upper_bound": 49371.45658944241,
+      "lower_bound": 42210.944438715196
+    },
+    {
+      "timestamp": "2025-06-04 00:00:00",
+      "actual": 45285.090000000004,
+      "predicted_mean": 44706.84183088055,
+      "upper_bound": 48286.56172609338,
+      "lower_bound": 41127.12193566772
+    },
+    {
+      "timestamp": "2025-06-05 00:00:00",
+      "actual": 45139.04,
+      "predicted_mean": 43359.212980053635,
+      "upper_bound": 46936.3792613054,
+      "lower_bound": 39782.04669880187
+    },
+    {
+      "timestamp": "2025-06-06 00:00:00",
+      "actual": 45165.29,
+      "predicted_mean": 45149.54818293238,
+      "upper_bound": 48728.58392487763,
+      "lower_bound": 41570.512440987135
+    },
+    {
+      "timestamp": "2025-06-07 00:00:00",
+      "actual": 36175.85,
+      "predicted_mean": 37392.828628799696,
+      "upper_bound": 40971.65353172497,
+      "lower_bound": 33814.00372587442
+    },
+    {
+      "timestamp": "2025-06-08 00:00:00",
+      "actual": 35919.68,
+      "predicted_mean": 37298.52349848789,
+      "upper_bound": 40875.74007764427,
+      "lower_bound": 33721.30691933152
+    },
+    {
+      "timestamp": "2025-06-09 00:00:00",
+      "actual": 44845.59,
+      "predicted_mean": 46705.923184116225,
+      "upper_bound": 50282.97521246534,
+      "lower_bound": 43128.87115576711
+    },
+    {
+      "timestamp": "2025-06-10 00:00:00",
+      "actual": 44902.35,
+      "predicted_mean": 45575.43070659985,
+      "upper_bound": 49153.91902261888,
+      "lower_bound": 41996.94239058082
+    },
+    {
+      "timestamp": "2025-06-11 00:00:00",
+      "actual": 45312.5,
+      "predicted_mean": 44801.34303099143,
+      "upper_bound": 48379.261235107035,
+      "lower_bound": 41223.42482687583
+    },
+    {
+      "timestamp": "2025-06-12 00:00:00",
+      "actual": 38871.06,
+      "predicted_mean": 43787.846550822665,
+      "upper_bound": 47363.97664748028,
+      "lower_bound": 40211.71645416505
+    },
+    {
+      "timestamp": "2025-06-13 00:00:00",
+      "actual": 35272.9,
+      "predicted_mean": 40878.88062568002,
+      "upper_bound": 44456.31246882875,
+      "lower_bound": 37301.4487825313
+    },
+    {
+      "timestamp": "2025-06-14 00:00:00",
+      "actual": 29791.05,
+      "predicted_mean": 28915.7797111548,
+      "upper_bound": 32493.19192129365,
+      "lower_bound": 25338.36750101595
+    },
+    {
+      "timestamp": "2025-06-15 00:00:00",
+      "actual": 35983.52,
+      "predicted_mean": 29906.19186283943,
+      "upper_bound": 33482.368686102636,
+      "lower_bound": 26330.01503957622
+    },
+    {
+      "timestamp": "2025-06-16 00:00:00",
+      "actual": 45013.88,
+      "predicted_mean": 43943.05558354291,
+      "upper_bound": 47519.11688677523,
+      "lower_bound": 40366.994280310595
+    },
+    {
+      "timestamp": "2025-06-17 00:00:00",
+      "actual": 45162.89,
+      "predicted_mean": 45075.67789625992,
+      "upper_bound": 48652.80325521262,
+      "lower_bound": 41498.55253730722
+    },
+    {
+      "timestamp": "2025-06-18 00:00:00",
+      "actual": 45100.88,
+      "predicted_mean": 45685.92055703443,
+      "upper_bound": 49262.5364563981,
+      "lower_bound": 42109.30465767076
+    },
+    {
+      "timestamp": "2025-06-19 00:00:00",
+      "actual": 44865.82,
+      "predicted_mean": 42899.32011722527,
+      "upper_bound": 46474.66539207799,
+      "lower_bound": 39323.97484237254
+    },
+    {
+      "timestamp": "2025-06-20 00:00:00",
+      "actual": 38115.19,
+      "predicted_mean": 43656.56451599383,
+      "upper_bound": 47232.81669384411,
+      "lower_bound": 40080.31233814354
+    },
+    {
+      "timestamp": "2025-06-21 00:00:00",
+      "actual": 30828.06,
+      "predicted_mean": 32575.74456766019,
+      "upper_bound": 36152.06355393985,
+      "lower_bound": 28999.42558138053
+    },
+    {
+      "timestamp": "2025-06-22 00:00:00",
+      "actual": 30689.38,
+      "predicted_mean": 33238.20297347888,
+      "upper_bound": 36813.5819984631,
+      "lower_bound": 29662.82394849466
+    },
+    {
+      "timestamp": "2025-06-23 00:00:00",
+      "actual": 45323.52,
+      "predicted_mean": 40589.69932165344,
+      "upper_bound": 44164.99356430769,
+      "lower_bound": 37014.40507899919
+    },
+    {
+      "timestamp": "2025-06-24 00:00:00",
+      "actual": 44959.74,
+      "predicted_mean": 43867.16808773847,
+      "upper_bound": 47443.24564662163,
+      "lower_bound": 40291.09052885531
+    },
+    {
+      "timestamp": "2025-06-25 00:00:00",
+      "actual": 45008.49,
+      "predicted_mean": 44937.08592395727,
+      "upper_bound": 48512.74177756925,
+      "lower_bound": 41361.43007034528
+    },
+    {
+      "timestamp": "2025-06-26 00:00:00",
+      "actual": 45070.94,
+      "predicted_mean": 43883.388207410724,
+      "upper_bound": 47458.13043973189,
+      "lower_bound": 40308.64597508956
+    },
+    {
+      "timestamp": "2025-06-27 00:00:00",
+      "actual": 45022.6,
+      "predicted_mean": 42267.41826251938,
+      "upper_bound": 45842.79356977161,
+      "lower_bound": 38692.04295526715
+    },
+    {
+      "timestamp": "2025-06-28 00:00:00",
+      "actual": 34137.43,
+      "predicted_mean": 37482.77811119973,
+      "upper_bound": 41058.25094879705,
+      "lower_bound": 33907.30527360241
+    },
+    {
+      "timestamp": "2025-06-29 00:00:00",
+      "actual": 34241.38,
+      "predicted_mean": 36311.288370012524,
+      "upper_bound": 39886.051176016605,
+      "lower_bound": 32736.525564008447
+    },
+    {
+      "timestamp": "2025-06-30 00:00:00",
+      "actual": 42612.28,
+      "predicted_mean": 45741.34445474053,
+      "upper_bound": 49316.04241984659,
+      "lower_bound": 42166.64648963447
+    },
+    {
+      "timestamp": "2025-07-01 00:00:00",
+      "actual": 42227.5,
+      "predicted_mean": 43118.11957356315,
+      "upper_bound": 46693.39212516631,
+      "lower_bound": 39542.847021959984
+    },
+    {
+      "timestamp": "2025-07-02 00:00:00",
+      "actual": 44186.5,
+      "predicted_mean": 42384.8143599422,
+      "upper_bound": 45959.75185649012,
+      "lower_bound": 38809.876863394275
+    },
+    {
+      "timestamp": "2025-07-03 00:00:00",
+      "actual": 44942.090000000004,
+      "predicted_mean": 42515.20933861883,
+      "upper_bound": 46089.483712763205,
+      "lower_bound": 38940.93496447445
+    },
+    {
+      "timestamp": "2025-07-04 00:00:00",
+      "actual": 45005.98,
+      "predicted_mean": 42691.748641874125,
+      "upper_bound": 46266.46602778927,
+      "lower_bound": 39117.03125595898
+    },
+    {
+      "timestamp": "2025-07-05 00:00:00",
+      "actual": 35999.42,
+      "predicted_mean": 36371.2320012157,
+      "upper_bound": 39946.04979317875,
+      "lower_bound": 32796.41420925265
+    },
+    {
+      "timestamp": "2025-07-06 00:00:00",
+      "actual": 36081.49,
+      "predicted_mean": 37590.21085026722,
+      "upper_bound": 41164.49521633645,
+      "lower_bound": 34015.92648419799
+    },
+    {
+      "timestamp": "2025-07-07 00:00:00",
+      "actual": 45071.43,
+      "predicted_mean": 46923.71861908573,
+      "upper_bound": 50497.9517611602,
+      "lower_bound": 43349.485477011265
+    },
+    {
+      "timestamp": "2025-07-08 00:00:00",
+      "actual": 44689.26,
+      "predicted_mean": 45248.73464768176,
+      "upper_bound": 48823.38840251739,
+      "lower_bound": 41674.080892846134
+    },
+    {
+      "timestamp": "2025-07-09 00:00:00",
+      "actual": 44991.88,
+      "predicted_mean": 45137.53712160107,
+      "upper_bound": 48711.93104799513,
+      "lower_bound": 41563.143195207005
+    },
+    {
+      "timestamp": "2025-07-10 00:00:00",
+      "actual": 39833.48,
+      "predicted_mean": 44117.3773315379,
+      "upper_bound": 47691.28636426884,
+      "lower_bound": 40543.46829880696
+    },
+    {
+      "timestamp": "2025-07-11 00:00:00",
+      "actual": 41299.91,
+      "predicted_mean": 40089.533321847295,
+      "upper_bound": 43663.75309987382,
+      "lower_bound": 36515.31354382077
+    },
+    {
+      "timestamp": "2025-07-12 00:00:00",
+      "actual": 35799.34,
+      "predicted_mean": 32459.199581726483,
+      "upper_bound": 36033.51012641512,
+      "lower_bound": 28884.889037037843
+    },
+    {
+      "timestamp": "2025-07-13 00:00:00",
+      "actual": 36308.77,
+      "predicted_mean": 35920.177055102184,
+      "upper_bound": 39494.08848686387,
+      "lower_bound": 32346.2656233405
+    },
+    {
+      "timestamp": "2025-07-14 00:00:00",
+      "actual": 44574.94,
+      "predicted_mean": 46382.16024141133,
+      "upper_bound": 49956.03031074796,
+      "lower_bound": 42808.290172074696
+    },
+    {
+      "timestamp": "2025-07-15 00:00:00",
+      "actual": 44931.19,
+      "predicted_mean": 45010.58989130511,
+      "upper_bound": 48584.767479201495,
+      "lower_bound": 41436.41230340873
+    },
+    {
+      "timestamp": "2025-07-16 00:00:00",
+      "actual": 44809.86,
+      "predicted_mean": 45623.749856896044,
+      "upper_bound": 49197.729003300155,
+      "lower_bound": 42049.77071049193
+    },
+    {
+      "timestamp": "2025-07-17 00:00:00",
+      "actual": 44934.45,
+      "predicted_mean": 42717.15666243265,
+      "upper_bound": 46290.77916057852,
+      "lower_bound": 39143.534164286786
+    },
+    {
+      "timestamp": "2025-07-18 00:00:00",
+      "actual": 45115.34,
+      "predicted_mean": 43851.00527574354,
+      "upper_bound": 47424.84617367191,
+      "lower_bound": 40277.16437781517
+    },
+    {
+      "timestamp": "2025-07-19 00:00:00",
+      "actual": 36155.66,
+      "predicted_mean": 37109.47371760436,
+      "upper_bound": 40683.391318794325,
+      "lower_bound": 33535.5561164144
+    },
+    {
+      "timestamp": "2025-07-20 00:00:00",
+      "actual": 35840.4,
+      "predicted_mean": 37431.13270905741,
+      "upper_bound": 41004.75259238867,
+      "lower_bound": 33857.51282572615
+    },
+    {
+      "timestamp": "2025-07-21 00:00:00",
+      "actual": 44984.46,
+      "predicted_mean": 45953.128336171765,
+      "upper_bound": 49526.71439965877,
+      "lower_bound": 42379.54227268476
+    },
+    {
+      "timestamp": "2025-07-22 00:00:00",
+      "actual": 44685.34,
+      "predicted_mean": 45456.19057857047,
+      "upper_bound": 49030.00128565486,
+      "lower_bound": 41882.37987148609
+    },
+    {
+      "timestamp": "2025-07-23 00:00:00",
+      "actual": 44638.75,
+      "predicted_mean": 45101.965550066234,
+      "upper_bound": 48675.62619857963,
+      "lower_bound": 41528.30490155284
+    },
+    {
+      "timestamp": "2025-07-24 00:00:00",
+      "actual": 45125.82,
+      "predicted_mean": 43101.8972025892,
+      "upper_bound": 46675.2943199,
+      "lower_bound": 39528.5000852784
+    },
+    {
+      "timestamp": "2025-07-25 00:00:00",
+      "actual": 37297.95,
+      "predicted_mean": 44140.00279325145,
+      "upper_bound": 47713.55362597408,
+      "lower_bound": 40566.45196052882
+    },
+    {
+      "timestamp": "2025-07-26 00:00:00",
+      "actual": 28894.33,
+      "predicted_mean": 31674.316453503707,
+      "upper_bound": 35247.92952148276,
+      "lower_bound": 28100.703385524655
+    },
+    {
+      "timestamp": "2025-07-27 00:00:00",
+      "actual": 35923.69,
+      "predicted_mean": 30318.10221289635,
+      "upper_bound": 33891.49368641241,
+      "lower_bound": 26744.71073938029
+    },
+    {
+      "timestamp": "2025-07-28 00:00:00",
+      "actual": 44992.16,
+      "predicted_mean": 43541.40880247303,
+      "upper_bound": 47114.77247142415,
+      "lower_bound": 39968.04513352191
+    },
+    {
+      "timestamp": "2025-07-29 00:00:00",
+      "actual": 44797.98,
+      "predicted_mean": 44751.11516679644,
+      "upper_bound": 48324.64282588917,
+      "lower_bound": 41177.587507703705
+    },
+    {
+      "timestamp": "2025-07-30 00:00:00",
+      "actual": 45019.89,
+      "predicted_mean": 44893.72608201368,
+      "upper_bound": 48467.141015629626,
+      "lower_bound": 41320.31114839773
+    },
+    {
+      "timestamp": "2025-07-31 00:00:00",
+      "actual": 45069.09,
+      "predicted_mean": 44696.2889420785,
+      "upper_bound": 48269.50844327142,
+      "lower_bound": 41123.06944088558
+    },
+    {
+      "timestamp": "2025-08-01 00:00:00",
+      "actual": 34142.02,
+      "predicted_mean": 42382.604547640876,
+      "upper_bound": 45955.93232342239,
+      "lower_bound": 38809.27677185936
+    },
+    {
+      "timestamp": "2025-08-02 00:00:00",
+      "actual": 32115.2,
+      "predicted_mean": 28913.356373119634,
+      "upper_bound": 32486.733308950137,
+      "lower_bound": 25339.97943728913
+    },
+    {
+      "timestamp": "2025-08-03 00:00:00",
+      "actual": 35835.8,
+      "predicted_mean": 33357.950455488484,
+      "upper_bound": 36931.16271374329,
+      "lower_bound": 29784.738197233684
+    },
+    {
+      "timestamp": "2025-08-04 00:00:00",
+      "actual": 44817.21,
+      "predicted_mean": 43916.01465594617,
+      "upper_bound": 47489.20403678988,
+      "lower_bound": 40342.82527510246
+    },
+    {
+      "timestamp": "2025-08-05 00:00:00",
+      "actual": 30343.91,
+      "predicted_mean": 44546.72904113298,
+      "upper_bound": 48120.038054736026,
+      "lower_bound": 40973.42002752994
+    },
+    {
+      "timestamp": "2025-08-06 00:00:00",
+      "actual": 29420.94,
+      "predicted_mean": 35321.88270061406,
+      "upper_bound": 38895.10740532412,
+      "lower_bound": 31748.657995903992
+    },
+    {
+      "timestamp": "2025-08-07 00:00:00",
+      "actual": 38762.76,
+      "predicted_mean": 31420.07997293194,
+      "upper_bound": 34993.159331890936,
+      "lower_bound": 27847.000613972945
+    },
+    {
+      "timestamp": "2025-08-08 00:00:00",
+      "actual": 44995.31,
+      "predicted_mean": 30460.763576334502,
+      "upper_bound": 34033.91921219691,
+      "lower_bound": 26887.6079404721
+    },
+    {
+      "timestamp": "2025-08-09 00:00:00",
+      "actual": 36021.7,
+      "predicted_mean": 34561.63582761922,
+      "upper_bound": 38134.82957286585,
+      "lower_bound": 30988.442082372592
+    },
+    {
+      "timestamp": "2025-08-10 00:00:00",
+      "actual": 36079.35,
+      "predicted_mean": 38585.35894116059,
+      "upper_bound": 42158.43043726277,
+      "lower_bound": 35012.28744505842
+    },
+    {
+      "timestamp": "2025-08-11 00:00:00",
+      "actual": 44526.05,
+      "predicted_mean": 47232.44284503234,
+      "upper_bound": 50805.49555594247,
+      "lower_bound": 43659.39013412221
+    },
+    {
+      "timestamp": "2025-08-12 00:00:00",
+      "actual": 44929.73,
+      "predicted_mean": 41450.82543719691,
+      "upper_bound": 45023.965358062975,
+      "lower_bound": 37877.68551633084
+    },
+    {
+      "timestamp": "2025-08-13 00:00:00",
+      "actual": 44951.15,
+      "predicted_mean": 43997.07217829937,
+      "upper_bound": 47570.149225141504,
+      "lower_bound": 40423.99513145724
+    },
+    {
+      "timestamp": "2025-08-14 00:00:00",
+      "actual": 45067.31,
+      "predicted_mean": 46795.42638408433,
+      "upper_bound": 50368.39508994526,
+      "lower_bound": 43222.45767822339
+    },
+    {
+      "timestamp": "2025-08-15 00:00:00",
+      "actual": 38009.87,
+      "predicted_mean": 42829.43415180394,
+      "upper_bound": 46402.456564120046,
+      "lower_bound": 39256.41173948783
+    },
+    {
+      "timestamp": "2025-08-16 00:00:00",
+      "actual": 30032.78,
+      "predicted_mean": 31971.74403787177,
+      "upper_bound": 35544.79558889256,
+      "lower_bound": 28398.69248685098
+    },
+    {
+      "timestamp": "2025-08-17 00:00:00",
+      "actual": 36065.36,
+      "predicted_mean": 32715.51714316459,
+      "upper_bound": 36288.47800419032,
+      "lower_bound": 29142.556282138863
+    },
+    {
+      "timestamp": "2025-08-18 00:00:00",
+      "actual": 45149.26,
+      "predicted_mean": 44438.75299506295,
+      "upper_bound": 48011.698486112786,
+      "lower_bound": 40865.80750401311
+    },
+    {
+      "timestamp": "2025-08-19 00:00:00",
+      "actual": 44911.04,
+      "predicted_mean": 42499.94771897258,
+      "upper_bound": 46072.956731835686,
+      "lower_bound": 38926.938706109475
+    },
+    {
+      "timestamp": "2025-08-20 00:00:00",
+      "actual": 44824.07,
+      "predicted_mean": 44206.533558089934,
+      "upper_bound": 47779.495767178756,
+      "lower_bound": 40633.57134900111
+    },
+    {
+      "timestamp": "2025-08-21 00:00:00",
+      "actual": 44842.15,
+      "predicted_mean": 46641.75755124262,
+      "upper_bound": 50214.638856213336,
+      "lower_bound": 43068.8762462719
+    },
+    {
+      "timestamp": "2025-08-22 00:00:00",
+      "actual": 35409.57,
+      "predicted_mean": 41680.15415456989,
+      "upper_bound": 45253.073228419715,
+      "lower_bound": 38107.23508072007
+    },
+    {
+      "timestamp": "2025-08-23 00:00:00",
+      "actual": 28346.31,
+      "predicted_mean": 29816.4569378243,
+      "upper_bound": 33389.398058515835,
+      "lower_bound": 26243.51581713276
+    },
+    {
+      "timestamp": "2025-08-24 00:00:00",
+      "actual": 36021.46,
+      "predicted_mean": 31940.700906068996,
+      "upper_bound": 35513.57477481162,
+      "lower_bound": 28367.827037326373
+    },
+    {
+      "timestamp": "2025-08-25 00:00:00",
+      "actual": 44727.34,
+      "predicted_mean": 43377.840945431555,
+      "upper_bound": 46950.70229227771,
+      "lower_bound": 39804.9795985854
+    },
+    {
+      "timestamp": "2025-08-26 00:00:00",
+      "actual": 44934.8,
+      "predicted_mean": 42511.274495584745,
+      "upper_bound": 46084.182066544985,
+      "lower_bound": 38938.366924624504
+    },
+    {
+      "timestamp": "2025-08-27 00:00:00",
+      "actual": 44908.54,
+      "predicted_mean": 44245.53808894867,
+      "upper_bound": 47818.410854946014,
+      "lower_bound": 40672.665322951325
+    },
+    {
+      "timestamp": "2025-08-28 00:00:00",
+      "actual": 44801.81,
+      "predicted_mean": 46755.73003930288,
+      "upper_bound": 50328.54230116667,
+      "lower_bound": 43182.917777439085
+    },
+    {
+      "timestamp": "2025-08-29 00:00:00",
+      "actual": 44851.82,
+      "predicted_mean": 40270.64816753258,
+      "upper_bound": 43843.48693986365,
+      "lower_bound": 36697.809395201504
+    },
+    {
+      "timestamp": "2025-08-30 00:00:00",
+      "actual": 36010.24,
+      "predicted_mean": 35941.60154294071,
+      "upper_bound": 39514.456858213736,
+      "lower_bound": 32368.74622766769
+    }
+  ],
+  "anomalies": [
+    {
+      "start_time": "2025-04-08 00:00:00",
+      "end_time": "2025-04-08 23:59:59",
+      "severity": 7.07,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 44924.54,
+      "aggregate_expected_mean": 57899.9,
+      "aggregate_deviation_pct": -22.41,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-04-12 00:00:00",
+      "end_time": "2025-04-13 23:59:59",
+      "severity": 2.3,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 36087.98,
+      "aggregate_expected_mean": 43087.76,
+      "aggregate_deviation_pct": -16.25,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-04-15 00:00:00",
+      "end_time": "2025-04-15 23:59:59",
+      "severity": 4.51,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 44922.08,
+      "aggregate_expected_mean": 53205.83,
+      "aggregate_deviation_pct": -15.57,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-04-19 00:00:00",
+      "end_time": "2025-04-19 23:59:59",
+      "severity": 3.57,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 36017.19,
+      "aggregate_expected_mean": 42601.21,
+      "aggregate_deviation_pct": -15.46,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-04-22 00:00:00",
+      "end_time": "2025-04-22 23:59:59",
+      "severity": 2.79,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 44869.91,
+      "aggregate_expected_mean": 49993.11,
+      "aggregate_deviation_pct": -10.25,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-04-26 00:00:00",
+      "end_time": "2025-04-26 23:59:59",
+      "severity": 2.49,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 36296.58,
+      "aggregate_expected_mean": 40874.5,
+      "aggregate_deviation_pct": -11.2,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-04-29 00:00:00",
+      "end_time": "2025-04-29 23:59:59",
+      "severity": 1.99,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 44888.46,
+      "aggregate_expected_mean": 48542.34,
+      "aggregate_deviation_pct": -7.53,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-05-15 00:00:00",
+      "end_time": "2025-05-16 23:59:59",
+      "severity": 2.06,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 34291.06,
+      "aggregate_expected_mean": 41042.95,
+      "aggregate_deviation_pct": -16.45,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-06-12 00:00:00",
+      "end_time": "2025-06-13 23:59:59",
+      "severity": 2.05,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 37071.98,
+      "aggregate_expected_mean": 42333.36,
+      "aggregate_deviation_pct": -12.43,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-06-20 00:00:00",
+      "end_time": "2025-06-20 23:59:59",
+      "severity": 3.04,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 38115.19,
+      "aggregate_expected_mean": 43656.56,
+      "aggregate_deviation_pct": -12.69,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-07-10 00:00:00",
+      "end_time": "2025-07-10 23:59:59",
+      "severity": 2.35,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 39833.48,
+      "aggregate_expected_mean": 44117.38,
+      "aggregate_deviation_pct": -9.71,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-07-25 00:00:00",
+      "end_time": "2025-07-25 23:59:59",
+      "severity": 3.75,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 37297.95,
+      "aggregate_expected_mean": 44140.0,
+      "aggregate_deviation_pct": -15.5,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-08-01 00:00:00",
+      "end_time": "2025-08-01 23:59:59",
+      "severity": 4.52,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 34142.02,
+      "aggregate_expected_mean": 42382.6,
+      "aggregate_deviation_pct": -19.44,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-08-05 00:00:00",
+      "end_time": "2025-08-06 23:59:59",
+      "severity": 2.41,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 29882.42,
+      "aggregate_expected_mean": 39934.31,
+      "aggregate_deviation_pct": -25.17,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-08-15 00:00:00",
+      "end_time": "2025-08-15 23:59:59",
+      "severity": 2.64,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 38009.87,
+      "aggregate_expected_mean": 42829.43,
+      "aggregate_deviation_pct": -11.25,
+      "detection_method": "bsts"
+    },
+    {
+      "start_time": "2025-08-22 00:00:00",
+      "end_time": "2025-08-22 23:59:59",
+      "severity": 3.44,
+      "direction": "drop",
+      "metric_name": "revenue",
+      "aggregate_actual_mean": 35409.57,
+      "aggregate_expected_mean": 41680.15,
+      "aggregate_deviation_pct": -15.04,
+      "detection_method": "bsts"
+    }
+  ],
+  "served_from": "cache",
+  "detection_method": "cached"
+}

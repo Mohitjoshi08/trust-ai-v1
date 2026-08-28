@@ -1,0 +1,11 @@
+{
+  "root_cause_summary": "A deployment updating the Stripe SDK on the iOS checkout module introduced a critical failure, causing a 65% drop in iOS revenue.",
+  "confidence_score": 92,
+  "evidence_citations": [
+    {
+      "log_id": "2008a38c-42ca-47e1-a2b5-c51f75be38d9",
+      "relevance_explanation": "This GitHub PR was merged exactly 2 hours before the anomaly started and directly modified the iOS checkout payment module."
+    }
+  ],
+  "recommended_action": "Rollback the iOS checkout module to the previous Stripe SDK version."
+}

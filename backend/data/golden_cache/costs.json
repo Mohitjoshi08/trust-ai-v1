@@ -1,0 +1,98 @@
+[
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1612,
+    "output_tokens": 220,
+    "cost_usd": 0.0001869
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 2162,
+    "output_tokens": 150,
+    "cost_usd": 0.00020714999999999997
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1897,
+    "output_tokens": 221,
+    "cost_usd": 0.00020857500000000001
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1364,
+    "output_tokens": 240,
+    "cost_usd": 0.0001743
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1535,
+    "output_tokens": 187,
+    "cost_usd": 0.000171225
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1583,
+    "output_tokens": 285,
+    "cost_usd": 0.000204225
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 2255,
+    "output_tokens": 267,
+    "cost_usd": 0.000249225
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1495,
+    "output_tokens": 161,
+    "cost_usd": 0.000160425
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1740,
+    "output_tokens": 222,
+    "cost_usd": 0.0001971
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 2356,
+    "output_tokens": 201,
+    "cost_usd": 0.000237
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1635,
+    "output_tokens": 268,
+    "cost_usd": 0.000203025
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1590,
+    "output_tokens": 162,
+    "cost_usd": 0.00016785
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1830,
+    "output_tokens": 230,
+    "cost_usd": 0.00020625
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1454,
+    "output_tokens": 242,
+    "cost_usd": 0.00018165
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 2452,
+    "output_tokens": 243,
+    "cost_usd": 0.0002568
+  },
+  {
+    "timestamp": "2026-08-15T20:25:00",
+    "input_tokens": 1333,
+    "output_tokens": 206,
+    "cost_usd": 0.000161775
+  }
+]

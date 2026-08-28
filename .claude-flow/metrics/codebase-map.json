@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-08-26T18:15:42.691Z",
+  "projectRoot": "C:\\Users\\mohit\\OneDrive\\Desktop\\AIC\\Trace.ai",
+  "structure": {
+    "hasPackageJson": false,
+    "hasTsConfig": false,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1787768142692
+}

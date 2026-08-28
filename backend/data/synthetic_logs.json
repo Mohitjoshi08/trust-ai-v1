@@ -1,0 +1,1016 @@
+[
+  {
+    "id": "d33e6329-c1fc-4cc9-ad25-9338bc9ddc42",
+    "timestamp": "2025-08-04T23:45:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1847: Refactored iOS checkout payment module. Updated Stripe SDK to v12.3. LGTM from @sarah."
+  },
+  {
+    "id": "b041f490-19b9-4b48-9f3d-c047ec76d134",
+    "timestamp": "2025-08-05T09:30:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #4891: Customer reports 'Payment Failed' error on iPhone 14 Pro. Cannot complete purchase. Error code STRIPE_INIT_FAIL."
+  },
+  {
+    "id": "c93aa761-29c0-442c-a630-1cbf27102c9b",
+    "timestamp": "2025-08-05T10:15:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #4903: 'Something went wrong' on checkout page. Using iPad Air, iOS 17.4. Was working yesterday."
+  },
+  {
+    "id": "c150ce86-0682-4b16-bee1-a21f92d31793",
+    "timestamp": "2025-08-05T11:00:00Z",
+    "source": "Slack",
+    "text_content": "#incident-response: @oncall We're seeing a spike in iOS checkout errors. Sentry showing STRIPE_INIT_FAIL across iOS 17.x devices. Potentially related to last night's deploy?"
+  },
+  {
+    "id": "d8bde7c1-73f7-4142-9e90-6b95164b1df9",
+    "timestamp": "2025-08-05T14:00:00Z",
+    "source": "Jira",
+    "text_content": "BUG-2291: [P1 Critical] iOS Checkout Failure - Stripe SDK v12.3 incompatible with iOS 17.x WebView. Assigned: @dev-team."
+  },
+  {
+    "id": "1a2c69d4-5ad5-4a22-aa88-cd9c5208fc6b",
+    "timestamp": "2025-08-07T09:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1852: Hotfix - Reverted Stripe SDK to v11.9 for iOS. Fixes BUG-2291."
+  },
+  {
+    "id": "f9473111-c925-4fb8-a2ff-d43483dabb82",
+    "timestamp": "2025-08-14T23:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1901: Updated CDN configuration for web assets. Switched primary CDN provider from CloudFront to Fastly."
+  },
+  {
+    "id": "4ff9d9af-1975-40b5-9a1b-b4af8f4bdb73",
+    "timestamp": "2025-08-15T08:00:00Z",
+    "source": "Slack",
+    "text_content": "#ops-alerts: Web response times spiking. Fastly edge nodes returning 503 errors across all regions."
+  },
+  {
+    "id": "d417e7b2-16ca-4d1a-b4a8-79dbbba5ac9e",
+    "timestamp": "2025-08-15T10:00:00Z",
+    "source": "Jira",
+    "text_content": "BUG-2345: [P1 Critical] Web platform CDN failure - Fastly configuration rejecting cache purge requests."
+  },
+  {
+    "id": "92eb4091-3486-4d68-bf6e-a8cfec70dc15",
+    "timestamp": "2025-08-16T14:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1908: Hotfix - Reverted CDN to CloudFront. Fixes BUG-2345."
+  },
+  {
+    "id": "b6c5a49c-e405-4703-92bf-54a1b64faeb6",
+    "timestamp": "2025-08-21T22:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1920: Migrated EMEA payment processing to new EU gateway endpoint."
+  },
+  {
+    "id": "cfb9cb1a-89ce-4fc9-bea4-cf12ac9a303f",
+    "timestamp": "2025-08-22T07:00:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #5102: UK customer unable to complete payment. Error: GATEWAY_TIMEOUT on checkout."
+  },
+  {
+    "id": "69a80138-5ae8-48f5-889a-c7066e9102e5",
+    "timestamp": "2025-08-22T09:00:00Z",
+    "source": "Slack",
+    "text_content": "#incident-response: EMEA payments down. New EU gateway endpoint failing TLS handshake with payment processor."
+  },
+  {
+    "id": "e9ff55f8-28da-49eb-b236-efe1fc6662f9",
+    "timestamp": "2025-08-23T11:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1925: Hotfix - Rolled back EMEA gateway to legacy endpoint. Fixes TLS issue."
+  },
+  {
+    "id": "734d8054-c3ed-4f54-aaf3-6e79ffa0330b",
+    "timestamp": "2025-07-09T20:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1750: Updated Android OAuth SDK to v4.1 for better security."
+  },
+  {
+    "id": "d51f08f2-21cd-4e5d-b158-c7ba369d24ae",
+    "timestamp": "2025-07-10T08:30:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #3800: Can't log in on my Samsung Galaxy S23. Keeps looping back to login screen."
+  },
+  {
+    "id": "bfb111d5-5e6e-40f4-9848-e49be6bc5935",
+    "timestamp": "2025-07-10T09:45:00Z",
+    "source": "Slack",
+    "text_content": "#incident-response: OAuth token refresh failing on Android. Looks like the new SDK is rejecting our issuer URL."
+  },
+  {
+    "id": "e406aa75-f4c1-4995-aabf-0e4c5648b59c",
+    "timestamp": "2025-07-11T12:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1755: Hotfix - Revert Android OAuth SDK to v3.8."
+  },
+  {
+    "id": "f11aa826-7610-4452-9804-0ec66d8cef43",
+    "timestamp": "2025-06-19T23:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1601: Deployed new indexing strategy to APAC Database cluster to optimize reads."
+  },
+  {
+    "id": "9956ec85-e9f8-494a-b85f-755daea7324e",
+    "timestamp": "2025-06-20T08:00:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #2104: App is super slow in Tokyo, taking 30 seconds to load the homepage."
+  },
+  {
+    "id": "1025e6f8-c837-48d2-8bbc-37b52cc83c28",
+    "timestamp": "2025-06-20T10:00:00Z",
+    "source": "Slack",
+    "text_content": "#ops-alerts: @oncall APAC DB CPU is sitting at 99%. Query latency is up by 4000%."
+  },
+  {
+    "id": "37ffb566-0f91-4089-b2ec-869b7afc21e5",
+    "timestamp": "2025-06-22T23:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1608: Rollback APAC indexing strategy. Restored previous index setup."
+  },
+  {
+    "id": "86394d09-b88d-4614-8af9-2f747ce25a2a",
+    "timestamp": "2025-06-30T18:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1650: Updated Elasticsearch cluster configuration for Web Search API."
+  },
+  {
+    "id": "a8863dc0-621a-4dd5-ad57-524b817e1d7b",
+    "timestamp": "2025-07-01T14:30:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #2901: Searching for products returns zero results on the website. Used to work yesterday."
+  },
+  {
+    "id": "cb292f83-2c2b-42b5-9025-2484b606cc26",
+    "timestamp": "2025-07-01T15:00:00Z",
+    "source": "Slack",
+    "text_content": "#incident-response: ES cluster returning 500s for all web queries due to heap memory exhaustion."
+  },
+  {
+    "id": "35498176-02c7-44e3-a47d-630bc6219906",
+    "timestamp": "2025-07-02T02:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1652: Fix ES cluster config and increase heap limits."
+  },
+  {
+    "id": "d89e96f8-6fa7-41cd-9cb0-306bbf6df4b8",
+    "timestamp": "2025-06-11T20:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1520: Added new push notification campaign trigger for dormant iOS users."
+  },
+  {
+    "id": "511b116d-b8e2-4907-8db4-ff150447abf9",
+    "timestamp": "2025-06-12T09:30:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #1800: I'm getting 10 notifications a minute from your app! Uninstalling immediately."
+  },
+  {
+    "id": "5e410b2f-aebb-444f-b5ed-0927711e5864",
+    "timestamp": "2025-06-12T10:15:00Z",
+    "source": "Slack",
+    "text_content": "#general: iOS users are getting spammed by the new campaign trigger loop. We are seeing a huge spike in uninstalls."
+  },
+  {
+    "id": "fe61b467-26e7-4069-94c2-77e24712c286",
+    "timestamp": "2025-06-14T18:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1525: Emergency disable of push notification campaign logic."
+  },
+  {
+    "id": "5470a31c-15f2-414d-920d-371eabc6aa0b",
+    "timestamp": "2025-07-24T22:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1810: Migrated NA inventory sync to a new serverless cron job."
+  },
+  {
+    "id": "e211e3e0-7ce6-49a3-93a4-99acb02b40d5",
+    "timestamp": "2025-07-25T07:00:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #4100: Everything I click on says 'Out of Stock' in the US store."
+  },
+  {
+    "id": "e4fb3831-4207-4d86-9142-95cb2823c352",
+    "timestamp": "2025-07-25T08:30:00Z",
+    "source": "Slack",
+    "text_content": "#ops-alerts: NA inventory sync cron job has been failing silently due to IAM permissions."
+  },
+  {
+    "id": "01703614-748a-4e31-a0c6-7d940c9caead",
+    "timestamp": "2025-07-26T20:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1812: Fix IAM permissions for NA inventory cron schedule."
+  },
+  {
+    "id": "add2352b-4ba4-44b1-a21e-a5c7e2743850",
+    "timestamp": "2025-06-27T16:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1620: Updated GDPR banner layout for stricter EMEA compliance."
+  },
+  {
+    "id": "640ccdd7-2696-4b19-af2d-4ed9a576e21a",
+    "timestamp": "2025-06-28T10:00:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #2500: I can't click the checkout button on my laptop, the cookie banner is in the way and has no close button."
+  },
+  {
+    "id": "662f6f43-6dd8-4f6e-aee2-fc8c44c7f161",
+    "timestamp": "2025-06-28T11:00:00Z",
+    "source": "Slack",
+    "text_content": "#frontend-team: @here The new GDPR banner z-index is blocking the checkout button on Web across EMEA."
+  },
+  {
+    "id": "772a17de-842a-45f8-a63d-397731a94f92",
+    "timestamp": "2025-06-30T23:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1625: Fix GDPR banner z-index and add explicit close button."
+  },
+  {
+    "id": "b2488323-3e31-4495-9849-25ce0409367b",
+    "timestamp": "2025-07-31T20:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1830: Added Summer Sale pricing logic and discount multiplier for Android."
+  },
+  {
+    "id": "30eeaa79-7742-4974-a0c0-84850368f806",
+    "timestamp": "2025-08-01T08:00:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #4600: All prices on the Android app are showing as $0.00, but when I try to check out it gives an error."
+  },
+  {
+    "id": "f3fc284d-b3bf-4631-993a-31dc96284511",
+    "timestamp": "2025-08-01T09:00:00Z",
+    "source": "Slack",
+    "text_content": "#incident-response: Summer sale multiplier calculation is returning 0 on Android due to an integer division bug."
+  },
+  {
+    "id": "7c39b64b-a517-461a-9592-b8eaa56b45f1",
+    "timestamp": "2025-08-02T10:00:00Z",
+    "source": "GitHub",
+    "text_content": "Merged PR #1835: Fix Summer Sale multiplier on Android (cast to float)."
+  },
+  {
+    "id": "222ff6ec-34c8-47d5-8552-4794efa42fb3",
+    "timestamp": "2025-05-15T08:00:00Z",
+    "source": "Slack",
+    "text_content": "#marketing: Heads up, our biggest competitor 'MegaStore' just launched a surprise 50% off sitewide flash sale in North America."
+  },
+  {
+    "id": "0b9a4bc4-fdf9-4562-b5dd-655c6884edc4",
+    "timestamp": "2025-05-15T10:30:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #1105: Customer asking if we will price match MegaStore's 50% off sale. They said they will buy there instead."
+  },
+  {
+    "id": "fa19e69b-d14f-4f9e-86b9-397223328bda",
+    "timestamp": "2025-05-16T09:00:00Z",
+    "source": "Slack",
+    "text_content": "#general: We are seeing a massive drop in NA conversions, but system metrics (latency, error rates) are completely normal. It seems to be entirely market-driven by the competitor's promo."
+  },
+  {
+    "id": "358f9aab-abbc-4757-ba91-02f6cec3fd4b",
+    "timestamp": "2025-05-18T18:00:00Z",
+    "source": "Slack",
+    "text_content": "#marketing: The competitor's flash sale just ended. We should see our NA volumes return to baseline tomorrow."
+  },
+  {
+    "id": "de2b954f-b5b3-4751-99da-3d3c06def5e5",
+    "timestamp": "2025-08-05T10:00:00Z",
+    "source": "Slack",
+    "text_content": "#general: @channel EMEA CDN edge node experiencing 50ms latency elevation."
+  },
+  {
+    "id": "81d1ddc3-9b97-47d8-ac15-32b1d0c103ba",
+    "timestamp": "2025-07-15T14:30:00Z",
+    "source": "Zendesk",
+    "text_content": "Ticket #3102: iOS app crash during checkout when switching languages."
+  },
+  {
+    "id": "b8a4bc61-3df3-4976-be96-d4a42a6a51d0",
+    "timestamp": "2025-08-06T11:20:00Z",
+    "source": "Jira",
+    "text_content": "TASK-4012: Update Android push notification certificate."
+  },
+  {
+    "id": "7edcdb33-777b-45c5-9dd7-d3d410430dc9",
+    "timestamp": "2025-05-06T14:16:44Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "4bb0e5b2-42f8-4e62-95b3-e3c2274ebfa7",
+    "timestamp": "2025-04-27T06:11:52Z",
+    "source": "Jira",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "e991db3c-8d0d-4760-bb89-3b8661325dfc",
+    "timestamp": "2025-05-18T14:52:57Z",
+    "source": "Jira",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "68efc83b-9c61-4f6b-a621-0bff822225ca",
+    "timestamp": "2025-08-02T06:48:33Z",
+    "source": "Zendesk",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "78dded9d-6316-4ecd-b63c-ba3c8c232a43",
+    "timestamp": "2025-04-27T21:42:19Z",
+    "source": "Zendesk",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "0e12a195-e716-4ac1-adab-b5f5f798ecc6",
+    "timestamp": "2025-08-25T15:59:58Z",
+    "source": "Slack",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "3e25bcb7-36cc-49d9-98ee-2bf6dd994b25",
+    "timestamp": "2025-04-01T18:32:07Z",
+    "source": "GitHub",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "63ed387e-331f-4e84-b19e-fbaf8eb86943",
+    "timestamp": "2025-08-16T22:37:47Z",
+    "source": "GitHub",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "b77e25f8-0247-410f-a9ab-f860ce9bcf9f",
+    "timestamp": "2025-06-12T19:31:39Z",
+    "source": "GitHub",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "1a5a0312-5309-4522-b108-3b87d3657874",
+    "timestamp": "2025-07-12T01:18:17Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "7b1a8d2a-3e64-459b-8aba-19f64b417190",
+    "timestamp": "2025-05-28T12:06:54Z",
+    "source": "GitHub",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "4bd7310a-3bba-4900-aeb3-2e8464f7e671",
+    "timestamp": "2025-05-22T22:39:45Z",
+    "source": "Zendesk",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "8c5f9912-e214-4395-8fab-199f2c64fe7f",
+    "timestamp": "2025-07-12T15:35:09Z",
+    "source": "GitHub",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "d27f4add-f3ad-4037-b5f6-8a9d8c767854",
+    "timestamp": "2025-04-19T08:01:47Z",
+    "source": "Zendesk",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "99f58b15-8648-462e-bb07-34cc86e3f6dd",
+    "timestamp": "2025-07-13T19:56:16Z",
+    "source": "Slack",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "8ba76a91-cbee-4cae-b620-3ecf5f1add5b",
+    "timestamp": "2025-04-11T06:25:10Z",
+    "source": "Jira",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "5ecbc214-f5a4-487b-828e-e0949e167773",
+    "timestamp": "2025-06-24T02:49:47Z",
+    "source": "Jira",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "27a0eb31-d31a-4c37-b8bd-b57f35c28c3a",
+    "timestamp": "2025-08-26T20:12:15Z",
+    "source": "Slack",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "9c268167-888a-4b6c-bbe1-99632ca6323c",
+    "timestamp": "2025-06-20T08:57:48Z",
+    "source": "GitHub",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "1722db17-27d3-499a-a0a4-adf4a92fc7b3",
+    "timestamp": "2025-05-09T21:51:07Z",
+    "source": "Zendesk",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "eabb59a1-cf69-4759-ab61-f8d9af13260e",
+    "timestamp": "2025-07-21T00:20:48Z",
+    "source": "Jira",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "4b0203e0-7552-4430-80d3-76b53f7dcdab",
+    "timestamp": "2025-07-06T15:23:27Z",
+    "source": "GitHub",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "cc908c91-7da3-441d-be40-f6f7605edf07",
+    "timestamp": "2025-08-17T14:20:20Z",
+    "source": "Slack",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "95fe3583-86cf-4314-869e-e07695bf07e1",
+    "timestamp": "2025-08-24T18:29:53Z",
+    "source": "Jira",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "bd83227b-a778-4e68-8d00-5a6a18484e3e",
+    "timestamp": "2025-04-06T06:31:41Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "97fbd2c9-928b-4fb3-b32b-0817aa4fd513",
+    "timestamp": "2025-08-12T03:36:43Z",
+    "source": "Zendesk",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "b89b29a7-d91e-4056-8b88-9b6848b3608b",
+    "timestamp": "2025-06-24T18:54:42Z",
+    "source": "Jira",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "a8ec4cd6-8179-432c-8aff-6870035a62e6",
+    "timestamp": "2025-04-17T06:34:35Z",
+    "source": "Zendesk",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "979cd419-720f-4731-ac29-00e74738dcf0",
+    "timestamp": "2025-08-25T08:57:50Z",
+    "source": "Jira",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "99727cb3-0b64-4ec7-8859-7ea9c56b1299",
+    "timestamp": "2025-06-23T01:46:09Z",
+    "source": "Zendesk",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "c3538228-9354-4556-a81a-ece786a63955",
+    "timestamp": "2025-06-27T07:41:06Z",
+    "source": "Slack",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "e94d54d3-ccfd-4586-907b-fd8b68be3756",
+    "timestamp": "2025-06-06T03:09:28Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "1e90ece6-85b4-4b80-87fc-60e2c0ec53d9",
+    "timestamp": "2025-05-23T04:55:03Z",
+    "source": "Jira",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "36f5cb2d-4621-4058-9fec-2823c688b86d",
+    "timestamp": "2025-07-15T13:05:55Z",
+    "source": "Jira",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "1f5ecdae-425f-452c-8f57-2f8679da72d6",
+    "timestamp": "2025-07-26T12:33:34Z",
+    "source": "GitHub",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "9de9688a-d9ac-4d96-bc97-78351efe6ac6",
+    "timestamp": "2025-08-08T09:46:17Z",
+    "source": "Jira",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "fe445efb-6f27-4ad7-9203-af3149e7eced",
+    "timestamp": "2025-08-21T08:55:35Z",
+    "source": "Jira",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "6580e71b-e47e-41a8-9dec-c4ffa128236d",
+    "timestamp": "2025-08-25T21:16:15Z",
+    "source": "Zendesk",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "8adbd6aa-f537-44e8-a01f-f9b359377a82",
+    "timestamp": "2025-07-23T19:55:22Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "b668eb5d-4ef0-4378-b425-dafe9d337c70",
+    "timestamp": "2025-07-30T16:10:13Z",
+    "source": "GitHub",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "92e1e73c-a31e-46fd-a835-a5bb43b42c2f",
+    "timestamp": "2025-05-15T09:33:35Z",
+    "source": "Slack",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "ab9bbdb0-ab3e-4b82-b329-516524c24575",
+    "timestamp": "2025-07-21T12:37:46Z",
+    "source": "Zendesk",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "31986ff8-d10c-4625-9120-faab40cef922",
+    "timestamp": "2025-06-29T21:08:02Z",
+    "source": "Jira",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "c34592ad-e803-4e0e-b70a-7db6e25a8d5e",
+    "timestamp": "2025-04-28T07:31:08Z",
+    "source": "GitHub",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "3a0d2514-50aa-4bc1-81a1-7c35f4e87ba3",
+    "timestamp": "2025-06-03T10:28:00Z",
+    "source": "Jira",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "ab4139e3-6d85-437f-b210-371cec96b9fc",
+    "timestamp": "2025-05-15T07:58:06Z",
+    "source": "Jira",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "abe02dd1-7d39-4cae-a64b-5fa366c66507",
+    "timestamp": "2025-07-13T11:10:37Z",
+    "source": "Zendesk",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "55002d6a-61d0-492d-92ce-a1483d8e0935",
+    "timestamp": "2025-07-17T02:14:06Z",
+    "source": "Zendesk",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "8b71b20a-f469-4650-95ca-d2455773cfa8",
+    "timestamp": "2025-04-18T10:28:43Z",
+    "source": "GitHub",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "5da3b7f1-7f56-4580-9c68-d3e0ae1cf36f",
+    "timestamp": "2025-04-04T18:32:23Z",
+    "source": "Slack",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "acd25391-e4c4-46e5-ae1e-3911e17afd16",
+    "timestamp": "2025-08-26T03:38:28Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "43fdb981-9d06-40c2-a9c9-aadd08078ce5",
+    "timestamp": "2025-07-08T10:29:10Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "c59b12bd-459c-49c5-b3bf-ee2642969dcb",
+    "timestamp": "2025-08-21T13:24:13Z",
+    "source": "Zendesk",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "ed0f37a9-9b3f-4635-9c05-bc144bf70f53",
+    "timestamp": "2025-07-17T00:18:12Z",
+    "source": "Zendesk",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "8a1d151a-3665-424b-a907-f99c5216d2cc",
+    "timestamp": "2025-04-29T00:45:15Z",
+    "source": "Jira",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "d52084bf-0fb3-4dc2-8ddc-7ea1b85ce6ef",
+    "timestamp": "2025-08-13T18:56:42Z",
+    "source": "Slack",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "9d08e9b7-36c4-4376-a4cd-72f43df50275",
+    "timestamp": "2025-05-24T11:34:45Z",
+    "source": "Slack",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "eb15842a-7049-432c-a4f2-3662bbee1787",
+    "timestamp": "2025-05-09T11:25:52Z",
+    "source": "Jira",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "df2a1184-ff14-487a-9d3c-6005633d369c",
+    "timestamp": "2025-05-03T09:22:18Z",
+    "source": "Jira",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "9bae4146-5f6b-4c00-93e7-5716d0288a25",
+    "timestamp": "2025-07-05T11:48:08Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "fc8c29c7-5eec-4617-9bbc-58aad301dbc5",
+    "timestamp": "2025-08-10T20:36:28Z",
+    "source": "Jira",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "bcd8e96b-8b25-44f4-9473-e8d96c998368",
+    "timestamp": "2025-07-19T13:07:12Z",
+    "source": "Jira",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "40811f56-3673-426e-929a-d82b9e6b6492",
+    "timestamp": "2025-04-29T06:39:27Z",
+    "source": "GitHub",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "2e762ade-b0e2-4cb0-a704-f33b65a6cb2f",
+    "timestamp": "2025-07-28T16:54:57Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "a54bf649-0151-4383-9649-f524707e62de",
+    "timestamp": "2025-08-16T00:19:05Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "58f64aa5-3b42-45a2-b176-edba91266880",
+    "timestamp": "2025-06-02T11:42:48Z",
+    "source": "Jira",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "eaba457e-774e-4d91-a20e-e7afa9f00b32",
+    "timestamp": "2025-04-08T17:16:40Z",
+    "source": "GitHub",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "2d04bddf-29e5-43fd-9168-4887ddeb06e9",
+    "timestamp": "2025-07-26T14:56:49Z",
+    "source": "Slack",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "4e3342e2-3f76-4213-ba3c-63d27f8ebbed",
+    "timestamp": "2025-08-02T03:49:37Z",
+    "source": "Jira",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "0e8a2b0e-abe6-4946-9d4c-1897aabd0255",
+    "timestamp": "2025-07-28T19:24:22Z",
+    "source": "GitHub",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "df4f4f4d-87e6-4496-a8d2-cf005cd12bca",
+    "timestamp": "2025-08-18T14:59:38Z",
+    "source": "Zendesk",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "c6caf42a-1569-4bf3-98ad-4f43d8b1a761",
+    "timestamp": "2025-06-13T20:04:36Z",
+    "source": "Slack",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "eff2aa3a-d47f-4714-a6fb-ac8e7ffba94d",
+    "timestamp": "2025-06-03T05:25:26Z",
+    "source": "Slack",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "cd64217e-6439-4b9f-8db6-b8704b81b6cf",
+    "timestamp": "2025-04-25T15:43:46Z",
+    "source": "Zendesk",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "16efbcfa-a3b9-47ee-ac65-0901bdc65586",
+    "timestamp": "2025-07-03T15:42:49Z",
+    "source": "GitHub",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "83bab9e8-2285-4219-b95c-766cac613914",
+    "timestamp": "2025-07-29T03:41:00Z",
+    "source": "Jira",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "7c844d65-01ca-4e14-9458-7c25ff61d495",
+    "timestamp": "2025-07-27T02:50:03Z",
+    "source": "Jira",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "27edfe4c-963a-4b6a-a8cb-95f7ea21f14f",
+    "timestamp": "2025-08-06T18:12:18Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "b51f2e3e-7083-453f-91e1-781cbc14313f",
+    "timestamp": "2025-04-08T11:11:59Z",
+    "source": "Zendesk",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "be6457ac-1486-4a46-8094-76daa8b884c2",
+    "timestamp": "2025-05-21T00:38:49Z",
+    "source": "Slack",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "484e1bb9-37dd-4a62-8bc1-88e2fce746f4",
+    "timestamp": "2025-06-22T06:57:46Z",
+    "source": "Jira",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "7275e110-1a97-4d4e-b651-c4a2ff827d5b",
+    "timestamp": "2025-06-02T10:33:05Z",
+    "source": "GitHub",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "cfa5c2fd-f5e7-43fe-a989-ae4da7d42108",
+    "timestamp": "2025-08-14T07:04:24Z",
+    "source": "Jira",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "ab4a8093-99e4-4878-867f-15627a0be158",
+    "timestamp": "2025-07-15T10:23:32Z",
+    "source": "Slack",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "35502fba-a7a8-4159-973c-4bc137fb3afe",
+    "timestamp": "2025-08-15T08:13:31Z",
+    "source": "Zendesk",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "6f81b5d5-d245-4d94-b305-a9092213158e",
+    "timestamp": "2025-06-21T18:07:04Z",
+    "source": "Jira",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "c33074f9-1a6b-4c11-918b-cf8b6ab66ba6",
+    "timestamp": "2025-04-16T21:59:18Z",
+    "source": "Zendesk",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "8e81f55b-9938-49ae-8357-6210c25f694b",
+    "timestamp": "2025-08-25T21:40:49Z",
+    "source": "Zendesk",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "ae134d76-94e3-47ce-ba43-ffad2ab42f8d",
+    "timestamp": "2025-06-20T11:11:28Z",
+    "source": "Jira",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "f543f19e-2a41-4188-aedb-68be4505fe2f",
+    "timestamp": "2025-06-11T03:28:30Z",
+    "source": "Zendesk",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "57b31a96-b204-46cc-b986-3ae1c58e4472",
+    "timestamp": "2025-07-20T14:26:28Z",
+    "source": "Jira",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "def5bd5b-f56e-44b1-84b3-ab8ef3773a96",
+    "timestamp": "2025-04-15T18:10:02Z",
+    "source": "Zendesk",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "be2bfd2a-22f0-4c32-a679-104be95908ca",
+    "timestamp": "2025-04-24T10:30:18Z",
+    "source": "GitHub",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "1d18122e-1668-499c-ae82-06b5b6fa4b89",
+    "timestamp": "2025-07-09T17:13:08Z",
+    "source": "Zendesk",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "102649dc-19a0-46bb-813d-d27a20352fa1",
+    "timestamp": "2025-08-07T22:50:19Z",
+    "source": "GitHub",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "f496359c-387e-4e39-84c4-8b0f9a6d2f4a",
+    "timestamp": "2025-04-12T16:52:32Z",
+    "source": "Slack",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "896cf206-8228-4a8b-8c29-84c1ffd6ae15",
+    "timestamp": "2025-07-28T21:55:13Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "e0080806-da4d-4811-9cc4-718cc944a39c",
+    "timestamp": "2025-04-27T11:58:24Z",
+    "source": "Zendesk",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "80311606-f076-4fd4-94b6-39cee9606580",
+    "timestamp": "2025-08-24T17:09:19Z",
+    "source": "GitHub",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "b826d140-5d8f-4eeb-9e6c-fa0465ad5e73",
+    "timestamp": "2025-04-26T01:23:29Z",
+    "source": "Slack",
+    "text_content": "Server maintenance scheduled for next weekend."
+  },
+  {
+    "id": "34a66b0d-e3e4-4aef-b28e-2ed764dbbbb5",
+    "timestamp": "2025-04-18T09:04:12Z",
+    "source": "Jira",
+    "text_content": "Customer asking for refund on late delivery."
+  },
+  {
+    "id": "6e667446-a8a0-469a-8900-968c6b021825",
+    "timestamp": "2025-07-18T23:09:35Z",
+    "source": "Slack",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "aa84ff12-67e2-4375-b41c-13ffe8adbba6",
+    "timestamp": "2025-06-27T21:16:02Z",
+    "source": "Jira",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "8071babe-eb59-45db-beb2-16a9805b868e",
+    "timestamp": "2025-08-01T02:15:45Z",
+    "source": "GitHub",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "654d70e8-b9d0-4fa0-b721-e7171622f2cf",
+    "timestamp": "2025-04-19T22:01:45Z",
+    "source": "Jira",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "38ed9a40-5081-4ccd-9f81-4bc58c9995df",
+    "timestamp": "2025-07-27T13:00:55Z",
+    "source": "GitHub",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "d3e0d5ec-14c4-4822-a2e1-be819612d2ab",
+    "timestamp": "2025-07-29T14:26:49Z",
+    "source": "Jira",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "b7e831bd-bd55-4e85-b90d-6b5b772f0991",
+    "timestamp": "2025-07-18T12:33:29Z",
+    "source": "GitHub",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "007541a2-8206-48b4-9f42-d3a4c3073183",
+    "timestamp": "2025-04-15T14:00:39Z",
+    "source": "Zendesk",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "4924914c-0021-4d63-99ca-c5f10b13e256",
+    "timestamp": "2025-07-15T13:34:18Z",
+    "source": "Slack",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "bf2e727a-aeb5-4d5d-b5c0-e86f9dcd515c",
+    "timestamp": "2025-07-31T04:30:18Z",
+    "source": "Slack",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "6bc03eed-ecd4-427b-9a62-d759523f0f7a",
+    "timestamp": "2025-05-24T11:35:25Z",
+    "source": "GitHub",
+    "text_content": "Welcome our new engineer to the team!"
+  },
+  {
+    "id": "5b8ef64f-afb4-4fe5-b1ca-f7f86f91b113",
+    "timestamp": "2025-08-12T05:56:42Z",
+    "source": "Zendesk",
+    "text_content": "New feature request: dark mode for web app."
+  },
+  {
+    "id": "c996a3ee-dcc8-4885-bbdc-92c6bebbaa35",
+    "timestamp": "2025-05-30T05:40:44Z",
+    "source": "GitHub",
+    "text_content": "Updated dependencies in package.json"
+  },
+  {
+    "id": "52d75995-d2c1-449f-9648-2805fe1ecd35",
+    "timestamp": "2025-06-29T13:23:55Z",
+    "source": "Slack",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "ebd11728-8bc1-48bf-89d6-b5b012351dd7",
+    "timestamp": "2025-04-23T03:26:49Z",
+    "source": "Zendesk",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  },
+  {
+    "id": "aac92c3a-4957-404c-b1f1-3158b9a293ef",
+    "timestamp": "2025-05-27T02:57:26Z",
+    "source": "Zendesk",
+    "text_content": "Launched summer marketing campaign on social channels."
+  },
+  {
+    "id": "0880235a-99eb-4df7-8988-05d3d1cb97fb",
+    "timestamp": "2025-04-13T20:12:34Z",
+    "source": "Jira",
+    "text_content": "Database backup completed successfully."
+  },
+  {
+    "id": "597196e4-746e-4637-8d46-660c4be85163",
+    "timestamp": "2025-04-15T20:16:59Z",
+    "source": "Zendesk",
+    "text_content": "Investigating intermittent timeout on reporting dashboard."
+  },
+  {
+    "id": "38b6e2b9-7a6f-4106-9ade-8dd9b9fbaf4c",
+    "timestamp": "2025-05-07T04:37:20Z",
+    "source": "Zendesk",
+    "text_content": "Weekly sync notes: hiring updates and marketing plans."
+  }
+]
