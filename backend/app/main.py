@@ -11,23 +11,29 @@ from app.cache.golden_path import cache_manager
 from pydantic import BaseModel
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.database import get_db, engine, Base
 from app.auth import get_current_user
 from app.models.db_models import Dataset, User
 import pandas as pd
 import asyncio
 from app.engine.bsts import detect_anomalies
 from app.engine.decomposer import run_decomposition
-from app.vectorstore.search import search_logs
 from app.engine.hypothesis import generate_hypotheses
 from app.engine.rag import build_rag_queries
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 class ChatRequest(BaseModel):
     message: str
 
 app = FastAPI(title="Trace.ai Engine API")
+
+# Create tables on startup (SQLite auto-creates the DB file)
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+    logger.info(f"Trace.ai started — DEMO_MODE={settings.DEMO_MODE}")
 
 from app.routers import integration_router, dataset_router
 app.include_router(integration_router.router, prefix="/api/v1")
@@ -50,64 +56,59 @@ def load_cache(filename: str):
 
 @app.get("/api/v1/trace_full", response_model=FullTraceResponse)
 async def get_full_trace(
-    current_user: User = Depends(get_current_user),
+    current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Returns the entire pipeline payload in one shot for easy frontend rendering."""
+
     # Check if user has a mapped dataset
     dataset = db.query(Dataset).filter(Dataset.org_id == current_user.org_id, Dataset.status == "mapped").order_by(Dataset.created_at.desc()).first()
-    
+
     if dataset and dataset.mapping_config:
         try:
             logger.info("Processing live dataset for trace...")
             config = dataset.mapping_config
-            
-            # Since the file is huge (100MB), we read in chunks or just read and aggregate quickly
-            # To save memory and time, we'll read a sample or aggregate
+
             df = pd.read_csv(dataset.file_path)
-            
+
             # Map columns
             ts_col = config.get("timestamp_col")
             met_col = config.get("metric_col")
             dim_cols = config.get("dimension_cols", [])
-            
+
             if ts_col and met_col:
                 df = df.rename(columns={ts_col: "timestamp", met_col: "metric_value"})
-            
+
             # Basic validation
             if "timestamp" not in df.columns or "metric_value" not in df.columns:
                 raise ValueError("Missing required mapped columns")
-                
+
             df['timestamp'] = pd.to_datetime(df['timestamp'])
-            
+
             # Aggregate to daily to speed up BSTS
             daily_df = df.set_index('timestamp').resample('D').agg({'metric_value': 'sum'}).reset_index()
             daily_df['metric_name'] = "revenue"
-            
+
             # Run BSTS on aggregated data
             ts_points, anomalies, method = detect_anomalies(daily_df, metric_col="metric_value")
-            
+
             ts_result = TimeSeriesResponse(
                 data=ts_points,
                 anomalies=anomalies,
                 served_from="live",
                 detection_method=method
             )
-            
+
             reports_list = []
             if anomalies:
                 anomaly = anomalies[0]
-                # Run decomposition on full dataframe for the specific dimensions
-                # Only use mapped dimension cols
                 decomp = run_decomposition(df, anomaly, metric_col="metric_value", dimensions=dim_cols)
-                
-                # Mock RAG & Hypothesis for speed on live custom datasets unless we want to query OpenAI
-                # For this demo, let's just do a mock or call OpenAI directly.
-                # Calling OpenAI directly:
+
                 queries = build_rag_queries(decomp)
+                from app.vectorstore.search import search_logs
                 evidence = await search_logs(queries[0], start_time=anomaly.start_time, end_time=anomaly.end_time)
                 hyp_result = await generate_hypotheses(anomaly, decomp, evidence)
-                
+
                 report = AnomalyReport(
                     anomaly_window=anomaly,
                     decomposition=decomp,
@@ -115,23 +116,23 @@ async def get_full_trace(
                     hypothesis=hyp_result
                 )
                 reports_list.append(report)
-            
+
             return FullTraceResponse(
                 timeseries=ts_result,
                 reports=reports_list
             )
         except Exception as e:
             logger.error(f"Live processing failed: {e}")
-            # Fall back to cache if it fails
+            # Fall back to cache if it fails (if in demo mode)
             pass
 
     if not settings.DEMO_MODE:
         raise HTTPException(status_code=501, detail="Live mode failed and DEMO_MODE is disabled.")
-        
-    # Fallback to cache
+
+    # Fallback to cache (always used in demo mode)
     ts_data = load_cache("timeseries.json")
     reports_data = load_cache("anomaly_reports.json")
-    
+
     reports_list = []
     for r in reports_data:
         report = AnomalyReport(
@@ -141,14 +142,14 @@ async def get_full_trace(
             hypothesis=HypothesisResult(**r["hypothesis"])
         )
         reports_list.append(report)
-            
+
     reports_list.sort(key=lambda x: x.anomaly_window.severity, reverse=True)
     reports_list = [
-        r for r in reports_list 
+        r for r in reports_list
         if r.rag.retrieved_logs and r.hypothesis.hypotheses and r.hypothesis.hypotheses[0].cause_title != "Unknown Issue"
     ]
     top_reports = reports_list[:10]
-    
+
     return FullTraceResponse(
         timeseries=TimeSeriesResponse(**ts_data),
         reports=top_reports
@@ -168,11 +169,11 @@ def get_costs():
 def chat(req: ChatRequest):
     import google.generativeai as genai
     genai.configure(api_key=os.environ.get("GEMINI_API_KEY", "dummy_key"))
-    model = genai.GenerativeModel('gemini-3.5-flash')
-    
+    model = genai.GenerativeModel('gemini-2.0-flash')
+
     # Load context
     reports_data = load_cache("anomaly_reports.json")
-    
+
     context = "Here is the context of the Trace.ai engine anomalies:\n"
     for idx, r in enumerate(reports_data):
         window = r.get('decomposition', {}).get('anomaly_window', {})
@@ -181,9 +182,9 @@ def chat(req: ChatRequest):
         context += f"  Segment: {r.get('decomposition', {}).get('primary_driver', 'Unknown')}\n"
         context += f"  Root Cause: {hyp.get('cause_title', 'Unknown')}\n"
         context += f"  Reasoning: {hyp.get('reasoning', '')}\n\n"
-        
+
     prompt = f"System Context:\n{context}\n\nYou are the Trace.ai Data Assistant. Your goal is to answer the user's questions about the anomalies intelligently and accurately using the context above. If they ask a general question, summarize the key problems.\n\nUser Question: {req.message}\nAssistant:"
-    
+
     try:
         response = model.generate_content(prompt)
         return {"response": response.text}

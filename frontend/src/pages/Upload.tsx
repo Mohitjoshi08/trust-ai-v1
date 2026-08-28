@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Upload as UploadIcon, CheckCircle, Database } from 'lucide-react';
+import { Upload as UploadIcon, CheckCircle, Database, Menu } from 'lucide-react';
 import { auth } from '../firebase';
+import { Sidebar } from '../components/Sidebar';
 
 export default function Upload() {
   const [file, setFile] = useState<File | null>(null);
@@ -13,6 +14,7 @@ export default function Upload() {
     dimension_cols: [] as string[]
   });
   const [success, setSuccess] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -28,12 +30,13 @@ export default function Upload() {
     formData.append('file', file);
 
     try {
-      const token = await auth.currentUser?.getIdToken();
-      const res = await fetch('http://localhost:8000/api/v1/datasets/upload', {
+      const token = import.meta.env.VITE_DEMO_MODE === 'true' ? 'demo' : await auth.currentUser?.getIdToken();
+      const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+      const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+      const res = await fetch(`${API_BASE_URL}/api/v1/datasets/upload`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: formData
       });
 
@@ -52,13 +55,13 @@ export default function Upload() {
 
   const handleSaveMapping = async () => {
     try {
-      const token = await auth.currentUser?.getIdToken();
-      const res = await fetch(`http://localhost:8000/api/v1/datasets/${datasetId}/map`, {
+      const token = import.meta.env.VITE_DEMO_MODE === 'true' ? 'demo' : await auth.currentUser?.getIdToken();
+      const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+
+      const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+      const res = await fetch(`${API_BASE_URL}/api/v1/datasets/${datasetId}/map`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(mapping)
       });
 
@@ -71,11 +74,17 @@ export default function Upload() {
   };
 
   return (
-    <div className="dashboard-content" style={{ padding: '32px', maxWidth: '800px', margin: '0 auto' }}>
-      <div className="flex items-center gap-4 mb-6">
-        <Database size={24} color="var(--primary)" />
-        <h1 className="headline-md">Data Sources</h1>
-      </div>
+    <div className="app-layout">
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      
+      <div className="dashboard-content" style={{ padding: '32px', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
+        <div className="flex items-center gap-4 mb-6">
+          <button className="btn-icon" onClick={() => setSidebarOpen(true)}>
+            <Menu size={18} />
+          </button>
+          <Database size={24} color="var(--primary)" />
+          <h1 className="headline-md">Data Sources</h1>
+        </div>
 
       {!columns.length ? (
         <div className="card" style={{ textAlign: 'center', padding: '48px' }}>
@@ -173,5 +182,6 @@ export default function Upload() {
         </div>
       )}
     </div>
+  </div>
   );
 }

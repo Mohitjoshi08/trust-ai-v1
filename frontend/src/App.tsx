@@ -11,18 +11,25 @@ import Upload from './pages/Upload';
 import Integrations from './pages/Integrations';
 import ConnectIntegration from './pages/ConnectIntegration';
 
-// Auth Guard Component
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
+
+// Auth Guard Component — bypassed in demo mode
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!DEMO_MODE);
 
   useEffect(() => {
+    if (DEMO_MODE) return;
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
     return unsubscribe;
   }, []);
+
+  if (DEMO_MODE) {
+    return children;
+  }
 
   if (loading) {
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;

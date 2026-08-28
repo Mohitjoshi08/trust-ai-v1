@@ -76,6 +76,7 @@ def run_decomposition(
     global_baseline_mean = float(global_baseline[metric_col].mean()) if not global_baseline.empty else 0.0
     global_anomaly_mean = float(global_anomaly[metric_col].mean()) if not global_anomaly.empty else 0.0
     total_aggregate_delta = global_anomaly_mean - global_baseline_mean
+    global_anomaly_len = len(global_anomaly)
     
     if total_aggregate_delta == 0:
         total_aggregate_delta = 1e-9 # Prevent division by zero
@@ -96,6 +97,7 @@ def run_decomposition(
                 anomaly_end=anomaly_end,
                 metric_col=metric_col,
                 total_aggregate_delta=total_aggregate_delta,
+                global_anomaly_len=global_anomaly_len,
                 dimension=dim,
                 segment_value=val
             )
@@ -153,7 +155,8 @@ def run_decomposition(
                 anomaly_start=anomaly_start,
                 anomaly_end=anomaly_end,
                 metric_col=metric_col,
-                total_aggregate_delta=primary_driver.absolute_change if primary_driver.absolute_change != 0 else 1e-9, 
+                total_aggregate_delta=primary_driver.absolute_change if primary_driver.absolute_change != 0 else 1e-9,
+                global_anomaly_len=global_anomaly_len,
                 dimension=sub_dim,
                 segment_value=f"{sub_val}"
             )

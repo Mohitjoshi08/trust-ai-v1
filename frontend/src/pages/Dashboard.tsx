@@ -6,11 +6,12 @@ import {
 import {
   GitCommit, Target, BrainCircuit, RefreshCw,
   ChevronRight, AlertTriangle, TrendingDown, Search,
-  LayoutDashboard, Settings, Menu, X, Database
+  Menu, X, Database
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
+import { Sidebar } from '../components/Sidebar'
 import '../index.css'
 
 interface AnomalyWindow {
@@ -102,13 +103,14 @@ function formatDateTime(dateStr: string): string {
 }
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true'
 
 export default function Dashboard() {
   const [trace, setTrace] = useState<TraceData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedIdx, setSelectedIdx] = useState(0)
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab] = useState('dashboard')
   const [costs, setCosts] = useState<any>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   
@@ -127,32 +129,31 @@ export default function Dashboard() {
     { role: 'assistant', content: 'Hi! I am the Trace.ai Data Assistant. Ask me anything about the recent anomalies.' }
   ])
 
-  const [datasets, setDatasets] = useState<any[]>([]);
+  const [datasets, setDatasets] = useState<any[]>(DEMO_MODE ? ['demo'] : []);
   const navigate = useNavigate();
 
   const fetchTrace = async () => {
     setLoading(true)
     setError(null)
     try {
-      const token = await auth.currentUser?.getIdToken();
+      const token = DEMO_MODE ? 'demo' : await auth.currentUser?.getIdToken();
+      const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
       
-      // 1. Check if user has uploaded any datasets
-      const dsRes = await fetch(`${API_BASE_URL}/api/v1/datasets/`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (dsRes.ok) {
-        const ds = await dsRes.json();
-        setDatasets(ds);
-        if (ds.length === 0) {
-          setLoading(false);
-          return; // They have no datasets, UI will handle this
+      if (!DEMO_MODE) {
+        // Check if user has uploaded any datasets
+        const dsRes = await fetch(`${API_BASE_URL}/api/v1/datasets/`, { headers });
+        if (dsRes.ok) {
+          const ds = await dsRes.json();
+          setDatasets(ds);
+          if (ds.length === 0) {
+            setLoading(false);
+            return;
+          }
         }
       }
 
-      // 2. Fetch the trace reports (In a real app, pass the dataset_id here)
-      const res = await fetch(`${API_BASE_URL}/api/v1/trace_full`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      // Fetch the trace reports
+      const res = await fetch(`${API_BASE_URL}/api/v1/trace_full`, { headers })
       if (!res.ok) throw new Error('Failed to fetch trace data')
       const data = await res.json()
       setTrace(data)
@@ -273,38 +274,7 @@ export default function Dashboard() {
 
   return (
     <div className="app-layout">
-      {/* 1. Slide-in Sidebar overlay & container */}
-      {sidebarOpen && (
-        <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
-      )}
-      <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
-          <div className="flex items-center gap-2">
-            <div className="sidebar-logo">
-              <BrainCircuit size={16} />
-            </div>
-            <div className="title-lg">Trace.ai</div>
-          </div>
-          <button className="btn-icon" onClick={() => setSidebarOpen(false)}>
-            <X size={18} />
-          </button>
-        </div>
-        <div className="flex flex-col gap-2">
-          <button className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }} style={{ width: '100%', textAlign: 'left', background: activeTab === 'dashboard' ? 'var(--surface-container)' : 'transparent' }}>
-            <LayoutDashboard size={16} /> Dashboard
-          </button>
-        </div>
-        <div className="flex flex-col gap-2 mt-2">
-          <button className="nav-item" onClick={() => navigate('/upload')} style={{ width: '100%', textAlign: 'left', background: 'transparent' }}>
-            <Database size={16} /> Data Sources
-          </button>
-        </div>
-        <div style={{ marginTop: 'auto' }}>
-          <button className={`nav-item ${activeTab === 'costs' ? 'active' : ''}`} onClick={() => { setActiveTab('costs'); setSidebarOpen(false); }} style={{ width: '100%', textAlign: 'left', background: activeTab === 'costs' ? 'var(--surface-container)' : 'transparent' }}>
-            <Settings size={16} /> Settings & Costs
-          </button>
-        </div>
-      </nav>
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
       {/* Dashboard Content Area */}
       {activeTab === 'dashboard' ? (

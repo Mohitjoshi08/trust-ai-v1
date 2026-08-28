@@ -2,21 +2,34 @@ import { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { BrainCircuit, AlertTriangle } from 'lucide-react';
+import { BrainCircuit, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    
     setLoading(true);
     setError('');
     
     try {
+      if (import.meta.env.VITE_DEMO_MODE === 'true') {
+        alert("Demo Mode: Account creation simulated. Verification email simulated.");
+        setTimeout(() => navigate('/login'), 500);
+        return;
+      }
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await import('firebase/auth').then(({ sendEmailVerification }) => sendEmailVerification(userCredential.user));
       alert("Account created! Please check your email to verify your account before logging in.");
@@ -68,14 +81,36 @@ export default function SignUp() {
           </div>
           <div>
             <label className="label-md">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              className="mt-1"
-              style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--outline)', background: 'var(--surface-container-lowest)', color: 'var(--on-surface)' }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input 
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                className="mt-1"
+                style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--outline)', background: 'var(--surface-container-lowest)', color: 'var(--on-surface)', paddingRight: '40px' }}
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--outline)' }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+          <div>
+            <label className="label-md">Confirm Password</label>
+            <div style={{ position: 'relative' }}>
+              <input 
+                type={showPassword ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                required
+                className="mt-1"
+                style={{ width: '100%', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--outline)', background: 'var(--surface-container-lowest)', color: 'var(--on-surface)', paddingRight: '40px' }}
+              />
+            </div>
           </div>
           <button type="submit" className="btn btn-primary mt-2" disabled={loading} style={{ justifyContent: 'center', padding: '12px' }}>
             {loading ? 'Creating Account...' : 'Sign Up'}

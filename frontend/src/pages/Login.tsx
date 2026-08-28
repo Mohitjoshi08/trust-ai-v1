@@ -17,6 +17,11 @@ export default function Login() {
     setError('');
     
     try {
+      if (import.meta.env.VITE_DEMO_MODE === 'true') {
+        setTimeout(() => navigate('/'), 500);
+        return;
+      }
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
         setError('Please verify your email before logging in.');

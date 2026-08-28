@@ -1,19 +1,22 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# We expect POSTGRES_URL in the .env file.
-# Default to a local postgres instance if not provided.
+# Use SQLite for local development. Override with POSTGRES_URL for production.
 DATABASE_URL = os.getenv(
-    "POSTGRES_URL", 
-    "postgresql://postgres:postgres@localhost:5432/trace_ai"
+    "DATABASE_URL",
+    "sqlite:///./trace_ai.db"
 )
 
-engine = create_engine(DATABASE_URL)
+# SQLite requires check_same_thread=False for FastAPI's async usage
+connect_args = {}
+if DATABASE_URL.startswith("sqlite"):
+    connect_args["check_same_thread"] = False
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
