@@ -42,11 +42,9 @@ from app.routers import integration_router, dataset_router
 app.include_router(integration_router.router, prefix="/api/v1")
 app.include_router(dataset_router.router, prefix="/api/v1")
 
-frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
