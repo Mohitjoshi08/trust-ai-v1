@@ -42,13 +42,21 @@ from app.routers import integration_router, dataset_router
 app.include_router(integration_router.router, prefix="/api/v1")
 app.include_router(dataset_router.router, prefix="/api/v1")
 
+# --- THE FIX: Explicit Origins List ---
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+    "https://trace-ai-demo-git-main-mohitjoshi08s-projects.vercel.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# --------------------------------------
 
 def load_cache(filename: str):
     path = os.path.join(settings.CACHE_DIR, filename)
