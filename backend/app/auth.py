@@ -22,11 +22,18 @@ def _ensure_firebase():
         import firebase_admin
         from firebase_admin import credentials
         firebase_cred_path = os.getenv("FIREBASE_CREDENTIALS")
-        if firebase_cred_path and os.path.exists(firebase_cred_path):
+        firebase_cred_json = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+
+        if firebase_cred_json:
+            import json
+            cred_dict = json.loads(firebase_cred_json)
+            cred = credentials.Certificate(cred_dict)
+            firebase_admin.initialize_app(cred)
+        elif firebase_cred_path and os.path.exists(firebase_cred_path):
             cred = credentials.Certificate(firebase_cred_path)
             firebase_admin.initialize_app(cred)
         else:
-            firebase_admin.initialize_app()
+            firebase_admin.initialize_app(options={'projectId': 'traceai-42679'})
         _firebase_initialized = True
     except Exception as e:
         logger.warning(f"Firebase init skipped: {e}")
@@ -47,6 +54,7 @@ def verify_firebase_token(credentials: HTTPAuthorizationCredentials = Security(s
         decoded_token = auth.verify_id_token(token)
         return decoded_token
     except Exception as e:
+        logger.error(f"Firebase token verification failed: {str(e)}")
         raise HTTPException(
             status_code=401,
             detail=f"Invalid Firebase token: {str(e)}"

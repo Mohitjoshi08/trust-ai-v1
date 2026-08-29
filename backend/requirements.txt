@@ -16,3 +16,4 @@ sqlalchemy
 alembic
 firebase-admin
 python-multipart
+gunicorn

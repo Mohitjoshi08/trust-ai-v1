@@ -46,7 +46,9 @@ def calculate_contributions(
         a_mean = anom_means.get(seg, 0.0)
         delta = a_mean - b_mean
         
-        pct_change = (delta / b_mean * 100.0) if b_mean > 0 else 0.0
+        # Add epsilon to prevent astronomical percentage changes from near-zero baselines
+        epsilon = 1e-2
+        pct_change = (delta / (b_mean + epsilon) * 100.0) if b_mean > 0 else 0.0
         
         contrib = 0.0
         if delta < 0 and total_drop_volume > 0:

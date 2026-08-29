@@ -39,9 +39,11 @@ from app.routers import integration_router, dataset_router
 app.include_router(integration_router.router, prefix="/api/v1")
 app.include_router(dataset_router.router, prefix="/api/v1")
 
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[frontend_url],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -124,58 +126,56 @@ async def get_full_trace(
             )
             return FullTraceResponse(timeseries=ts_res, reports=[])
             
-        # For demo simplicity, just process the worst anomaly
-        aw = sorted(anomaly_windows, key=lambda x: x.severity, reverse=True)[0]
+        # Process top 5 worst anomalies
+        top_anomalies = sorted(anomaly_windows, key=lambda x: abs(x.aggregate_deviation_pct), reverse=True)[:5]
+        reports_list = []
         
-        # 3. Decomposition
-        decomp = run_decomposition(df, aw, timestamp_col, metric_col)
-        
-        # 4. RAG
         from app.engine.rag import build_rag_queries, adaptive_search
         from datetime import datetime
-        
-        queries = build_rag_queries(decomp)
-        # Use primary query for search
-        query = queries[0] if queries else f"{metric_col} anomaly"
-        
-        # Ensure datetimes
-        st = datetime.fromisoformat(aw.start_time) if isinstance(aw.start_time, str) else aw.start_time
-        et = datetime.fromisoformat(aw.end_time) if isinstance(aw.end_time, str) else aw.end_time
-        
-        logs, window = await adaptive_search(dataset_id, query, st, et)
-        
-        rag_result = RAGResult(
-            decomposition=decomp,
-            search_queries=queries,
-            retrieved_logs=logs
-        )
-        
-        # 5. Hypotheses
-        hypotheses_tuple = await generate_hypotheses(aw, decomp, logs)
-        # Handle the fact that generate_hypotheses returns a tuple of (result, rejected_logs) in hypothesis.py
-        # Wait, the signature says `-> List[HypothesisResult]` but the implementation says `return result, rejected_logs`
-        # Let's inspect the actual return type of generate_hypotheses: `return result, rejected_logs`. So we must unpack.
-        
-        if isinstance(hypotheses_tuple, tuple):
-            hypotheses = hypotheses_tuple[0]
-            rejected_logs = hypotheses_tuple[1]
-        else:
-            hypotheses = hypotheses_tuple
-            rejected_logs = []
-            
-        # 6. Compose AnomalyReport
-        report = AnomalyReport(
-            anomaly_window=aw,
-            decomposition=decomp,
-            rag=rag_result,
-            hypotheses=hypotheses,
-            rejected_logs=rejected_logs
-        )
-        
-        # Save to database
         from app.database_utils import save_anomaly_report_to_db
-        save_anomaly_report_to_db(db, dataset_id, report)
         
+        for aw in top_anomalies:
+            # 3. Decomposition
+            decomp = run_decomposition(df, aw, timestamp_col, metric_col)
+            
+            # 4. RAG
+            queries = build_rag_queries(decomp)
+            query = queries[0] if queries else f"{metric_col} anomaly"
+            
+            st = datetime.fromisoformat(aw.start_time) if isinstance(aw.start_time, str) else aw.start_time
+            et = datetime.fromisoformat(aw.end_time) if isinstance(aw.end_time, str) else aw.end_time
+            
+            logs, window = await adaptive_search(dataset_id, query, st, et)
+            
+            rag_result = RAGResult(
+                decomposition=decomp,
+                search_queries=queries,
+                retrieved_logs=logs
+            )
+            
+            # 5. Hypotheses
+            hypotheses_tuple = await generate_hypotheses(aw, decomp, logs)
+            
+            if isinstance(hypotheses_tuple, tuple):
+                hypotheses = hypotheses_tuple[0]
+                rejected_logs = hypotheses_tuple[1]
+            else:
+                hypotheses = hypotheses_tuple
+                rejected_logs = []
+                
+            # 6. Compose AnomalyReport
+            report = AnomalyReport(
+                anomaly_window=aw,
+                decomposition=decomp,
+                rag=rag_result,
+                hypotheses=hypotheses,
+                rejected_logs=rejected_logs
+            )
+            
+            # Save to database
+            save_anomaly_report_to_db(db, dataset_id, report)
+            reports_list.append(report)
+            
         # Build Response
         ts_res = TimeSeriesResponse(
             data=ts_points,
@@ -183,7 +183,7 @@ async def get_full_trace(
             served_from="live",
             detection_method=method
         )
-        return FullTraceResponse(timeseries=ts_res, reports=[report])
+        return FullTraceResponse(timeseries=ts_res, reports=reports_list)
 
 @app.get("/api/v1/costs")
 def get_costs():

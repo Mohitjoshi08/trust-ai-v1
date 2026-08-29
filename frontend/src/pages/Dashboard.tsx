@@ -433,7 +433,11 @@ export default function Dashboard() {
                   <YAxis
                     stroke="var(--outline)"
                     tick={{ fill: 'var(--on-surface-variant)', fontSize: 11, fontFamily: 'var(--font-family)' }}
-                    tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
+                    tickFormatter={(v: number) => {
+                      if (v >= 1000000) return `$${(v / 1000000).toFixed(1)}M`
+                      if (v >= 1000) return `$${(v / 1000).toFixed(0)}k`
+                      return `$${v.toFixed(0)}`
+                    }}
                     domain={['auto', 'auto']}
                     axisLine={false}
                     tickLine={false}
