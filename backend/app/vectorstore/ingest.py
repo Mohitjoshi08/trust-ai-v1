@@ -21,9 +21,9 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
     def __call__(self, input: Documents) -> Embeddings:
         from google import genai
         client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        # Use text-embedding-004 which is the standard Gemini embedding model
+        # Use gemini-embedding-2 which is the standard Gemini embedding model
         response = client.models.embed_content(
-            model='text-embedding-004', 
+            model='gemini-embedding-2',
             contents=input
         )
         # Return a list of embeddings
