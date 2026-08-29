@@ -14,14 +14,35 @@ def get_chroma_client():
     client = chromadb.PersistentClient(path=str(db_path))
     return client
 
+from chromadb.api.types import Documents, EmbeddingFunction, Embeddings
+from app.config import settings
+
+class GeminiEmbeddingFunction(EmbeddingFunction):
+    def __call__(self, input: Documents) -> Embeddings:
+        from google import genai
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        # Use text-embedding-004 which is the standard Gemini embedding model
+        response = client.models.embed_content(
+            model='text-embedding-004', 
+            contents=input
+        )
+        # Return a list of embeddings
+        return [e.values for e in response.embeddings]
+
 def get_collection(dataset_id: str, client=None):
     if not client:
         client = get_chroma_client()
     
     # Chroma collection names must be valid: alphanumeric, underscores, hyphens.
     collection_name = f"logs_{dataset_id.replace('-', '_')}"
-    # all-MiniLM-L6-v2 is the default embedding function used by Chroma if none is provided.
-    collection = client.get_or_create_collection(name=collection_name)
+    
+    # Use Gemini embeddings to completely eliminate PyTorch OOM crashes
+    gemini_ef = GeminiEmbeddingFunction()
+    
+    collection = client.get_or_create_collection(
+        name=collection_name, 
+        embedding_function=gemini_ef
+    )
     return collection
 
 def ingest_logs(dataset_id: str, logs_path: str) -> int:
