@@ -5,6 +5,7 @@ from app.models.schemas import LogDocument
 from app.vectorstore.ingest import get_collection
 
 async def search_logs(
+    dataset_id: str,
     query: str,
     start_time: datetime,
     end_time: datetime,
@@ -12,7 +13,7 @@ async def search_logs(
     top_k: int = 10
 ) -> List[LogDocument]:
     
-    collection = get_collection()
+    collection = get_collection(dataset_id)
     
     # Expand window
     effective_start = start_time - timedelta(hours=time_buffer_hours)
@@ -24,15 +25,10 @@ async def search_logs(
     effective_end_str = effective_end.isoformat() + "Z" if not effective_end.tzinfo else effective_end.isoformat()
     
     # Semantic search with the query within the filtered set
+    # Note: ChromaDB $gte / $lte only support int/float, so we fetch more and filter locally
     results = collection.query(
         query_texts=[query],
-        n_results=top_k,
-        where={
-            "$and": [
-                {"timestamp": {"$gte": effective_start_str}},
-                {"timestamp": {"$lte": effective_end_str}}
-            ]
-        }
+        n_results=top_k * 3,
     )
     
     documents: List[LogDocument] = []
@@ -56,15 +52,27 @@ async def search_logs(
         except:
             ts = datetime.utcnow()
             
-        doc = LogDocument(
-            id=ids[i],
-            timestamp=ts,
-            source=metadatas[i]["source"],
-            text_content=docs[i],
-            similarity_score=sim_score,
-            matched_query=query
-        )
-        documents.append(doc)
+        # Filter locally
+        if ts.tzinfo is not None:
+            ts = ts.replace(tzinfo=None)
+        if effective_start.tzinfo is not None:
+            effective_start = effective_start.replace(tzinfo=None)
+        if effective_end.tzinfo is not None:
+            effective_end = effective_end.replace(tzinfo=None)
+            
+        if effective_start <= ts <= effective_end:
+            doc = LogDocument(
+                id=ids[i],
+                timestamp=ts,
+                source=metadatas[i]["source"],
+                text_content=docs[i],
+                similarity_score=sim_score,
+                matched_query=query
+            )
+            documents.append(doc)
+            
+        if len(documents) >= top_k:
+            break
         
     # Sort by relevance score
     documents.sort(key=lambda x: x.similarity_score, reverse=True)

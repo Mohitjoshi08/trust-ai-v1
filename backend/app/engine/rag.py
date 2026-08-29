@@ -2,8 +2,12 @@
 Trace.ai — RAG Query Builder
 Phase 4 Implementation
 """
-from typing import List
-from app.models.schemas import DecompositionResult, SegmentContribution
+from typing import List, Tuple
+import logging
+from datetime import datetime
+from app.models.schemas import DecompositionResult, SegmentContribution, LogDocument, EvidenceStatus
+
+logger = logging.getLogger(__name__)
 
 QUERY_TEMPLATES = {
     "device": {
@@ -49,3 +53,36 @@ def build_rag_queries(decomp: DecompositionResult) -> List[str]:
         queries.append(build_rag_query_for_segment(decomp.secondary_driver, metric_name))
         
     return queries
+
+async def adaptive_search(
+    dataset_id: str,
+    query: str,
+    start_time: datetime,
+    end_time: datetime
+) -> Tuple[List[LogDocument], int]:
+    """
+    Query ChromaDB with expanding time windows until conclusive evidence is found.
+    Returns (logs, final_time_buffer_hours).
+    """
+    from app.vectorstore.search import search_logs
+    from app.engine.hypothesis import evaluate_evidence
+    
+    windows = [24, 72, 168]  # 24 hours, 72 hours, 7 days
+    
+    for window in windows:
+        logger.info(f"Trying RAG search with time_buffer_hours={window}")
+        logs = await search_logs(dataset_id, query, start_time, end_time, time_buffer_hours=window)
+        
+        # Evaluate deterministic evidence strength
+        anomaly_ts = str(start_time)
+        evidence_items, _ = evaluate_evidence(anomaly_ts, logs)
+        
+        # If all checks return UNKNOWN, it means we found NO conclusive logs for deploy or error
+        is_insufficient = all(item["status"] == EvidenceStatus.UNKNOWN for item in evidence_items)
+        
+        if not is_insufficient:
+            logger.info(f"Conclusive evidence found at window={window}")
+            return logs, window
+            
+    logger.warning(f"Reached max window ({windows[-1]}h) with insufficient evidence.")
+    return logs, windows[-1]

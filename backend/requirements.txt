@@ -8,7 +8,7 @@ scipy
 statsmodels
 httpx
 sentence-transformers
-google-generativeai
+google-genai
 chromadb
 openai
 

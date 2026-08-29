@@ -148,6 +148,34 @@ def run_decomposition(df: pd.DataFrame, window: AnomalyWindow) -> DecompositionR
     if is_ambiguous and secondary and not any(f"{secondary.dimension}={secondary.segment_value}" in p[1] for p in drill_down_paths):
         drill_down_paths.append(["revenue", f"{secondary.dimension}={secondary.segment_value}"])
 
+    # --- Reconciliation Logic ---
+    # aggregate delta = actual - expected
+    aggregate_delta = window.aggregate_actual_mean - window.aggregate_expected_mean
+    
+    # explained delta = sum of negative segment deltas (the drop volume)
+    explained_delta = sum([abs(s.absolute_change) for s in all_segments if s.absolute_change < 0])
+    
+    residual_delta = abs(aggregate_delta) - explained_delta
+    explained_share = explained_delta / abs(aggregate_delta) if abs(aggregate_delta) > 0 else 0.0
+    
+    tolerance = 0.05  # 5% tolerance
+    if abs(residual_delta) <= tolerance * abs(aggregate_delta):
+        reconciliation_status = "reconciled"
+    elif explained_share > 0.5:
+        reconciliation_status = "partial"
+    else:
+        reconciliation_status = "failed"
+        
+    from app.models.schemas import ReconciliationResult
+    reconciliation = ReconciliationResult(
+        aggregate_delta=round(aggregate_delta, 2),
+        explained_delta=round(explained_delta, 2),
+        residual_delta=round(residual_delta, 2),
+        explained_share=round(explained_share, 4),
+        status=reconciliation_status,
+        tolerance=tolerance
+    )
+
     return DecompositionResult(
         anomaly_window=window,
         primary_driver=primary,
@@ -155,5 +183,6 @@ def run_decomposition(df: pd.DataFrame, window: AnomalyWindow) -> DecompositionR
         is_ambiguous=is_ambiguous,
         level2_drilldowns=drilldowns,
         all_segments=all_segments,
-        drill_down_paths=drill_down_paths
+        drill_down_paths=drill_down_paths,
+        reconciliation=reconciliation
     )

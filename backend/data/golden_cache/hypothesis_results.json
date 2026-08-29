@@ -1,11 +1,117 @@
-{
-  "root_cause_summary": "A deployment updating the Stripe SDK on the iOS checkout module introduced a critical failure, causing a 65% drop in iOS revenue.",
-  "confidence_score": 92,
-  "evidence_citations": [
-    {
-      "log_id": "2008a38c-42ca-47e1-a2b5-c51f75be38d9",
-      "relevance_explanation": "This GitHub PR was merged exactly 2 hours before the anomaly started and directly modified the iOS checkout payment module."
-    }
-  ],
-  "recommended_action": "Rollback the iOS checkout module to the previous Stripe SDK version."
-}
+[
+  {
+    "id": "hyp-ios-stripe-sdk",
+    "rank": 1,
+    "title": "Stripe SDK Update Broke iOS Checkout",
+    "description": "A deployment updating the Stripe SDK on the iOS checkout module introduced a critical failure in the payment flow, causing a 65% drop in iOS revenue. The PR was merged 2 hours before the anomaly started and directly modified the iOS checkout payment module.",
+    "evidence_strength": "HIGH",
+    "evidence_matrix": [
+      {
+        "id": "ev-001",
+        "log_id": "2008a38c-42ca-47e1-a2b5-c51f75be38d9",
+        "checkpoint": "Deployment preceded anomaly",
+        "status": "PASS",
+        "timestamp": "2025-06-10T14:30:00",
+        "details": "GitHub PR merged exactly 2 hours before anomaly start, modifying iOS checkout payment module."
+      },
+      {
+        "id": "ev-002",
+        "log_id": "2008a38c-42ca-47e1-a2b5-c51f75be38d9",
+        "checkpoint": "Error rate spiked in segment",
+        "status": "PASS",
+        "timestamp": "2025-06-10T16:45:00",
+        "details": "iOS checkout error rate jumped from 0.3% to 42% immediately after the deployment window."
+      },
+      {
+        "id": "ev-003",
+        "log_id": null,
+        "checkpoint": "Affected segment matches primary driver",
+        "status": "PASS",
+        "timestamp": null,
+        "details": "Anomaly decomposition identifies iOS as the primary driver with 87% contribution to the aggregate revenue drop."
+      },
+      {
+        "id": "ev-004",
+        "log_id": null,
+        "checkpoint": "Rollback correlated with recovery",
+        "status": "PASS",
+        "timestamp": "2025-06-11T09:15:00",
+        "details": "Revenue on iOS recovered to baseline within 2 hours of the Stripe SDK rollback deployment."
+      }
+    ]
+  },
+  {
+    "id": "hyp-push-notification-bug",
+    "rank": 2,
+    "title": "Push Notification Bug Caused App Uninstalls",
+    "description": "A misconfigured push notification campaign sent excessive alerts to iOS users, leading to a spike in app uninstalls and reduced active user count during the anomaly window.",
+    "evidence_strength": "MEDIUM",
+    "evidence_matrix": [
+      {
+        "id": "ev-005",
+        "log_id": null,
+        "checkpoint": "Deployment preceded anomaly",
+        "status": "UNKNOWN",
+        "timestamp": null,
+        "details": "Push notification config change timestamp is ambiguous; may have preceded or coincided with anomaly."
+      },
+      {
+        "id": "ev-006",
+        "log_id": null,
+        "checkpoint": "Error rate spiked in segment",
+        "status": "FAIL",
+        "timestamp": null,
+        "details": "No checkout error rate spike observed from push notifications; the failure mode is user churn, not transaction errors."
+      },
+      {
+        "id": "ev-007",
+        "log_id": null,
+        "checkpoint": "Affected segment matches primary driver",
+        "status": "PASS",
+        "timestamp": null,
+        "details": "Push notification bug affected iOS users, matching the primary driver segment."
+      },
+      {
+        "id": "ev-008",
+        "log_id": null,
+        "checkpoint": "Uninstall rate exceeded baseline",
+        "status": "PASS",
+        "timestamp": "2025-06-10T18:00:00",
+        "details": "App Store uninstall rate was 3.2x baseline during the anomaly window for the iOS segment."
+      }
+    ]
+  },
+  {
+    "id": "hyp-seasonal-variance",
+    "rank": 3,
+    "title": "Seasonal Traffic Decline",
+    "description": "Normal seasonal traffic patterns may explain part of the revenue dip, as mid-June historically shows lower conversion rates.",
+    "evidence_strength": "LOW",
+    "evidence_matrix": [
+      {
+        "id": "ev-009",
+        "log_id": null,
+        "checkpoint": "Deployment preceded anomaly",
+        "status": "FAIL",
+        "timestamp": null,
+        "details": "No deployment or operational event corresponds to this hypothesis."
+      },
+      {
+        "id": "ev-010",
+        "log_id": null,
+        "checkpoint": "Historical pattern matches current anomaly",
+        "status": "UNKNOWN",
+        "timestamp": null,
+        "details": "Year-over-year comparison shows a 5-8% dip in mid-June, but the current 65% drop far exceeds historical variance."
+      },
+      {
+        "id": "ev-011",
+        "log_id": null,
+        "checkpoint": "Affected segment matches primary driver",
+        "status": "FAIL",
+        "timestamp": null,
+        "details": "Seasonal patterns affect all segments uniformly; they do not explain iOS-specific concentration."
+      }
+    ]
+  }
+]

@@ -47,7 +47,7 @@ export default function Upload() {
       setDatasetId(data.dataset_id);
     } catch (err) {
       console.error(err);
-      alert('Failed to upload CSV');
+      alert('Failed to upload ZIP file. Ensure it contains metrics.csv and logs.json.');
     } finally {
       setUploading(false);
     }
@@ -90,11 +90,11 @@ export default function Upload() {
         <div className="card" style={{ textAlign: 'center', padding: '48px' }}>
           <UploadIcon size={48} color="var(--outline)" style={{ margin: '0 auto 16px' }} />
           <h2 className="title-lg">Upload Dataset</h2>
-          <p className="text-muted body-md mt-2 mb-6">Upload your metric CSV file to begin analysis</p>
+          <p className="text-muted body-md mt-2 mb-6">Upload your metric & log ZIP file (.zip containing metrics.csv and logs.json)</p>
           
           <input 
             type="file" 
-            accept=".csv" 
+            accept=".zip" 
             onChange={handleFileChange}
             id="file-upload"
             style={{ display: 'none' }}
@@ -116,7 +116,7 @@ export default function Upload() {
       ) : !success ? (
         <div className="card">
           <h2 className="title-lg mb-4">Map Columns</h2>
-          <p className="text-muted body-md mb-6">Map your CSV columns to Trace.ai's required fields.</p>
+          <p className="text-muted body-md mb-6">Map your metrics.csv columns to Trace.ai's required fields.</p>
           
           <div className="flex flex-col gap-4">
             <div>

@@ -3,11 +3,36 @@ from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
 
+
+# ============================================================
+# Core Enums
+# ============================================================
+
 class DetectionMethod(str, Enum):
     BSTS = "bsts"
     Z_SCORE = "z_score"
     CACHED = "cached"
     HARDCODED = "hardcoded"
+
+
+class EvidenceStatus(str, Enum):
+    """Status of an individual evidence checkpoint."""
+    PASS_ = "PASS"
+    FAIL = "FAIL"
+    UNKNOWN = "UNKNOWN"
+
+
+class EvidenceStrength(str, Enum):
+    """Qualitative strength of the evidence supporting a hypothesis."""
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+    INSUFFICIENT = "INSUFFICIENT"
+
+
+# ============================================================
+# Time-Series & Anomaly Models (unchanged)
+# ============================================================
 
 class TimeSeriesPoint(BaseModel):
     timestamp: datetime
@@ -32,6 +57,11 @@ class TimeSeriesResponse(BaseModel):
     anomalies: List[AnomalyWindow]
     served_from: str
     detection_method: DetectionMethod
+
+
+# ============================================================
+# Decomposition Models (unchanged)
+# ============================================================
 
 class SegmentContribution(BaseModel):
     dimension: str
@@ -59,6 +89,7 @@ class DecompositionResult(BaseModel):
     level2_drilldowns: List[Level2DrillDown]
     all_segments: List[SegmentContribution]
     drill_down_paths: List[List[str]]
+    reconciliation: Optional['ReconciliationResult'] = None
 
 class ReconciliationResult(BaseModel):
     aggregate_delta: float
@@ -67,6 +98,11 @@ class ReconciliationResult(BaseModel):
     explained_share: float
     status: str  # reconciled / partial / failed
     tolerance: float
+
+
+# ============================================================
+# RAG / Log Models (unchanged)
+# ============================================================
 
 class LogDocument(BaseModel):
     id: str
@@ -97,6 +133,44 @@ class EvidenceLink(BaseModel):
     relevance_score: float
     role: str  # temporal / symptom / deployment / incident / recovery / contradiction
 
+
+# ============================================================
+# Phase 2: Evidence Matrix & Multi-Hypothesis Models (NEW)
+# ============================================================
+
+class EvidenceItem(BaseModel):
+    """A single checkpoint in the evidence matrix for a hypothesis."""
+    id: str
+    log_id: Optional[str] = None
+    checkpoint: str  # e.g., "Deployment preceded anomaly"
+    status: EvidenceStatus
+    timestamp: Optional[str] = None
+    details: str
+
+
+class HypothesisResult(BaseModel):
+    """
+    Phase 2 hypothesis result — a single competing hypothesis with
+    a structured evidence matrix (replaces raw confidence scores).
+    """
+    id: str
+    rank: int
+    title: str
+    description: str
+    evidence_strength: EvidenceStrength
+    evidence_matrix: List[EvidenceItem]
+    analyst_feedback: Optional[bool] = None
+
+class RejectedLog(BaseModel):
+    log_id: str
+    timestamp: str
+    rejection_reason: str
+
+
+# ============================================================
+# Legacy V1 Hypothesis Models (kept for hypothesis.py compat)
+# ============================================================
+
 class EvidenceCheck(BaseModel):
     check_name: str
     result: str  # pass / fail / unknown
@@ -110,7 +184,11 @@ class EvidenceMatrix(BaseModel):
     failed_count: int
     unknown_count: int
 
-class Hypothesis(BaseModel):
+class HypothesisV1(BaseModel):
+    """
+    Legacy hypothesis model (V1). Used by hypothesis.py engine and its tests.
+    The deprecated confidence_score field has been removed.
+    """
     rank: int
     cause_title: str
     evidence_strength: str   # HIGH / MEDIUM / LOW / INSUFFICIENT
@@ -121,8 +199,9 @@ class Hypothesis(BaseModel):
     evidence_checks: List[EvidenceCheck] = []
     recommended_action: str
     status: str = "investigate"  # recommended / investigate / rejected / ambiguous
-    # Backwards compatibility
-    confidence_score: Optional[int] = None
+
+# Backward-compatibility alias so `from app.models.schemas import Hypothesis` still works
+Hypothesis = HypothesisV1
 
 class RecoveryValidation(BaseModel):
     detected: bool
@@ -131,8 +210,12 @@ class RecoveryValidation(BaseModel):
     metric_recovered: bool
     recovery_summary: str
 
-class HypothesisResult(BaseModel):
-    hypotheses: List[Hypothesis]
+class HypothesisResultV1(BaseModel):
+    """
+    Legacy wrapper around a list of V1 hypotheses.
+    Used for parsing the old 'hypothesis' key in golden cache.
+    """
+    hypotheses: List[HypothesisV1]
     served_from: str = "cache"
     status: str = "healthy"
 
@@ -143,17 +226,34 @@ class InvestigationReport(BaseModel):
     rag: RAGResult
     retrieval_metadata: Optional[RetrievalMetadata] = None
     timeline: List[EvidenceLink] = []
-    hypotheses: List[Hypothesis] = []
+    hypotheses: List[HypothesisV1] = []
     recovery_validation: Optional[RecoveryValidation] = None
     overall_status: str = "investigate"
 
+
+# ============================================================
+# Top-Level Report & Response Models
+# ============================================================
+
 class AnomalyReport(BaseModel):
-    # Old compatibility container, but updated inner types
+    """
+    Top-level report for a single anomaly.
+
+    Phase 2: The primary data contract now uses `hypotheses` —
+    a list of 2-3 competing HypothesisResult objects with structured
+    evidence matrices. The old `hypothesis` (HypothesisResultV1 wrapper)
+    is retained as Optional for backward-compatible cache parsing.
+    """
     anomaly_window: AnomalyWindow
     decomposition: DecompositionResult
     rag: RAGResult
-    hypothesis: HypothesisResult
+    # Phase 2: structured multi-hypothesis list
+    hypotheses: List[HypothesisResult] = []
+    # Legacy: old hypothesis wrapper (optional, for cache parsing)
+    hypothesis: Optional[HypothesisResultV1] = None
     investigation: Optional[InvestigationReport] = None
+    recovered: Optional[bool] = None
+    rejected_logs: List[RejectedLog] = []
 
 class FullTraceResponse(BaseModel):
     timeseries: TimeSeriesResponse

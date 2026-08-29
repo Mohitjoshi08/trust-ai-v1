@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, ReferenceArea, ReferenceLine
 } from 'recharts'
 import {
-  GitCommit, Target, BrainCircuit, RefreshCw,
+  GitCommit, BrainCircuit, RefreshCw,
   ChevronRight, AlertTriangle, TrendingDown, Search,
   Menu, X, Database
 } from 'lucide-react'
@@ -35,15 +35,32 @@ interface LogDoc {
   matched_query: string
 }
 
-interface Hypothesis {
+type EvidenceStatus = 'PASS' | 'FAIL' | 'UNKNOWN'
+type EvidenceStrength = 'HIGH' | 'MEDIUM' | 'LOW' | 'INSUFFICIENT'
+
+interface EvidenceItem {
+  id: string
+  log_id: string | null
+  checkpoint: string
+  status: EvidenceStatus
+  timestamp: string | null
+  details: string
+}
+
+interface RejectedLog {
+  log_id: string
+  timestamp: string
+  rejection_reason: string
+}
+
+interface HypothesisResult {
+  id: string
   rank: number
-  cause_title: string
-  evidence_strength: string
-  status: string
-  evidence_checks: { check_name: string; result: string; explanation: string; weight: number }[]
-  reasoning: string
-  supporting_evidence_ids: string[]
-  recommended_action: string
+  title: string
+  description: string
+  evidence_strength: EvidenceStrength
+  evidence_matrix: EvidenceItem[]
+  analyst_feedback?: boolean | null
 }
 
 interface AnomalyReport {
@@ -68,14 +85,11 @@ interface AnomalyReport {
     search_queries: string[]
     retrieved_logs: LogDoc[]
   }
-  hypothesis: {
-    hypotheses: Hypothesis[]
-    served_from: string
-    status: string
-  }
+  hypotheses: HypothesisResult[]
   timeline?: any
   reconciliation?: any
   recovery_validation?: any
+  rejected_logs?: RejectedLog[]
 }
 
 interface TraceData {
@@ -87,9 +101,10 @@ interface TraceData {
 }
 
 function getConfidenceClass(strength: string): string {
-  if (strength === 'HIGH') return 'confidence-high'
-  if (strength === 'MEDIUM') return 'confidence-med'
-  return 'confidence-low'
+  if (strength === 'HIGH') return 'badge-success'
+  if (strength === 'MEDIUM') return 'badge-warning'
+  if (strength === 'LOW') return 'badge-warning' // or orange if available
+  return 'badge-critical' // INSUFFICIENT
 }
 
 function formatDate(dateStr: string): string {
@@ -139,20 +154,28 @@ export default function Dashboard() {
       const token = DEMO_MODE ? 'demo' : await auth.currentUser?.getIdToken();
       const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
       
-      if (!DEMO_MODE) {
-        // Check if user has uploaded any datasets
-        const dsRes = await fetch(`${API_BASE_URL}/api/v1/datasets/`, { headers });
-        if (dsRes.ok) {
+      // Check if user has uploaded any datasets
+      const dsRes = await fetch(`${API_BASE_URL}/api/v1/datasets/`, { headers });
+      if (dsRes.ok) {
           const ds = await dsRes.json();
           setDatasets(ds);
-          if (ds.length === 0) {
-            setLoading(false);
-            return;
+          
+          // Filter to only datasets that have been mapped (status === 'mapped')
+          const mappedDs = ds.filter((d: any) => d.status === 'mapped');
+          if (mappedDs.length > 0) {
+              // Grab the most recently uploaded mapped dataset
+              const latestDs = mappedDs[mappedDs.length - 1];
+              const res = await fetch(`${API_BASE_URL}/api/v1/trace_full?dataset_id=${latestDs.id}`, { headers })
+              if (!res.ok) throw new Error('Failed to fetch trace data for dataset')
+              const data = await res.json()
+              setTrace(data)
+              setSelectedIdx(0)
+              setLoading(false)
+              return
           }
-        }
       }
 
-      // Fetch the trace reports
+      // Fetch the fallback trace reports
       const res = await fetch(`${API_BASE_URL}/api/v1/trace_full`, { headers })
       if (!res.ok) throw new Error('Failed to fetch trace data')
       const data = await res.json()
@@ -203,24 +226,39 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner" />
-        <h2 className="title-lg">Trace.ai Engine Running...</h2>
-        <p className="text-muted body-md">Analyzing metrics and operational logs across 4 pipeline stages</p>
+      <div className="app-layout">
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+        <div className="dashboard-content flex flex-col justify-center items-center h-full">
+          <div className="loading-container text-center">
+            <div className="loading-spinner mx-auto" />
+            <h2 className="title-lg">Trace.ai Engine Running...</h2>
+            <p className="text-muted body-md mt-2">Analyzing metrics and operational logs</p>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="app-layout" style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-        <div className="card" style={{ textAlign: 'center', padding: '48px', maxWidth: '400px' }}>
-          <AlertTriangle size={48} color="var(--error)" style={{ margin: '0 auto' }} />
-          <h2 className="title-lg mt-4">Connection Error</h2>
-          <p className="text-muted body-md mt-4">{error}</p>
-          <button className="btn mt-4" onClick={fetchTrace}>
-            <RefreshCw size={16} /> Retry
-          </button>
+      <div className="app-layout">
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+        <div className="dashboard-content h-full">
+          <div className="flex items-center gap-4 mb-6">
+            <button className="btn-icon" onClick={() => setSidebarOpen(true)}>
+              <Menu size={18} />
+            </button>
+          </div>
+          <div className="flex justify-center items-center h-full">
+            <div className="card text-center" style={{ padding: '48px', maxWidth: '400px' }}>
+              <AlertTriangle size={48} color="var(--error)" className="mx-auto" />
+              <h2 className="title-lg mt-4">Connection Error</h2>
+              <p className="text-muted body-md mt-4">{error}</p>
+              <button className="btn mt-4 mx-auto" onClick={fetchTrace}>
+                <RefreshCw size={16} /> Retry
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -228,14 +266,24 @@ export default function Dashboard() {
 
   if (datasets.length === 0) {
     return (
-      <div className="app-layout" style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-        <div className="card" style={{ textAlign: 'center', padding: '48px', maxWidth: '400px' }}>
-          <Database size={48} color="var(--primary)" style={{ margin: '0 auto' }} />
-          <h2 className="title-lg mt-4">Welcome to Trace.ai</h2>
-          <p className="text-muted body-md mt-4">You haven't uploaded any data yet. Upload your first CSV dataset to start monitoring for anomalies.</p>
-          <button className="btn btn-primary mt-4" onClick={() => navigate('/upload')} style={{ margin: '16px auto 0' }}>
-            Upload Dataset
-          </button>
+      <div className="app-layout">
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+        <div className="dashboard-content h-full">
+          <div className="flex items-center gap-4 mb-6">
+            <button className="btn-icon" onClick={() => setSidebarOpen(true)}>
+              <Menu size={18} />
+            </button>
+          </div>
+          <div className="flex justify-center items-center h-full">
+            <div className="card text-center" style={{ padding: '48px', maxWidth: '400px' }}>
+              <Database size={48} color="var(--primary)" className="mx-auto" />
+              <h2 className="title-lg mt-4">Welcome to Trace.ai</h2>
+              <p className="text-muted body-md mt-4">You haven't uploaded any data yet. Upload your first CSV dataset to start monitoring for anomalies.</p>
+              <button className="btn btn-primary mt-4 mx-auto" onClick={() => navigate('/upload')}>
+                Upload Dataset
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -243,10 +291,20 @@ export default function Dashboard() {
 
   if (!trace || !trace.reports || trace.reports.length === 0) {
     return (
-      <div className="app-layout" style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-        <div className="card" style={{ textAlign: 'center', padding: '48px' }}>
-          <h2 className="title-lg">No anomalies detected</h2>
-          <p className="text-muted body-md mt-4">The BSTS model found no significant deviations in the metric data.</p>
+      <div className="app-layout">
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+        <div className="dashboard-content h-full">
+          <div className="flex items-center gap-4 mb-6">
+            <button className="btn-icon" onClick={() => setSidebarOpen(true)}>
+              <Menu size={18} />
+            </button>
+          </div>
+          <div className="flex justify-center items-center h-full">
+            <div className="card text-center" style={{ padding: '48px', maxWidth: '400px' }}>
+              <h2 className="title-lg">No anomalies detected</h2>
+              <p className="text-muted body-md mt-4">The BSTS model found no significant deviations in the metric data.</p>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -256,7 +314,6 @@ export default function Dashboard() {
   const report = reports[selectedIdx]
   const decomp = report.decomposition
   const primary = decomp.primary_driver
-  const hyp = report.hypothesis.hypotheses[0]
 
   // Chart data
   const chartData = timeseries.data.map((d) => ({
@@ -296,7 +353,7 @@ export default function Dashboard() {
           <div className="feed-list">
             {reports.map((r, idx) => {
               const aw = r.anomaly_window
-              const topHyp = r.hypothesis.hypotheses[0]
+              const topHyp = r.hypotheses?.[0]
               return (
                 <div
                   key={idx}
@@ -311,7 +368,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="body-md" style={{ fontWeight: 600, marginBottom: '6px' }}>
-                    {topHyp?.cause_title || `${aw.metric_name} anomaly`}
+                    {topHyp?.title || `${aw.metric_name} anomaly`}
                   </div>
                   <div className="label-md text-muted" style={{ textTransform: 'none' }}>
                     {formatDate(aw.start_time)} – {formatDate(aw.end_time)}<br/>
@@ -536,85 +593,177 @@ export default function Dashboard() {
             <span className="title-lg">Causal Intelligence</span>
           </div>
 
-          {/* Hypothesis */}
-          {hyp && (
-            <div className="hypothesis-box">
-              {decomp.is_ambiguous && (
-                <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#fffbeb', borderRadius: 'var(--radius-md)', color: '#92400e', border: '1px solid #fcd34d' }}>
-                  <AlertTriangle size={18} />
-                  <span className="label-md">AMBIGUOUS: Human review recommended.</span>
-                </div>
-              )}
-                <div className="flex justify-between items-start mb-4">
+          {/* Multi-Hypothesis UI */}
+          <div className="hypotheses-container flex flex-col gap-4 mb-6">
+            {report.hypotheses?.map((h, idx) => (
+              <div key={h.id} className="hypothesis-box" style={{ padding: '16px', background: 'var(--surface-container-low)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--outline-variant)' }}>
+                {idx === 0 && decomp.is_ambiguous && (
+                  <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#fffbeb', borderRadius: 'var(--radius-md)', color: '#92400e', border: '1px solid #fcd34d' }}>
+                    <AlertTriangle size={18} />
+                    <span className="label-md">AMBIGUOUS: Human review recommended.</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-start mb-3">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="badge" style={{ background: 'var(--primary)', color: 'var(--on-primary)', borderColor: 'var(--primary)' }}>
-                        PRIMARY DIAGNOSIS
-                      </span>
-                      <span className={`badge ${getConfidenceClass(hyp.evidence_strength)}`}>
-                        {hyp.evidence_strength} EVIDENCE
+                      {idx === 0 && (
+                        <span className="badge" style={{ background: 'var(--primary)', color: 'var(--on-primary)', borderColor: 'var(--primary)' }}>
+                          PRIMARY HYPOTHESIS
+                        </span>
+                      )}
+                      <span className={`badge ${getConfidenceClass(h.evidence_strength)}`}>
+                        {h.evidence_strength} EVIDENCE
                       </span>
                     </div>
-                    <div className="title-lg">{hyp.cause_title}</div>
+                    <div className="title-lg">{h.title}</div>
+                  </div>
+                  {/* Analyst Feedback Toggles */}
+                  <div className="flex items-center gap-2">
+                    <button 
+                      className="btn" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', 
+                        background: h.analyst_feedback === true ? 'var(--success-container)' : 'transparent',
+                        color: h.analyst_feedback === true ? 'var(--on-success-container)' : 'var(--on-surface-variant)',
+                        border: h.analyst_feedback === true ? '1px solid #86efac' : '1px solid var(--outline-variant)'
+                      }}
+                      onClick={() => {
+                        const previousState = h.analyst_feedback;
+                        // Optimistic UI Update
+                        const newTrace = {...trace!};
+                        newTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = true;
+                        setTrace(newTrace);
+                        
+                        // Fire async request to backend
+                        fetch(`${API_BASE_URL}/api/v1/analyze/feedback/${h.id}`, {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ is_correct: true })
+                        }).catch(err => {
+                          console.error("Failed to save feedback", err);
+                          // Revert on failure
+                          const revertTrace = {...trace!};
+                          revertTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = previousState;
+                          setTrace(revertTrace);
+                        });
+                      }}
+                    >
+                      Approve
+                    </button>
+                    <button 
+                      className="btn" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px',
+                        background: h.analyst_feedback === false ? 'var(--error-container)' : 'transparent',
+                        color: h.analyst_feedback === false ? 'var(--on-error-container)' : 'var(--on-surface-variant)',
+                        border: h.analyst_feedback === false ? '1px solid #fca5a5' : '1px solid var(--outline-variant)'
+                      }}
+                      onClick={() => {
+                        const previousState = h.analyst_feedback;
+                        // Optimistic UI Update
+                        const newTrace = {...trace!};
+                        newTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = false;
+                        setTrace(newTrace);
+                        
+                        // Fire async request to backend
+                        fetch(`${API_BASE_URL}/api/v1/analyze/feedback/${h.id}`, {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ is_correct: false })
+                        }).catch(err => {
+                          console.error("Failed to save feedback", err);
+                          // Revert on failure
+                          const revertTrace = {...trace!};
+                          revertTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = previousState;
+                          setTrace(revertTrace);
+                        });
+                      }}
+                    >
+                      Reject
+                    </button>
                   </div>
                 </div>
-              
-              <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: 'var(--error-container)', borderRadius: 'var(--radius-lg)', color: 'var(--on-error-container)', border: '1px solid #fca5a5' }}>
-                <TrendingDown size={18} />
-                <div style={{ flex: 1 }}>
-                  <div className="label-md" style={{ opacity: 0.9 }}>Automated Impact Quantifier</div>
-                  <div className="title-lg mt-1">
-                    -${(Math.abs(report.anomaly_window.aggregate_deviation_pct) * 850).toLocaleString('en-US', {maximumFractionDigits: 0})} <span style={{ fontSize: '11px', fontWeight: 400 }}>/ hour</span>
+                
+                <p className="body-md text-muted mb-4" style={{ lineHeight: '1.5' }}>{h.description}</p>
+                
+                {/* Evidence Matrix Data Table */}
+                {h.evidence_matrix && h.evidence_matrix.length > 0 && (
+                  <div className="evidence-matrix">
+                    <div className="label-md text-muted mb-2">Evidence Matrix</div>
+                    <div style={{ border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
+                        <thead style={{ background: 'var(--surface-container)' }}>
+                          <tr>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Checkpoint</th>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Status</th>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Timestamp</th>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Details</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {h.evidence_matrix.map((ev) => (
+                            <tr key={ev.id} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top', fontWeight: 500 }}>{ev.checkpoint}</td>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top' }}>
+                                <span className={`badge ${ev.status === 'PASS' ? 'badge-success' : ev.status === 'FAIL' ? 'badge-critical' : 'badge-warning'}`}>
+                                  {ev.status}
+                                </span>
+                              </td>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>
+                                {ev.timestamp ? formatDateTime(ev.timestamp) : '-'}
+                              </td>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>{ev.details}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
+                )}
+                
+                {/* Red Herrings */}
+                {idx === 0 && report.rejected_logs && report.rejected_logs.length > 0 && (
+                  <div className="evidence-matrix mt-4">
+                    <div className="label-md text-muted mb-2">Rejected Evidence (Red Herrings)</div>
+                    <div style={{ border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left', opacity: 0.7 }}>
+                        <thead style={{ background: 'var(--surface-container)' }}>
+                          <tr>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Log ID</th>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Timestamp</th>
+                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Rejection Reason</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {report.rejected_logs.map((rl, i) => (
+                            <tr key={i} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top', fontWeight: 500, textDecoration: 'line-through' }}>{rl.log_id}</td>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>{formatDateTime(rl.timestamp)}</td>
+                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--error)' }}>{rl.rejection_reason}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Recovery Validation (Only on top hypothesis) */}
+                {idx === 0 && report.recovery_validation && (
+                  <div style={{ marginTop: '16px', padding: '12px', background: report.recovery_validation.metric_recovered ? '#f0fdf4' : '#fff1f2', borderRadius: 'var(--radius-md)', border: `1px solid ${report.recovery_validation.metric_recovered ? '#86efac' : '#fecdd3'}` }}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <RefreshCw size={14} color={report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)'} />
+                      <span className="label-md" style={{ color: report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)' }}>
+                        {report.recovery_validation.metric_recovered ? 'RECOVERY DETECTED' : 'NO RECOVERY YET'}
+                      </span>
+                    </div>
+                    <p className="body-md text-muted" style={{ fontSize: '11px' }}>{report.recovery_validation.recovery_summary || 'Monitoring post-incident trajectory.'}</p>
+                  </div>
+                )}
               </div>
-              <p className="body-md text-muted" style={{ lineHeight: '1.5' }}>{hyp.reasoning}</p>
-
-              {/* Evidence Checks Matrix */}
-              {hyp.evidence_checks && hyp.evidence_checks.length > 0 && (
-                <div className="mt-4 mb-4">
-                  <div className="label-md text-muted mb-2">Evidence Checks</div>
-                  <div className="flex flex-col gap-2">
-                    {hyp.evidence_checks.map((check: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center" style={{ padding: '8px 12px', background: 'var(--surface-container)', borderRadius: 'var(--radius-md)', border: '1px solid var(--outline-variant)' }}>
-                        <div className="flex flex-col">
-                          <span className="body-md" style={{ fontWeight: 500, fontSize: '12px' }}>{check.check_name.replace(/_/g, ' ')}</span>
-                          <span className="text-muted" style={{ fontSize: '10px' }}>{check.explanation}</span>
-                        </div>
-                        <span className={`badge ${check.result?.toUpperCase() === 'PASS' ? 'badge-success' : (check.result?.toUpperCase() === 'FAIL' ? 'badge-critical' : 'badge-warning')}`}>
-                          {check.result?.toUpperCase()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Recommended Action */}
-              {hyp.recommended_action && (
-                <div className="action-box">
-                  <Target size={16} color="var(--success)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <div>
-                    <span className="label-md" style={{ color: 'var(--success)' }}>Recommended Action</span>
-                    <p className="body-md mt-1">{hyp.recommended_action}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Recovery Validation */}
-              {report.recovery_validation && (
-                <div style={{ marginTop: '16px', padding: '12px', background: report.recovery_validation.metric_recovered ? '#f0fdf4' : '#fff1f2', borderRadius: 'var(--radius-md)', border: `1px solid ${report.recovery_validation.metric_recovered ? '#86efac' : '#fecdd3'}` }}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <RefreshCw size={14} color={report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)'} />
-                    <span className="label-md" style={{ color: report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)' }}>
-                      {report.recovery_validation.metric_recovered ? 'RECOVERY DETECTED' : 'NO RECOVERY YET'}
-                    </span>
-                  </div>
-                  <p className="body-md text-muted" style={{ fontSize: '11px' }}>{report.recovery_validation.recovery_summary || 'Monitoring post-incident trajectory.'}</p>
-                </div>
-              )}
-            </div>
-          )}
+            ))}
+          </div>
 
           {/* Timeline Sequence */}
           {report.timeline && report.timeline.length > 0 && (
@@ -632,24 +781,6 @@ export default function Dashboard() {
                       </div>
                       <span className="text-muted" style={{ fontSize: '10px' }}>{formatDateTime(evt.timestamp)}</span>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Alternative Hypotheses */}
-          {report.hypothesis.hypotheses.length > 1 && (
-            <div style={{ marginBottom: '24px' }}>
-              <div className="label-md text-muted mb-2">Alternative Hypotheses</div>
-              <div className="flex flex-col gap-2">
-                {report.hypothesis.hypotheses.slice(1).map((altHyp: any, i: number) => (
-                  <div key={i} style={{ padding: '12px', background: 'var(--surface-container-low)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--outline-variant)' }}>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="title-md" style={{ fontSize: '13px', fontWeight: 600 }}>{altHyp.cause_title}</span>
-                      <span className={`badge ${getConfidenceClass(altHyp.evidence_strength)}`}>{altHyp.evidence_strength}</span>
-                    </div>
-                    <p className="body-md text-muted" style={{ fontSize: '12px' }}>{altHyp.reasoning}</p>
                   </div>
                 ))}
               </div>

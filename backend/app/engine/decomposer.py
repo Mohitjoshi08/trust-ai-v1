@@ -50,17 +50,18 @@ def _calculate_segment_contribution(
 def run_decomposition(
     df: pd.DataFrame, 
     anomaly: AnomalyWindow,
+    timestamp_col: str = "timestamp",
     metric_col: str = "metric_value",
-    dimensions: List[str] = ["region", "device"]
+    dimensions: List[str] = ["region", "device", "Region"]
 ) -> DecompositionResult:
     """
     Decompose the metric anomaly across specified dimensions.
     """
     # 1. Prepare data
     work = df.copy()
-    if 'timestamp' in work.columns:
-        work['timestamp'] = pd.to_datetime(work['timestamp'])
-        work = work.set_index('timestamp')
+    if timestamp_col in work.columns:
+        work[timestamp_col] = pd.to_datetime(work[timestamp_col])
+        work = work.set_index(timestamp_col)
     else:
         # Assuming index is timestamp if 'timestamp' column is not found
         work.index = pd.to_datetime(work.index)
@@ -140,7 +141,8 @@ def run_decomposition(
         
     # Level 2 Drilldown (for primary driver)
     level2_drilldowns = []
-    other_dims = [d for d in dimensions if d != primary_driver.dimension]
+    valid_dims = [d for d in dimensions if d in work.columns]
+    other_dims = [d for d in valid_dims if d != primary_driver.dimension]
     if other_dims:
         sub_dim = other_dims[0]
         # Filter work df to primary driver

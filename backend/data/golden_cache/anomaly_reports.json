@@ -370,7 +370,6 @@
           "cause_title": "Null Pointer Exception in Checkout",
           "evidence_strength": "LOW",
           "evidence_score": 49,
-          "confidence_score": 49,
           "reasoning": "A recent deployment introduced a regression causing a null pointer exception when users with saved credit cards attempted to check out.",
           "supporting_evidence_ids": [
             "eaba457e-774e-4d91-a20e-e7afa9f00b32",
@@ -399,7 +398,6 @@
           "cause_title": "Database Desync",
           "evidence_strength": "LOW",
           "evidence_score": 36,
-          "confidence_score": 36,
           "reasoning": "Database replicas might be lagging, causing payment details to be unavailable.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -425,7 +423,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 21,
-          "confidence_score": 21,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -451,7 +448,6 @@
           "cause_title": "Alternative Explanation",
           "evidence_strength": "LOW",
           "evidence_score": 45,
-          "confidence_score": 45,
           "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -521,105 +517,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r0-0",
         "rank": 1,
-        "cause_title": "Null Pointer Exception in Checkout",
+        "title": "Null Pointer Exception in Checkout",
+        "description": "A recent deployment introduced a regression causing a null pointer exception when users with saved credit cards attempted to check out.",
         "evidence_strength": "LOW",
-        "evidence_score": 49,
-        "confidence_score": 49,
-        "reasoning": "A recent deployment introduced a regression causing a null pointer exception when users with saved credit cards attempted to check out.",
-        "supporting_evidence_ids": [
-          "eaba457e-774e-4d91-a20e-e7afa9f00b32",
-          "b51f2e3e-7083-453f-91e1-781cbc14313f"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r0-h0-0",
+            "log_id": "eaba457e-774e-4d91-a20e-e7afa9f00b32",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r0-h0-1",
+            "log_id": "b51f2e3e-7083-453f-91e1-781cbc14313f",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Rollback the checkout-service deployment to the previous stable version.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r0-1",
         "rank": 2,
-        "cause_title": "Database Desync",
+        "title": "Database Desync",
+        "description": "Database replicas might be lagging, causing payment details to be unavailable.",
         "evidence_strength": "LOW",
-        "evidence_score": 36,
-        "confidence_score": 36,
-        "reasoning": "Database replicas might be lagging, causing payment details to be unavailable.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r0-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r0-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check replica lag metrics.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r0-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 21,
-        "confidence_score": 21,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r0-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r0-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
-      },
-      {
-        "rank": 2,
-        "cause_title": "Alternative Explanation",
-        "evidence_strength": "LOW",
-        "evidence_score": 45,
-        "confidence_score": 45,
-        "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
-          {
-            "check_name": "temporal_alignment",
-            "result": "unknown",
-            "explanation": "Insufficient temporal resolution.",
-            "weight": 1.0
-          }
-        ],
-        "recommended_action": "Expand retrieval window to confirm.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "ambiguous"
@@ -909,7 +879,6 @@
           "cause_title": "Database Connection Pool Exhausted",
           "evidence_strength": "MEDIUM",
           "evidence_score": 74,
-          "confidence_score": 74,
           "reasoning": "A memory leak in the inventory service caused it to hold database connections open, exhausting the pool and causing upstream 503s.",
           "supporting_evidence_ids": [
             "8ba76a91-cbee-4cae-b620-3ecf5f1add5b",
@@ -938,7 +907,6 @@
           "cause_title": "High Traffic Spike",
           "evidence_strength": "MEDIUM",
           "evidence_score": 50,
-          "confidence_score": 50,
           "reasoning": "A sudden undocumented surge in traffic might have overwhelmed the connection limits organically.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -1014,59 +982,54 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r1-0",
         "rank": 1,
-        "cause_title": "Database Connection Pool Exhausted",
+        "title": "Database Connection Pool Exhausted",
+        "description": "A memory leak in the inventory service caused it to hold database connections open, exhausting the pool and causing upstream 503s.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 74,
-        "confidence_score": 74,
-        "reasoning": "A memory leak in the inventory service caused it to hold database connections open, exhausting the pool and causing upstream 503s.",
-        "supporting_evidence_ids": [
-          "8ba76a91-cbee-4cae-b620-3ecf5f1add5b",
-          "f496359c-387e-4e39-84c4-8b0f9a6d2f4a"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r1-h0-0",
+            "log_id": "8ba76a91-cbee-4cae-b620-3ecf5f1add5b",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r1-h0-1",
+            "log_id": "f496359c-387e-4e39-84c4-8b0f9a6d2f4a",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Restart the inventory service pods and investigate the memory leak.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r1-1",
         "rank": 2,
-        "cause_title": "High Traffic Spike",
+        "title": "High Traffic Spike",
+        "description": "A sudden undocumented surge in traffic might have overwhelmed the connection limits organically.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 50,
-        "confidence_score": 50,
-        "reasoning": "A sudden undocumented surge in traffic might have overwhelmed the connection limits organically.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r1-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r1-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Scale up database maximum connections.",
-        "status": "investigate"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -1458,7 +1421,6 @@
           "cause_title": "Expired SSL Certificate on API Gateway",
           "evidence_strength": "HIGH",
           "evidence_score": 89,
-          "confidence_score": 89,
           "reasoning": "The SSL certificate for the primary API gateway expired, causing all client apps (iOS/Android) to terminate connections due to security policies.",
           "supporting_evidence_ids": [
             "597196e4-746e-4637-8d46-660c4be85163",
@@ -1487,7 +1449,6 @@
           "cause_title": "DNS Routing Error",
           "evidence_strength": "MEDIUM",
           "evidence_score": 71,
-          "confidence_score": 71,
           "reasoning": "DNS might have been misconfigured, routing users to a deprecated server with an old cert.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -1513,7 +1474,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "MEDIUM",
           "evidence_score": 60,
-          "confidence_score": 60,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -1539,7 +1499,6 @@
           "cause_title": "Alternative Explanation",
           "evidence_strength": "LOW",
           "evidence_score": 45,
-          "confidence_score": 45,
           "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -1625,105 +1584,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r2-0",
         "rank": 1,
-        "cause_title": "Expired SSL Certificate on API Gateway",
+        "title": "Expired SSL Certificate on API Gateway",
+        "description": "The SSL certificate for the primary API gateway expired, causing all client apps (iOS/Android) to terminate connections due to security policies.",
         "evidence_strength": "HIGH",
-        "evidence_score": 89,
-        "confidence_score": 89,
-        "reasoning": "The SSL certificate for the primary API gateway expired, causing all client apps (iOS/Android) to terminate connections due to security policies.",
-        "supporting_evidence_ids": [
-          "597196e4-746e-4637-8d46-660c4be85163",
-          "0880235a-99eb-4df7-8988-05d3d1cb97fb"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r2-h0-0",
+            "log_id": "597196e4-746e-4637-8d46-660c4be85163",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r2-h0-1",
+            "log_id": "0880235a-99eb-4df7-8988-05d3d1cb97fb",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Renew and deploy the wildcard SSL certificate to the API gateway.",
-        "status": "recommended"
+        ]
       },
       {
+        "id": "hyp-r2-1",
         "rank": 2,
-        "cause_title": "DNS Routing Error",
+        "title": "DNS Routing Error",
+        "description": "DNS might have been misconfigured, routing users to a deprecated server with an old cert.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 71,
-        "confidence_score": 71,
-        "reasoning": "DNS might have been misconfigured, routing users to a deprecated server with an old cert.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r2-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r2-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Verify Route53 DNS records.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r2-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 60,
-        "confidence_score": 60,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r2-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r2-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "investigate"
-      },
-      {
-        "rank": 2,
-        "cause_title": "Alternative Explanation",
-        "evidence_strength": "LOW",
-        "evidence_score": 45,
-        "confidence_score": 45,
-        "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
-          {
-            "check_name": "temporal_alignment",
-            "result": "unknown",
-            "explanation": "Insufficient temporal resolution.",
-            "weight": 1.0
-          }
-        ],
-        "recommended_action": "Expand retrieval window to confirm.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "recommended"
@@ -2021,7 +1954,6 @@
           "cause_title": "Stripe API Outage",
           "evidence_strength": "MEDIUM",
           "evidence_score": 64,
-          "confidence_score": 64,
           "reasoning": "Stripe's payment API experienced a localized outage in the US region, resulting in 5xx errors for 40% of checkout attempts.",
           "supporting_evidence_ids": [
             "8b71b20a-f469-4650-95ca-d2455773cfa8",
@@ -2050,7 +1982,6 @@
           "cause_title": "Invalid API Keys",
           "evidence_strength": "MEDIUM",
           "evidence_score": 50,
-          "confidence_score": 50,
           "reasoning": "A rotation script might have deployed invalid Stripe API keys to production.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -2076,7 +2007,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 44,
-          "confidence_score": 44,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -2160,85 +2090,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r3-0",
         "rank": 1,
-        "cause_title": "Stripe API Outage",
+        "title": "Stripe API Outage",
+        "description": "Stripe's payment API experienced a localized outage in the US region, resulting in 5xx errors for 40% of checkout attempts.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 64,
-        "confidence_score": 64,
-        "reasoning": "Stripe's payment API experienced a localized outage in the US region, resulting in 5xx errors for 40% of checkout attempts.",
-        "supporting_evidence_ids": [
-          "8b71b20a-f469-4650-95ca-d2455773cfa8",
-          "34a66b0d-e3e4-4aef-b28e-2ed764dbbbb5"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r3-h0-0",
+            "log_id": "8b71b20a-f469-4650-95ca-d2455773cfa8",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r3-h0-1",
+            "log_id": "34a66b0d-e3e4-4aef-b28e-2ed764dbbbb5",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Enable fallback payment gateway (PayPal) and monitor Stripe status page.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r3-1",
         "rank": 2,
-        "cause_title": "Invalid API Keys",
+        "title": "Invalid API Keys",
+        "description": "A rotation script might have deployed invalid Stripe API keys to production.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 50,
-        "confidence_score": 50,
-        "reasoning": "A rotation script might have deployed invalid Stripe API keys to production.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r3-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r3-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Verify environment variables in vault.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r3-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 44,
-        "confidence_score": 44,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r3-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r3-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -2614,7 +2538,6 @@
           "cause_title": "AWS us-east-1 Network Partition",
           "evidence_strength": "MEDIUM",
           "evidence_score": 79,
-          "confidence_score": 79,
           "reasoning": "A localized network partition in AWS us-east-1 caused packet loss between our frontend services and the backend Redis cache.",
           "supporting_evidence_ids": [
             "d27f4add-f3ad-4037-b5f6-8a9d8c767854",
@@ -2643,7 +2566,6 @@
           "cause_title": "Redis Eviction Spikes",
           "evidence_strength": "MEDIUM",
           "evidence_score": 63,
-          "confidence_score": 63,
           "reasoning": "Cache memory limits were reached causing massive key evictions and CPU locking.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -2669,7 +2591,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 49,
-          "confidence_score": 49,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -2695,7 +2616,6 @@
           "cause_title": "Alternative Explanation",
           "evidence_strength": "LOW",
           "evidence_score": 45,
-          "confidence_score": 45,
           "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -2765,105 +2685,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r4-0",
         "rank": 1,
-        "cause_title": "AWS us-east-1 Network Partition",
+        "title": "AWS us-east-1 Network Partition",
+        "description": "A localized network partition in AWS us-east-1 caused packet loss between our frontend services and the backend Redis cache.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 79,
-        "confidence_score": 79,
-        "reasoning": "A localized network partition in AWS us-east-1 caused packet loss between our frontend services and the backend Redis cache.",
-        "supporting_evidence_ids": [
-          "d27f4add-f3ad-4037-b5f6-8a9d8c767854",
-          "ebd11728-8bc1-48bf-89d6-b5b012351dd7"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r4-h0-0",
+            "log_id": "d27f4add-f3ad-4037-b5f6-8a9d8c767854",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r4-h0-1",
+            "log_id": "ebd11728-8bc1-48bf-89d6-b5b012351dd7",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Failover traffic to us-west-2 region.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r4-1",
         "rank": 2,
-        "cause_title": "Redis Eviction Spikes",
+        "title": "Redis Eviction Spikes",
+        "description": "Cache memory limits were reached causing massive key evictions and CPU locking.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 63,
-        "confidence_score": 63,
-        "reasoning": "Cache memory limits were reached causing massive key evictions and CPU locking.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r4-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r4-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check Redis memory utilization.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r4-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 49,
-        "confidence_score": 49,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r4-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r4-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
-      },
-      {
-        "rank": 2,
-        "cause_title": "Alternative Explanation",
-        "evidence_strength": "LOW",
-        "evidence_score": 45,
-        "confidence_score": 45,
-        "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
-          {
-            "check_name": "temporal_alignment",
-            "result": "unknown",
-            "explanation": "Insufficient temporal resolution.",
-            "weight": 1.0
-          }
-        ],
-        "recommended_action": "Expand retrieval window to confirm.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -3137,7 +3031,6 @@
           "cause_title": "Twilio SMS Delivery Failure",
           "evidence_strength": "HIGH",
           "evidence_score": 84,
-          "confidence_score": 84,
           "reasoning": "Twilio carrier filtering aggressively blocked our 2FA SMS codes as spam in the EMEA region, preventing new user signups.",
           "supporting_evidence_ids": [
             "b826d140-5d8f-4eeb-9e6c-fa0465ad5e73"
@@ -3165,7 +3058,6 @@
           "cause_title": "Rate Limiting",
           "evidence_strength": "MEDIUM",
           "evidence_score": 64,
-          "confidence_score": 64,
           "reasoning": "Users might be hitting rate limits on the 2FA endpoint.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -3191,7 +3083,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "MEDIUM",
           "evidence_score": 52,
-          "confidence_score": 52,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -3251,84 +3142,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r5-0",
         "rank": 1,
-        "cause_title": "Twilio SMS Delivery Failure",
+        "title": "Twilio SMS Delivery Failure",
+        "description": "Twilio carrier filtering aggressively blocked our 2FA SMS codes as spam in the EMEA region, preventing new user signups.",
         "evidence_strength": "HIGH",
-        "evidence_score": 84,
-        "confidence_score": 84,
-        "reasoning": "Twilio carrier filtering aggressively blocked our 2FA SMS codes as spam in the EMEA region, preventing new user signups.",
-        "supporting_evidence_ids": [
-          "b826d140-5d8f-4eeb-9e6c-fa0465ad5e73"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r5-h0-0",
+            "log_id": "b826d140-5d8f-4eeb-9e6c-fa0465ad5e73",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r5-h0-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Contact Twilio support to whitelist sender ID and enable email-based 2FA fallback.",
-        "status": "recommended"
+        ]
       },
       {
+        "id": "hyp-r5-1",
         "rank": 2,
-        "cause_title": "Rate Limiting",
+        "title": "Rate Limiting",
+        "description": "Users might be hitting rate limits on the 2FA endpoint.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 64,
-        "confidence_score": 64,
-        "reasoning": "Users might be hitting rate limits on the 2FA endpoint.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r5-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r5-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check API rate limit logs.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r5-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 52,
-        "confidence_score": 52,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r5-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r5-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "investigate"
+        ]
       }
     ],
     "overall_status": "recommended"
@@ -3736,7 +3622,6 @@
           "cause_title": "Erroneous 100% Discount Code",
           "evidence_strength": "LOW",
           "evidence_score": 47,
-          "confidence_score": 47,
           "reasoning": "A marketing team member accidentally created a promo code 'FREEBIE' with a 100% discount instead of 10%, causing a spike in zero-dollar orders but a drop in gross revenue.",
           "supporting_evidence_ids": [
             "e0080806-da4d-4811-9cc4-718cc944a39c",
@@ -3765,7 +3650,6 @@
           "cause_title": "Currency Conversion Bug",
           "evidence_strength": "LOW",
           "evidence_score": 32,
-          "confidence_score": 32,
           "reasoning": "A bug in the currency microservice might be returning zero multipliers for international users.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -3791,7 +3675,6 @@
           "cause_title": "Alternative Explanation",
           "evidence_strength": "LOW",
           "evidence_score": 45,
-          "confidence_score": 45,
           "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -3893,79 +3776,71 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r6-0",
         "rank": 1,
-        "cause_title": "Erroneous 100% Discount Code",
+        "title": "Erroneous 100% Discount Code",
+        "description": "A marketing team member accidentally created a promo code 'FREEBIE' with a 100% discount instead of 10%, causing a spike in zero-dollar orders but a drop in gross revenue.",
         "evidence_strength": "LOW",
-        "evidence_score": 47,
-        "confidence_score": 47,
-        "reasoning": "A marketing team member accidentally created a promo code 'FREEBIE' with a 100% discount instead of 10%, causing a spike in zero-dollar orders but a drop in gross revenue.",
-        "supporting_evidence_ids": [
-          "e0080806-da4d-4811-9cc4-718cc944a39c",
-          "40811f56-3673-426e-929a-d82b9e6b6492"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r6-h0-0",
+            "log_id": "e0080806-da4d-4811-9cc4-718cc944a39c",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r6-h0-1",
+            "log_id": "40811f56-3673-426e-929a-d82b9e6b6492",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Deactivate promo code 'FREEBIE' immediately.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r6-1",
         "rank": 2,
-        "cause_title": "Currency Conversion Bug",
+        "title": "Currency Conversion Bug",
+        "description": "A bug in the currency microservice might be returning zero multipliers for international users.",
         "evidence_strength": "LOW",
-        "evidence_score": 32,
-        "confidence_score": 32,
-        "reasoning": "A bug in the currency microservice might be returning zero multipliers for international users.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r6-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r6-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Verify exchange rates API.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r6-2",
         "rank": 2,
-        "cause_title": "Alternative Explanation",
+        "title": "Alternative Explanation",
+        "description": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
         "evidence_strength": "LOW",
-        "evidence_score": 45,
-        "confidence_score": 45,
-        "reasoning": "Data is ambiguous. Another possible cause exists but lacks strong supporting evidence.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "unknown",
-            "explanation": "Insufficient temporal resolution.",
-            "weight": 1.0
+            "id": "ev-r6-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "UNKNOWN",
+            "timestamp": null,
+            "details": "Insufficient temporal resolution."
           }
-        ],
-        "recommended_action": "Expand retrieval window to confirm.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "ambiguous"
@@ -4271,7 +4146,6 @@
           "cause_title": "Broken Deep Link in Marketing Email",
           "evidence_strength": "HIGH",
           "evidence_score": 91,
-          "confidence_score": 91,
           "reasoning": "The weekly newsletter was sent with a malformed URL for the featured product, causing 80% of email clickthroughs to land on a 404 page.",
           "supporting_evidence_ids": [
             "fa19e69b-d14f-4f9e-86b9-397223328bda",
@@ -4300,7 +4174,6 @@
           "cause_title": "Product Deleted from Catalog",
           "evidence_strength": "MEDIUM",
           "evidence_score": 75,
-          "confidence_score": 75,
           "reasoning": "The product might have been accidentally marked as inactive in the database.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -4326,7 +4199,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "MEDIUM",
           "evidence_score": 65,
-          "confidence_score": 65,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -4418,85 +4290,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r7-0",
         "rank": 1,
-        "cause_title": "Broken Deep Link in Marketing Email",
+        "title": "Broken Deep Link in Marketing Email",
+        "description": "The weekly newsletter was sent with a malformed URL for the featured product, causing 80% of email clickthroughs to land on a 404 page.",
         "evidence_strength": "HIGH",
-        "evidence_score": 91,
-        "confidence_score": 91,
-        "reasoning": "The weekly newsletter was sent with a malformed URL for the featured product, causing 80% of email clickthroughs to land on a 404 page.",
-        "supporting_evidence_ids": [
-          "fa19e69b-d14f-4f9e-86b9-397223328bda",
-          "ab4139e3-6d85-437f-b210-371cec96b9fc"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r7-h0-0",
+            "log_id": "fa19e69b-d14f-4f9e-86b9-397223328bda",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r7-h0-1",
+            "log_id": "ab4139e3-6d85-437f-b210-371cec96b9fc",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Send correction email and set up redirect rule for the malformed URL.",
-        "status": "recommended"
+        ]
       },
       {
+        "id": "hyp-r7-1",
         "rank": 2,
-        "cause_title": "Product Deleted from Catalog",
+        "title": "Product Deleted from Catalog",
+        "description": "The product might have been accidentally marked as inactive in the database.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 75,
-        "confidence_score": 75,
-        "reasoning": "The product might have been accidentally marked as inactive in the database.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r7-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r7-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check product status in CMS.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r7-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 65,
-        "confidence_score": 65,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r7-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r7-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "investigate"
+        ]
       }
     ],
     "overall_status": "recommended"
@@ -4792,7 +4658,6 @@
           "cause_title": "Warehouse Inventory Sync Failure",
           "evidence_strength": "MEDIUM",
           "evidence_score": 78,
-          "confidence_score": 78,
           "reasoning": "The nightly batch job syncing inventory from the warehouse system failed, incorrectly marking our top 50 selling items as Out of Stock.",
           "supporting_evidence_ids": [
             "5e410b2f-aebb-444f-b5ed-0927711e5864",
@@ -4821,7 +4686,6 @@
           "cause_title": "Actual Supply Chain Shortage",
           "evidence_strength": "MEDIUM",
           "evidence_score": 57,
-          "confidence_score": 57,
           "reasoning": "A supplier shipment may have been genuinely delayed.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -4847,7 +4711,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 48,
-          "confidence_score": 48,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -4947,85 +4810,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r8-0",
         "rank": 1,
-        "cause_title": "Warehouse Inventory Sync Failure",
+        "title": "Warehouse Inventory Sync Failure",
+        "description": "The nightly batch job syncing inventory from the warehouse system failed, incorrectly marking our top 50 selling items as Out of Stock.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 78,
-        "confidence_score": 78,
-        "reasoning": "The nightly batch job syncing inventory from the warehouse system failed, incorrectly marking our top 50 selling items as Out of Stock.",
-        "supporting_evidence_ids": [
-          "5e410b2f-aebb-444f-b5ed-0927711e5864",
-          "511b116d-b8e2-4907-8db4-ff150447abf9"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r8-h0-0",
+            "log_id": "5e410b2f-aebb-444f-b5ed-0927711e5864",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r8-h0-1",
+            "log_id": "511b116d-b8e2-4907-8db4-ff150447abf9",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Manually trigger the inventory sync job and bypass cache.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r8-1",
         "rank": 2,
-        "cause_title": "Actual Supply Chain Shortage",
+        "title": "Actual Supply Chain Shortage",
+        "description": "A supplier shipment may have been genuinely delayed.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 57,
-        "confidence_score": 57,
-        "reasoning": "A supplier shipment may have been genuinely delayed.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r8-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r8-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check with warehouse manager.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r8-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 48,
-        "confidence_score": 48,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r8-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r8-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -5333,7 +5190,6 @@
           "cause_title": "Competitor Surprise Flash Sale",
           "evidence_strength": "LOW",
           "evidence_score": 49,
-          "confidence_score": 49,
           "reasoning": "A major competitor launched an unannounced 60% off sitewide sale. Our systems are healthy (no errors, normal latency), indicating the drop in conversions is strictly market-driven.",
           "supporting_evidence_ids": [
             "1025e6f8-c837-48d2-8bbc-37b52cc83c28",
@@ -5362,7 +5218,6 @@
           "cause_title": "Silent Frontend Bug",
           "evidence_strength": "LOW",
           "evidence_score": 39,
-          "confidence_score": 39,
           "reasoning": "A silent JavaScript error in a specific browser might be blocking the 'Add to Cart' button without sending error logs.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -5454,59 +5309,54 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r9-0",
         "rank": 1,
-        "cause_title": "Competitor Surprise Flash Sale",
+        "title": "Competitor Surprise Flash Sale",
+        "description": "A major competitor launched an unannounced 60% off sitewide sale. Our systems are healthy (no errors, normal latency), indicating the drop in conversions is strictly market-driven.",
         "evidence_strength": "LOW",
-        "evidence_score": 49,
-        "confidence_score": 49,
-        "reasoning": "A major competitor launched an unannounced 60% off sitewide sale. Our systems are healthy (no errors, normal latency), indicating the drop in conversions is strictly market-driven.",
-        "supporting_evidence_ids": [
-          "1025e6f8-c837-48d2-8bbc-37b52cc83c28",
-          "f11aa826-7610-4452-9804-0ec66d8cef43"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r9-h0-0",
+            "log_id": "1025e6f8-c837-48d2-8bbc-37b52cc83c28",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r9-h0-1",
+            "log_id": "f11aa826-7610-4452-9804-0ec66d8cef43",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Initiate competitive price matching or launch a targeted counter-promotion.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r9-1",
         "rank": 2,
-        "cause_title": "Silent Frontend Bug",
+        "title": "Silent Frontend Bug",
+        "description": "A silent JavaScript error in a specific browser might be blocking the 'Add to Cart' button without sending error logs.",
         "evidence_strength": "LOW",
-        "evidence_score": 39,
-        "confidence_score": 39,
-        "reasoning": "A silent JavaScript error in a specific browser might be blocking the 'Add to Cart' button without sending error logs.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r9-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r9-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check frontend crash analytics (Sentry).",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "ambiguous"
@@ -5786,7 +5636,6 @@
           "cause_title": "Viral Negative Social Media PR",
           "evidence_strength": "MEDIUM",
           "evidence_score": 74,
-          "confidence_score": 74,
           "reasoning": "A TikTok video criticizing our latest product went viral. System health is nominal, but organic traffic and conversion rates have plummeted correlating with the video's release.",
           "supporting_evidence_ids": [
             "bfb111d5-5e6e-40f4-9848-e49be6bc5935",
@@ -5815,7 +5664,6 @@
           "cause_title": "SEO Penalty",
           "evidence_strength": "LOW",
           "evidence_score": 49,
-          "confidence_score": 49,
           "reasoning": "Google might have rolled out a search algorithm update that penalized our domain.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -5841,7 +5689,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 42,
-          "confidence_score": 42,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -5925,85 +5772,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r10-0",
         "rank": 1,
-        "cause_title": "Viral Negative Social Media PR",
+        "title": "Viral Negative Social Media PR",
+        "description": "A TikTok video criticizing our latest product went viral. System health is nominal, but organic traffic and conversion rates have plummeted correlating with the video's release.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 74,
-        "confidence_score": 74,
-        "reasoning": "A TikTok video criticizing our latest product went viral. System health is nominal, but organic traffic and conversion rates have plummeted correlating with the video's release.",
-        "supporting_evidence_ids": [
-          "bfb111d5-5e6e-40f4-9848-e49be6bc5935",
-          "734d8054-c3ed-4f54-aaf3-6e79ffa0330b"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r10-h0-0",
+            "log_id": "bfb111d5-5e6e-40f4-9848-e49be6bc5935",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r10-h0-1",
+            "log_id": "734d8054-c3ed-4f54-aaf3-6e79ffa0330b",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Pause active ad spend for this product and prepare PR response.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r10-1",
         "rank": 2,
-        "cause_title": "SEO Penalty",
+        "title": "SEO Penalty",
+        "description": "Google might have rolled out a search algorithm update that penalized our domain.",
         "evidence_strength": "LOW",
-        "evidence_score": 49,
-        "confidence_score": 49,
-        "reasoning": "Google might have rolled out a search algorithm update that penalized our domain.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r10-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r10-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check Google Search Console metrics.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r10-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 42,
-        "confidence_score": 42,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r10-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r10-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -6293,7 +6134,6 @@
           "cause_title": "Major Holiday Off-Season Drop",
           "evidence_strength": "MEDIUM",
           "evidence_score": 79,
-          "confidence_score": 79,
           "reasoning": "Metric drop perfectly coincides with a major regional holiday (e.g., Thanksgiving). The anomaly detection model failed to account for this seasonal seasonality.",
           "supporting_evidence_ids": [
             "e211e3e0-7ce6-49a3-93a4-99acb02b40d5",
@@ -6322,7 +6162,6 @@
           "cause_title": "Tracking Pixel Failure",
           "evidence_strength": "MEDIUM",
           "evidence_score": 66,
-          "confidence_score": 66,
           "reasoning": "Google Analytics or Segment tracking pixel might be failing to load for users.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -6348,7 +6187,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "MEDIUM",
           "evidence_score": 56,
-          "confidence_score": 56,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -6424,85 +6262,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r11-0",
         "rank": 1,
-        "cause_title": "Major Holiday Off-Season Drop",
+        "title": "Major Holiday Off-Season Drop",
+        "description": "Metric drop perfectly coincides with a major regional holiday (e.g., Thanksgiving). The anomaly detection model failed to account for this seasonal seasonality.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 79,
-        "confidence_score": 79,
-        "reasoning": "Metric drop perfectly coincides with a major regional holiday (e.g., Thanksgiving). The anomaly detection model failed to account for this seasonal seasonality.",
-        "supporting_evidence_ids": [
-          "e211e3e0-7ce6-49a3-93a4-99acb02b40d5",
-          "e4fb3831-4207-4d86-9142-95cb2823c352"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r11-h0-0",
+            "log_id": "e211e3e0-7ce6-49a3-93a4-99acb02b40d5",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r11-h0-1",
+            "log_id": "e4fb3831-4207-4d86-9142-95cb2823c352",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Flag this anomaly as expected seasonal behavior to retrain the model.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r11-1",
         "rank": 2,
-        "cause_title": "Tracking Pixel Failure",
+        "title": "Tracking Pixel Failure",
+        "description": "Google Analytics or Segment tracking pixel might be failing to load for users.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 66,
-        "confidence_score": 66,
-        "reasoning": "Google Analytics or Segment tracking pixel might be failing to load for users.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r11-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r11-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Verify tracking pixel network requests.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r11-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 56,
-        "confidence_score": 56,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r11-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r11-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "investigate"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -6790,7 +6622,6 @@
           "cause_title": "Volumetric DDoS Attack",
           "evidence_strength": "MEDIUM",
           "evidence_score": 62,
-          "confidence_score": 62,
           "reasoning": "A massive influx of traffic from unfamiliar IP subnets targeted the login endpoint. The WAF engaged and rate-limited them, but it artificially depressed the legitimate conversion rate.",
           "supporting_evidence_ids": [
             "f3fc284d-b3bf-4631-993a-31dc96284511",
@@ -6819,7 +6650,6 @@
           "cause_title": "Viral Traffic Spike",
           "evidence_strength": "LOW",
           "evidence_score": 39,
-          "confidence_score": 39,
           "reasoning": "A legitimate link on Reddit/HackerNews might be driving huge organic traffic.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -6845,7 +6675,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 34,
-          "confidence_score": 34,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -6937,85 +6766,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r12-0",
         "rank": 1,
-        "cause_title": "Volumetric DDoS Attack",
+        "title": "Volumetric DDoS Attack",
+        "description": "A massive influx of traffic from unfamiliar IP subnets targeted the login endpoint. The WAF engaged and rate-limited them, but it artificially depressed the legitimate conversion rate.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 62,
-        "confidence_score": 62,
-        "reasoning": "A massive influx of traffic from unfamiliar IP subnets targeted the login endpoint. The WAF engaged and rate-limited them, but it artificially depressed the legitimate conversion rate.",
-        "supporting_evidence_ids": [
-          "f3fc284d-b3bf-4631-993a-31dc96284511",
-          "30eeaa79-7742-4974-a0c0-84850368f806"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r12-h0-0",
+            "log_id": "f3fc284d-b3bf-4631-993a-31dc96284511",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r12-h0-1",
+            "log_id": "30eeaa79-7742-4974-a0c0-84850368f806",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Review WAF logs and permanently block the malicious ASN ranges.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r12-1",
         "rank": 2,
-        "cause_title": "Viral Traffic Spike",
+        "title": "Viral Traffic Spike",
+        "description": "A legitimate link on Reddit/HackerNews might be driving huge organic traffic.",
         "evidence_strength": "LOW",
-        "evidence_score": 39,
-        "confidence_score": 39,
-        "reasoning": "A legitimate link on Reddit/HackerNews might be driving huge organic traffic.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r12-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r12-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check referrers for the traffic spike.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r12-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 34,
-        "confidence_score": 34,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r12-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r12-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "investigate"
@@ -7327,7 +7150,6 @@
           "cause_title": "Overactive Fraud Prevention",
           "evidence_strength": "HIGH",
           "evidence_score": 93,
-          "confidence_score": 93,
           "reasoning": "Our 3rd-party fraud prevention algorithm (Sift) updated its risk model and incorrectly started scoring legitimate EU IP addresses as high risk, blocking their checkouts.",
           "supporting_evidence_ids": [
             "c150ce86-0682-4b16-bee1-a21f92d31793",
@@ -7356,7 +7178,6 @@
           "cause_title": "BIN Attack",
           "evidence_strength": "MEDIUM",
           "evidence_score": 77,
-          "confidence_score": 77,
           "reasoning": "A coordinated card-testing attack might actually be occurring from EU proxies.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -7472,59 +7293,54 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r13-0",
         "rank": 1,
-        "cause_title": "Overactive Fraud Prevention",
+        "title": "Overactive Fraud Prevention",
+        "description": "Our 3rd-party fraud prevention algorithm (Sift) updated its risk model and incorrectly started scoring legitimate EU IP addresses as high risk, blocking their checkouts.",
         "evidence_strength": "HIGH",
-        "evidence_score": 93,
-        "confidence_score": 93,
-        "reasoning": "Our 3rd-party fraud prevention algorithm (Sift) updated its risk model and incorrectly started scoring legitimate EU IP addresses as high risk, blocking their checkouts.",
-        "supporting_evidence_ids": [
-          "c150ce86-0682-4b16-bee1-a21f92d31793",
-          "b041f490-19b9-4b48-9f3d-c047ec76d134"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r13-h0-0",
+            "log_id": "c150ce86-0682-4b16-bee1-a21f92d31793",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r13-h0-1",
+            "log_id": "b041f490-19b9-4b48-9f3d-c047ec76d134",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Lower the fraud risk threshold temporarily and open a support ticket with the vendor.",
-        "status": "recommended"
+        ]
       },
       {
+        "id": "hyp-r13-1",
         "rank": 2,
-        "cause_title": "BIN Attack",
+        "title": "BIN Attack",
+        "description": "A coordinated card-testing attack might actually be occurring from EU proxies.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 77,
-        "confidence_score": 77,
-        "reasoning": "A coordinated card-testing attack might actually be occurring from EU proxies.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r13-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r13-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Analyze blocked card BINs for patterns.",
-        "status": "investigate"
+        ]
       }
     ],
     "overall_status": "recommended"
@@ -7820,7 +7636,6 @@
           "cause_title": "Missing App Store Update",
           "evidence_strength": "HIGH",
           "evidence_score": 89,
-          "confidence_score": 89,
           "reasoning": "A backend API change deprecated an old endpoint, but the forced-update mechanism for the iOS app failed. Users on older app versions are receiving 410 Gone errors.",
           "supporting_evidence_ids": [
             "d417e7b2-16ca-4d1a-b4a8-79dbbba5ac9e",
@@ -7849,7 +7664,6 @@
           "cause_title": "Load Balancer Routing Error",
           "evidence_strength": "MEDIUM",
           "evidence_score": 74,
-          "confidence_score": 74,
           "reasoning": "The load balancer might be routing mobile traffic to the wrong backend cluster.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -7949,59 +7763,54 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r14-0",
         "rank": 1,
-        "cause_title": "Missing App Store Update",
+        "title": "Missing App Store Update",
+        "description": "A backend API change deprecated an old endpoint, but the forced-update mechanism for the iOS app failed. Users on older app versions are receiving 410 Gone errors.",
         "evidence_strength": "HIGH",
-        "evidence_score": 89,
-        "confidence_score": 89,
-        "reasoning": "A backend API change deprecated an old endpoint, but the forced-update mechanism for the iOS app failed. Users on older app versions are receiving 410 Gone errors.",
-        "supporting_evidence_ids": [
-          "d417e7b2-16ca-4d1a-b4a8-79dbbba5ac9e",
-          "4ff9d9af-1975-40b5-9a1b-b4af8f4bdb73"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r14-h0-0",
+            "log_id": "d417e7b2-16ca-4d1a-b4a8-79dbbba5ac9e",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r14-h0-1",
+            "log_id": "4ff9d9af-1975-40b5-9a1b-b4af8f4bdb73",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Re-enable the deprecated endpoint temporarily and trigger the forced app update correctly.",
-        "status": "recommended"
+        ]
       },
       {
+        "id": "hyp-r14-1",
         "rank": 2,
-        "cause_title": "Load Balancer Routing Error",
+        "title": "Load Balancer Routing Error",
+        "description": "The load balancer might be routing mobile traffic to the wrong backend cluster.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 74,
-        "confidence_score": 74,
-        "reasoning": "The load balancer might be routing mobile traffic to the wrong backend cluster.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r14-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r14-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check ALBRoutingRules.",
-        "status": "investigate"
+        ]
       }
     ],
     "overall_status": "recommended"
@@ -8309,7 +8118,6 @@
           "cause_title": "CDN Cache Invalidation Failure",
           "evidence_strength": "MEDIUM",
           "evidence_score": 65,
-          "confidence_score": 65,
           "reasoning": "A deploy successfully pushed new assets, but the CDN cache invalidation command failed. Users are receiving a mix of old JS bundles and new HTML, causing React hydration errors.",
           "supporting_evidence_ids": [
             "69a80138-5ae8-48f5-889a-c7066e9102e5",
@@ -8338,7 +8146,6 @@
           "cause_title": "Corrupt Webpack Build",
           "evidence_strength": "LOW",
           "evidence_score": 42,
-          "confidence_score": 42,
           "reasoning": "The CI/CD pipeline might have produced a corrupted JS bundle.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -8364,7 +8171,6 @@
           "cause_title": "Generic Microservice Latency",
           "evidence_strength": "LOW",
           "evidence_score": 31,
-          "confidence_score": 31,
           "reasoning": "General system degradation across multiple services might be contributing to the drop.",
           "supporting_evidence_ids": [],
           "contradicting_evidence_ids": [],
@@ -8456,85 +8262,79 @@
     },
     "hypotheses": [
       {
+        "id": "hyp-r15-0",
         "rank": 1,
-        "cause_title": "CDN Cache Invalidation Failure",
+        "title": "CDN Cache Invalidation Failure",
+        "description": "A deploy successfully pushed new assets, but the CDN cache invalidation command failed. Users are receiving a mix of old JS bundles and new HTML, causing React hydration errors.",
         "evidence_strength": "MEDIUM",
-        "evidence_score": 65,
-        "confidence_score": 65,
-        "reasoning": "A deploy successfully pushed new assets, but the CDN cache invalidation command failed. Users are receiving a mix of old JS bundles and new HTML, causing React hydration errors.",
-        "supporting_evidence_ids": [
-          "69a80138-5ae8-48f5-889a-c7066e9102e5",
-          "b6c5a49c-e405-4703-92bf-54a1b64faeb6"
-        ],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "pass",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r15-h0-0",
+            "log_id": "69a80138-5ae8-48f5-889a-c7066e9102e5",
+            "checkpoint": "Temporal Alignment",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r15-h0-1",
+            "log_id": "b6c5a49c-e405-4703-92bf-54a1b64faeb6",
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Manually clear the Cloudflare/Fastly CDN cache for the entire domain.",
-        "status": "investigate"
+        ]
       },
       {
+        "id": "hyp-r15-1",
         "rank": 2,
-        "cause_title": "Corrupt Webpack Build",
+        "title": "Corrupt Webpack Build",
+        "description": "The CI/CD pipeline might have produced a corrupted JS bundle.",
         "evidence_strength": "LOW",
-        "evidence_score": 42,
-        "confidence_score": 42,
-        "reasoning": "The CI/CD pipeline might have produced a corrupted JS bundle.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r15-h1-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r15-h1-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Check CI/CD build artifact hashes.",
-        "status": "ambiguous"
+        ]
       },
       {
+        "id": "hyp-r15-2",
         "rank": 3,
-        "cause_title": "Generic Microservice Latency",
+        "title": "Generic Microservice Latency",
+        "description": "General system degradation across multiple services might be contributing to the drop.",
         "evidence_strength": "LOW",
-        "evidence_score": 31,
-        "confidence_score": 31,
-        "reasoning": "General system degradation across multiple services might be contributing to the drop.",
-        "supporting_evidence_ids": [],
-        "contradicting_evidence_ids": [],
-        "evidence_checks": [
+        "evidence_matrix": [
           {
-            "check_name": "temporal_alignment",
-            "result": "fail",
-            "explanation": "Event occurred within the anomaly window.",
-            "weight": 1.0
+            "id": "ev-r15-h2-0",
+            "log_id": null,
+            "checkpoint": "Temporal Alignment",
+            "status": "FAIL",
+            "timestamp": null,
+            "details": "Event occurred within the anomaly window."
           },
           {
-            "check_name": "affected_segment_match",
-            "result": "pass",
-            "explanation": "Evidence affects the primary segment.",
-            "weight": 1.0
+            "id": "ev-r15-h2-1",
+            "log_id": null,
+            "checkpoint": "Affected Segment Match",
+            "status": "PASS",
+            "timestamp": null,
+            "details": "Evidence affects the primary segment."
           }
-        ],
-        "recommended_action": "Monitor system-wide health.",
-        "status": "ambiguous"
+        ]
       }
     ],
     "overall_status": "investigate"

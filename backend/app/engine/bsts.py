@@ -180,6 +180,28 @@ def _find_anomaly_windows(
 # Public API
 # ---------------------------------------------------------------------------
 
+def validate_recovery(time_series_data: List[TimeSeriesPoint], anomaly_end_time: pd.Timestamp) -> bool:
+    """
+    Check the time series data after the anomaly end time.
+    If any metric value returns to within 5% of the pre-anomaly expected baseline,
+    flag the anomaly as recovered.
+    """
+    post_anomaly = [pt for pt in time_series_data if pt.timestamp > anomaly_end_time]
+    if not post_anomaly:
+        return False
+        
+    for pt in post_anomaly:
+        # Avoid division by zero
+        if pt.predicted_mean != 0:
+            deviation_pct = abs((pt.actual - pt.predicted_mean) / pt.predicted_mean) * 100
+            if deviation_pct <= 5.0:
+                return True
+        else:
+            if abs(pt.actual) <= 1e-9: # effectively zero
+                return True
+                
+    return False
+
 def detect_anomalies(
     df: pd.DataFrame,
     metric_col: str = "metric_value",
@@ -203,7 +225,9 @@ def detect_anomalies(
 
     # Ensure datetime index for resampling
     work = df.copy()
-    work[timestamp_col] = pd.to_datetime(work[timestamp_col])
+    work[timestamp_col] = pd.to_datetime(work[timestamp_col], errors='coerce')
+    work[metric_col] = pd.to_numeric(work[metric_col], errors='coerce')
+    work = work.dropna(subset=[timestamp_col, metric_col])
     work = work.set_index(timestamp_col).sort_index()
 
     # Aggregate to daily (handles both hourly and already-daily data)

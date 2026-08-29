@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.models.schemas import FullTraceResponse, TimeSeriesResponse, AnomalyReport, AnomalyWindow, DecompositionResult, RAGResult, HypothesisResult
+from app.models.schemas import FullTraceResponse, TimeSeriesResponse, AnomalyReport, AnomalyWindow, DecompositionResult, RAGResult, HypothesisResult, HypothesisResultV1
 from app.cache.golden_path import cache_manager
 from pydantic import BaseModel
 from fastapi import Depends
@@ -56,104 +56,134 @@ def load_cache(filename: str):
 
 @app.get("/api/v1/trace_full", response_model=FullTraceResponse)
 async def get_full_trace(
+    dataset_id: Optional[str] = None,
     current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Returns the entire pipeline payload in one shot for easy frontend rendering."""
 
-    # Check if user has a mapped dataset
-    dataset = db.query(Dataset).filter(Dataset.org_id == current_user.org_id, Dataset.status == "mapped").order_by(Dataset.created_at.desc()).first()
+    if not dataset_id:
+        logger.info("Serving trace from synthetic golden cache (live processing disabled).")
+        # Fallback to cache (always used in demo mode if no dataset is selected)
+        ts_data = load_cache("timeseries.json")
+        reports_data = load_cache("anomaly_reports.json")
 
-    if dataset and dataset.mapping_config:
+        reports_list = []
+        for r in reports_data:
+            # Parse new Phase 2 hypotheses (structured evidence matrix)
+            new_hypotheses = [HypothesisResult(**h) for h in r.get("hypotheses", [])]
+            # Parse old V1 hypothesis wrapper (backward compat)
+            old_hypothesis = HypothesisResultV1(**r["hypothesis"]) if r.get("hypothesis") else None
+
+            report = AnomalyReport(
+                anomaly_window=AnomalyWindow(**r["decomposition"]["anomaly_window"]),
+                decomposition=DecompositionResult(**r["decomposition"]),
+                rag=RAGResult(**r["rag"]),
+                hypotheses=new_hypotheses,
+                hypothesis=old_hypothesis,
+            )
+            reports_list.append(report)
+
+        reports_list.sort(key=lambda x: x.anomaly_window.severity, reverse=True)
+        reports_list = [
+            r for r in reports_list
+            if r.rag.retrieved_logs and r.hypotheses
+        ]
+        top_reports = reports_list[:10]
+
+        return FullTraceResponse(
+            timeseries=TimeSeriesResponse(**ts_data),
+            reports=top_reports
+        )
+    else:
+        logger.info(f"Live processing dataset: {dataset_id}")
+        dataset = db.query(Dataset).filter(Dataset.id == dataset_id).first()
+        if not dataset:
+            raise HTTPException(status_code=404, detail="Dataset not found")
+            
+        mapping = dataset.mapping_config or {}
+        timestamp_col = mapping.get("timestamp_col", "timestamp")
+        metric_col = mapping.get("metric_col", "metric_value")
+        
+        # 1. Load CSV
         try:
-            logger.info("Processing live dataset for trace...")
-            config = dataset.mapping_config
-
             df = pd.read_csv(dataset.file_path)
-
-            # Map columns
-            ts_col = config.get("timestamp_col")
-            met_col = config.get("metric_col")
-            dim_cols = config.get("dimension_cols", [])
-
-            if ts_col and met_col:
-                df = df.rename(columns={ts_col: "timestamp", met_col: "metric_value"})
-
-            # Basic validation
-            if "timestamp" not in df.columns or "metric_value" not in df.columns:
-                raise ValueError("Missing required mapped columns")
-
-            df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-            # Aggregate to daily to speed up BSTS
-            daily_df = df.set_index('timestamp').resample('D').agg({'metric_value': 'sum'}).reset_index()
-            daily_df['metric_name'] = "revenue"
-
-            # Run BSTS on aggregated data
-            ts_points, anomalies, method = detect_anomalies(daily_df, metric_col="metric_value")
-
-            ts_result = TimeSeriesResponse(
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to read CSV: {str(e)}")
+            
+        # 2. Anomaly Detection
+        ts_points, anomaly_windows, method = detect_anomalies(df, metric_col, timestamp_col)
+        
+        if not anomaly_windows:
+            # Return empty reports
+            ts_res = TimeSeriesResponse(
                 data=ts_points,
-                anomalies=anomalies,
+                anomalies=[],
                 served_from="live",
                 detection_method=method
             )
-
-            reports_list = []
-            if anomalies:
-                anomaly = anomalies[0]
-                decomp = run_decomposition(df, anomaly, metric_col="metric_value", dimensions=dim_cols)
-
-                queries = build_rag_queries(decomp)
-                from app.vectorstore.search import search_logs
-                evidence = await search_logs(queries[0], start_time=anomaly.start_time, end_time=anomaly.end_time)
-                hyp_result = await generate_hypotheses(anomaly, decomp, evidence)
-
-                report = AnomalyReport(
-                    anomaly_window=anomaly,
-                    decomposition=decomp,
-                    rag=RAGResult(decomposition=decomp, search_queries=queries, retrieved_logs=evidence),
-                    hypothesis=hyp_result
-                )
-                reports_list.append(report)
-
-            return FullTraceResponse(
-                timeseries=ts_result,
-                reports=reports_list
-            )
-        except Exception as e:
-            logger.error(f"Live processing failed: {e}")
-            # Fall back to cache if it fails (if in demo mode)
-            pass
-
-    if not settings.DEMO_MODE:
-        raise HTTPException(status_code=501, detail="Live mode failed and DEMO_MODE is disabled.")
-
-    # Fallback to cache (always used in demo mode)
-    ts_data = load_cache("timeseries.json")
-    reports_data = load_cache("anomaly_reports.json")
-
-    reports_list = []
-    for r in reports_data:
-        report = AnomalyReport(
-            anomaly_window=AnomalyWindow(**r["decomposition"]["anomaly_window"]),
-            decomposition=DecompositionResult(**r["decomposition"]),
-            rag=RAGResult(**r["rag"]),
-            hypothesis=HypothesisResult(**r["hypothesis"])
+            return FullTraceResponse(timeseries=ts_res, reports=[])
+            
+        # For demo simplicity, just process the worst anomaly
+        aw = sorted(anomaly_windows, key=lambda x: x.severity, reverse=True)[0]
+        
+        # 3. Decomposition
+        decomp = run_decomposition(df, aw, timestamp_col, metric_col)
+        
+        # 4. RAG
+        from app.engine.rag import build_rag_queries, adaptive_search
+        from datetime import datetime
+        
+        queries = build_rag_queries(decomp)
+        # Use primary query for search
+        query = queries[0] if queries else f"{metric_col} anomaly"
+        
+        # Ensure datetimes
+        st = datetime.fromisoformat(aw.start_time) if isinstance(aw.start_time, str) else aw.start_time
+        et = datetime.fromisoformat(aw.end_time) if isinstance(aw.end_time, str) else aw.end_time
+        
+        logs, window = await adaptive_search(dataset_id, query, st, et)
+        
+        rag_result = RAGResult(
+            decomposition=decomp,
+            search_queries=queries,
+            retrieved_logs=logs
         )
-        reports_list.append(report)
-
-    reports_list.sort(key=lambda x: x.anomaly_window.severity, reverse=True)
-    reports_list = [
-        r for r in reports_list
-        if r.rag.retrieved_logs and r.hypothesis.hypotheses and r.hypothesis.hypotheses[0].cause_title != "Unknown Issue"
-    ]
-    top_reports = reports_list[:10]
-
-    return FullTraceResponse(
-        timeseries=TimeSeriesResponse(**ts_data),
-        reports=top_reports
-    )
+        
+        # 5. Hypotheses
+        hypotheses_tuple = await generate_hypotheses(aw, decomp, logs)
+        # Handle the fact that generate_hypotheses returns a tuple of (result, rejected_logs) in hypothesis.py
+        # Wait, the signature says `-> List[HypothesisResult]` but the implementation says `return result, rejected_logs`
+        # Let's inspect the actual return type of generate_hypotheses: `return result, rejected_logs`. So we must unpack.
+        
+        if isinstance(hypotheses_tuple, tuple):
+            hypotheses = hypotheses_tuple[0]
+            rejected_logs = hypotheses_tuple[1]
+        else:
+            hypotheses = hypotheses_tuple
+            rejected_logs = []
+            
+        # 6. Compose AnomalyReport
+        report = AnomalyReport(
+            anomaly_window=aw,
+            decomposition=decomp,
+            rag=rag_result,
+            hypotheses=hypotheses,
+            rejected_logs=rejected_logs
+        )
+        
+        # Save to database
+        from app.database_utils import save_anomaly_report_to_db
+        save_anomaly_report_to_db(db, dataset_id, report)
+        
+        # Build Response
+        ts_res = TimeSeriesResponse(
+            data=ts_points,
+            anomalies=anomaly_windows,
+            served_from="live",
+            detection_method=method
+        )
+        return FullTraceResponse(timeseries=ts_res, reports=[report])
 
 @app.get("/api/v1/costs")
 def get_costs():
@@ -167,9 +197,7 @@ def get_costs():
 
 @app.post("/api/v1/chat")
 def chat(req: ChatRequest):
-    import google.generativeai as genai
-    genai.configure(api_key=os.environ.get("GEMINI_API_KEY", "dummy_key"))
-    model = genai.GenerativeModel('gemini-2.0-flash')
+    from google import genai
 
     # Load context
     reports_data = load_cache("anomaly_reports.json")
@@ -186,7 +214,11 @@ def chat(req: ChatRequest):
     prompt = f"System Context:\n{context}\n\nYou are the Trace.ai Data Assistant. Your goal is to answer the user's questions about the anomalies intelligently and accurately using the context above. If they ask a general question, summarize the key problems.\n\nUser Question: {req.message}\nAssistant:"
 
     try:
-        response = model.generate_content(prompt)
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy_key"))
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
         return {"response": response.text}
     except Exception as e:
         msg = req.message.lower()
@@ -259,6 +291,30 @@ def analyze_full(req: DecomposeRequest):
     except Exception as e:
         logger.error(f"Full analysis endpoint failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to run full analysis pipeline.")
+
+
+# --- Write-Back Pipeline (Phase 8) ---
+
+class FeedbackRequest(BaseModel):
+    is_correct: bool
+
+@app.put("/api/v1/analyze/feedback/{hypothesis_id}")
+def submit_analyst_feedback(
+    hypothesis_id: str,
+    req: FeedbackRequest,
+    db: Session = Depends(get_db)
+):
+    """Saves analyst feedback (Approve/Reject) for a specific hypothesis back to the database."""
+    from app.models.db_models import HypothesisModel
+    
+    hyp = db.query(HypothesisModel).filter(HypothesisModel.id == hypothesis_id).first()
+    if not hyp:
+        raise HTTPException(status_code=404, detail="Hypothesis not found in database.")
+        
+    hyp.analyst_feedback = req.is_correct
+    db.commit()
+    
+    return {"status": "success", "message": f"Feedback updated for {hypothesis_id}", "is_correct": req.is_correct}
 
 
 # --- Global Exception Handler for Graceful Degradation ---

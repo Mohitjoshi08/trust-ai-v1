@@ -76,7 +76,7 @@ async def test_hypothesis_valid_output(dummy_data, monkeypatch):
     monkeypatch.setattr(hyp_module, "client", mock_client)
     
     anomaly, decomp, logs = dummy_data
-    result = await generate_hypotheses(anomaly, decomp, logs)
+    result, _ = await generate_hypotheses(anomaly, decomp, logs)
     
     assert isinstance(result, HypothesisResult)
     assert result.hypotheses[0].cause_title == "Valid"
@@ -92,7 +92,7 @@ async def test_hypothesis_malformed_json_retry(dummy_data, monkeypatch):
     anomaly, decomp, logs = dummy_data
     anomaly.metric_name = "bad_json" # Trigger the mock condition
     
-    result = await generate_hypotheses(anomaly, decomp, logs)
+    result, _ = await generate_hypotheses(anomaly, decomp, logs)
     
     assert mock_client.chat.completions.call_count == 2
     assert result.hypotheses[0].cause_title == "Fixed"
@@ -107,7 +107,7 @@ async def test_hypothesis_hallucination_stripping(dummy_data, monkeypatch):
     anomaly, decomp, logs = dummy_data
     anomaly.metric_name = "hallucinate" # Trigger the mock condition
     
-    result = await generate_hypotheses(anomaly, decomp, logs)
+    result, _ = await generate_hypotheses(anomaly, decomp, logs)
     
     # ID should be stripped, score should drop to <= 15
     assert len(result.hypotheses[0].supporting_evidence_ids) == 0

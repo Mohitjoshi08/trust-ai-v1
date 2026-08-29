@@ -1,7 +1,7 @@
 import json
 import os
 from typing import Dict, Any, List
-import google.generativeai as genai
+from google import genai
 
 def generate_schema_mapping(platform: str, columns: List[str]) -> Dict[str, Any]:
     """Uses LLM to automatically map source columns to target Trace.ai schema."""
@@ -23,10 +23,12 @@ def generate_schema_mapping(platform: str, columns: List[str]) -> Dict[str, Any]
     if not api_key:
         return _fallback_mapping(platform, columns)
 
-    genai.configure(api_key=api_key)
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
         text = response.text.strip()
         if text.startswith("```json"):
             text = text[7:-3]
