@@ -32,7 +32,10 @@ app = FastAPI(title="Trace.ai Engine API")
 # Create tables on startup (SQLite auto-creates the DB file)
 @app.on_event("startup")
 def on_startup():
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        logger.warning(f"Database init race condition skipped: {e}")
     logger.info(f"Trace.ai started — DEMO_MODE={settings.DEMO_MODE}")
 
 from app.routers import integration_router, dataset_router
