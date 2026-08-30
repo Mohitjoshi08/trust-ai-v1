@@ -1,0 +1,21 @@
+{
+  "kpi_definitions": {
+    "Revenue": {
+      "description": "Total top-line revenue generated.",
+      "calculation": "Traffic * Conversion_Rate * Average_Order_Value"
+    },
+    "Traffic": {
+      "description": "Total unique visitors to the platform.",
+      "calculation": "Organic_Traffic + Paid_Traffic + Direct_Traffic"
+    },
+    "Conversion_Rate": {
+      "description": "Percentage of visitors who make a purchase.",
+      "calculation": "(Total_Orders / Traffic) * 100"
+    }
+  },
+  "business_rules": [
+    "A Traffic drop with a stable Conversion_Rate implies a top-of-funnel issue (e.g., marketing budget cut, SEO penalty).",
+    "A Conversion_Rate drop with stable Traffic implies a bottom-of-funnel or product issue (e.g., broken checkout, out of stock, price error).",
+    "If Revenue drops significantly but Traffic and Conversion_Rate are stable, the Average_Order_Value (AOV) must have dropped, likely due to deep discounting or mix shift."
+  ]
+}

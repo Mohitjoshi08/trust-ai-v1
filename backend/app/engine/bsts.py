@@ -112,7 +112,8 @@ def _zscore_bounds(series: pd.Series, sigma: float = 2.0) -> pd.DataFrame:
 def _find_anomaly_windows(
     daily_df: pd.DataFrame,
     metric_col: str,
-    detection_method: DetectionMethod
+    detection_method: DetectionMethod,
+    anomaly_type: str = "Standard"
 ) -> List[AnomalyWindow]:
     """
     Group consecutive days where actual falls outside (lower, upper) bounds
@@ -171,6 +172,7 @@ def _find_anomaly_windows(
             aggregate_expected_mean=expected_mean,
             aggregate_deviation_pct=round(deviation_pct, 2),
             detection_method=detection_method,
+            anomaly_type=anomaly_type,
         ))
 
     return windows
@@ -240,18 +242,26 @@ def detect_anomalies(
         return [], [], DetectionMethod.Z_SCORE
 
     # --- Fit model ---
-    if len(daily) < 14:
+    if len(daily) < 10:
+        logger.warning("Sparse history detected (%d days). Using rule-based threshold.", len(daily))
+        bounds_df = _zscore_bounds(daily[metric_col])
+        method = DetectionMethod.RULE_BASED
+        anomaly_type = "Sparse History Detected"
+    elif len(daily) < 14:
         # Too few points for BSTS; go straight to Z-score
         logger.warning("Only %d days — using Z-score fallback.", len(daily))
         bounds_df = _zscore_bounds(daily[metric_col])
         method = DetectionMethod.Z_SCORE
+        anomaly_type = "Standard"
     else:
         result, method = fit_bsts_model(daily[metric_col])
         if result is not None:
             bounds_df = result
+            anomaly_type = "Standard"
         else:
             bounds_df = _zscore_bounds(daily[metric_col])
             method = DetectionMethod.Z_SCORE
+            anomaly_type = "Standard"
 
     # Merge bounds into daily frame
     daily = daily.join(bounds_df)
@@ -268,6 +278,6 @@ def detect_anomalies(
         ))
 
     # --- Detect anomaly windows ---
-    anomaly_windows = _find_anomaly_windows(daily, metric_col, method)
+    anomaly_windows = _find_anomaly_windows(daily, metric_col, method, anomaly_type)
 
     return ts_points, anomaly_windows, method

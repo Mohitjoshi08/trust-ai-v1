@@ -7,7 +7,7 @@ import {
   GitCommit, BrainCircuit, RefreshCw,
   ChevronRight, AlertTriangle, TrendingDown, Search,
   Menu, X, Database, Sun, Moon, Activity, Server, Cpu,
-  CheckCircle, XCircle, HelpCircle
+  CheckCircle, XCircle, DollarSign, HelpCircle
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -54,6 +54,12 @@ interface RejectedLog {
   rejection_reason: string
 }
 
+interface ActionRecommendation {
+  lever: string
+  action: string
+  expected_impact: string
+}
+
 interface HypothesisResult {
   id: string
   rank: number
@@ -62,6 +68,7 @@ interface HypothesisResult {
   evidence_strength: EvidenceStrength
   evidence_matrix: EvidenceItem[]
   analyst_feedback?: boolean | null
+  recommended_actions?: ActionRecommendation[]
 }
 
 interface AnomalyReport {
@@ -232,7 +239,6 @@ function InvestigationTimeline({ report }: { report: AnomalyReport }) {
           <div className="timeline-event-dot" style={{ background: evt.color }} />
           <div className="timeline-event-content">
             <div className="timeline-event-title">{evt.title}</div>
-            <div className="timeline-event-time">{formatDateTime(evt.time)}</div>
           </div>
         </div>
       )) : (
@@ -321,6 +327,46 @@ export default function Dashboard() {
 
   // Hypothesis tab state
   const [activeHypothesisTab, setActiveHypothesisTab] = useState(0)
+  
+  // Persona state
+  const [persona, setPersona] = useState<'analyst' | 'executive'>('analyst')
+  const [isRegenerating, setIsRegenerating] = useState(false)
+
+  const handlePersonaChange = async (newPersona: 'analyst' | 'executive') => {
+    setPersona(newPersona)
+    if (!trace || !trace.reports || !trace.reports[selectedIdx]) return
+    
+    setIsRegenerating(true)
+    const report = trace.reports[selectedIdx]
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/analyze/regenerate_hypotheses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          anomaly_window: report.anomaly_window,
+          decomposition: report.decomposition,
+          retrieved_logs: report.rag.retrieved_logs,
+          persona: newPersona
+        })
+      })
+      
+      if (res.ok) {
+        const data = await res.json()
+        const newTrace = { ...trace }
+        newTrace.reports[selectedIdx].hypotheses = data.hypotheses
+        newTrace.reports[selectedIdx].rejected_logs = data.rejected_logs
+        setTrace(newTrace)
+        setActiveHypothesisTab(0)
+      }
+    } catch (err) {
+      console.error("Failed to regenerate hypotheses for new persona", err)
+    } finally {
+      setIsRegenerating(false)
+    }
+  }
+  
+  // Telemetry state
+  const [showTelemetry, setShowTelemetry] = useState(false)
   
   // UI Features
   const [showEvents, setShowEvents] = useState(false)
@@ -545,6 +591,9 @@ export default function Dashboard() {
               <h2 className="title-lg">Detected Issues</h2>
             </div>
             <div className="flex items-center gap-2">
+              <button className="btn-icon" onClick={() => setShowTelemetry(true)} title="View LLM Telemetry & Costs">
+                <DollarSign size={14} />
+              </button>
               <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
                 {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
               </button>
@@ -817,6 +866,21 @@ export default function Dashboard() {
             <span className="title-lg">Causal Intelligence</span>
           </div>
 
+          {/* Persona Toggle */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="label-md text-muted">Persona:</span>
+            <select 
+              value={persona} 
+              onChange={(e) => handlePersonaChange(e.target.value as 'analyst' | 'executive')}
+              disabled={isRegenerating}
+              style={{ padding: '4px 8px', borderRadius: 'var(--radius-md)', border: '1px solid var(--outline-variant)', background: 'var(--surface-container)', color: 'var(--on-surface)', outline: 'none' }}
+            >
+              <option value="analyst">Data Analyst</option>
+              <option value="executive">Executive</option>
+            </select>
+            {isRegenerating && <RefreshCw size={14} className="text-muted" style={{ animation: 'spin 1s linear infinite' }} />}
+          </div>
+
           {/* Ambiguity Warning */}
           {decomp.is_ambiguous && (
             <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: 'var(--warning)', borderRadius: 'var(--radius-md)', color: 'var(--on-warning)', border: '1px solid var(--warning)', opacity: 0.9 }}>
@@ -869,7 +933,15 @@ export default function Dashboard() {
 
               {/* Active Hypothesis Detail */}
               {activeHypothesis && (
-                <div className="hypothesis-box" style={{ padding: '16px', background: 'var(--surface-container-low)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--outline-variant)' }}>
+                <div className="hypothesis-box" style={{ 
+                  padding: '16px', 
+                  background: 'var(--surface-container-low)', 
+                  borderRadius: 'var(--radius-lg)', 
+                  border: '1px solid var(--outline-variant)',
+                  opacity: activeHypothesis.analyst_feedback === false ? 0.5 : 1,
+                  filter: activeHypothesis.analyst_feedback === false ? 'grayscale(100%)' : 'none',
+                  transition: 'all 0.2s ease-in-out'
+                }}>
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
@@ -947,6 +1019,28 @@ export default function Dashboard() {
                   
                   <p className="body-md text-muted mb-4" style={{ lineHeight: '1.5' }}>{activeHypothesis.description}</p>
                   
+                  {/* Action Recommendations */}
+                  {activeHypothesis.recommended_actions && activeHypothesis.recommended_actions.length > 0 && (
+                    <div className="mt-4 mb-4">
+                      <div className="label-md text-muted mb-2">Recommended Actions</div>
+                      <div className="flex flex-col gap-2">
+                        {activeHypothesis.recommended_actions.map((action: any, i: number) => (
+                          <div key={i} style={{ padding: '12px', background: 'var(--surface-container)', borderRadius: 'var(--radius-md)', border: '1px solid var(--outline-variant)' }}>
+                            <div className="flex gap-2 items-center mb-1">
+                              <span className="badge" style={{ background: 'var(--primary-container)', color: 'var(--on-primary-container)' }}>{action.driver}</span>
+                              <span className="text-muted" style={{ fontSize: '12px' }}>→</span>
+                              <span className="badge" style={{ background: 'var(--surface-container-highest)', color: 'var(--on-surface)' }}>{action.lever}</span>
+                            </div>
+                            <div className="body-md mb-1" style={{ fontWeight: 500 }}>{action.action}</div>
+                            <div className="text-muted" style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <Activity size={12} /> Expected Impact: {action.expected_impact}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Evidence Matrix Data Table */}
                   {activeHypothesis.evidence_matrix && activeHypothesis.evidence_matrix.length > 0 && (
                     <div className="evidence-matrix">
@@ -1153,6 +1247,46 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Telemetry Modal */}
+      {showTelemetry && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setShowTelemetry(false)}>
+          <div className="modal-content card" style={{ padding: '24px', width: '500px', maxWidth: '90%', maxHeight: '80vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="title-lg">LLM Telemetry & Cost</h3>
+              <button className="btn-icon" onClick={() => setShowTelemetry(false)}><X size={16} /></button>
+            </div>
+            {costs ? (
+              <div>
+                <div className="mb-4" style={{ padding: '16px', background: 'var(--surface-container-highest)', borderRadius: 'var(--radius-md)' }}>
+                  <div className="label-md text-muted">Total Estimated Cost</div>
+                  <div className="title-lg" style={{ color: 'var(--primary)' }}>${costs.total_usd?.toFixed(4)}</div>
+                </div>
+                <div className="label-md mb-2">History</div>
+                <div className="flex flex-col gap-2">
+                  {costs.history?.slice().reverse().map((c: any, i: number) => (
+                    <div key={i} style={{ padding: '12px', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)' }}>
+                      <div className="flex justify-between text-muted" style={{ fontSize: '12px', marginBottom: '4px' }}>
+                        <span>{new Date(c.timestamp).toLocaleString()}</span>
+                        <span>{c.model}</span>
+                      </div>
+                      <div className="flex justify-between mt-2 text-sm">
+                        <span>Tokens: {c.input_tokens} In / {c.output_tokens} Out</span>
+                        <span>{c.latency_ms}ms</span>
+                      </div>
+                      <div className="mt-1" style={{ fontSize: '12px', color: 'var(--primary)' }}>
+                        Cost: ${c.cost_usd?.toFixed(5)} | Persona: {c.persona}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-muted">Loading telemetry data...</p>
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   )

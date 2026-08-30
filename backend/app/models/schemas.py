@@ -13,6 +13,7 @@ class DetectionMethod(str, Enum):
     Z_SCORE = "z_score"
     CACHED = "cached"
     HARDCODED = "hardcoded"
+    RULE_BASED = "rule_based"
 
 
 class EvidenceStatus(str, Enum):
@@ -51,6 +52,7 @@ class AnomalyWindow(BaseModel):
     aggregate_expected_mean: float
     aggregate_deviation_pct: float
     detection_method: DetectionMethod
+    anomaly_type: str = "Standard"
 
 class TimeSeriesResponse(BaseModel):
     data: List[TimeSeriesPoint]
@@ -147,6 +149,12 @@ class EvidenceItem(BaseModel):
     timestamp: Optional[str] = None
     details: str
 
+class ActionRecommendation(BaseModel):
+    driver: str
+    lever: str
+    action: str
+    expected_impact: str
+
 
 class HypothesisResult(BaseModel):
     """
@@ -159,6 +167,7 @@ class HypothesisResult(BaseModel):
     description: str
     evidence_strength: EvidenceStrength
     evidence_matrix: List[EvidenceItem]
+    recommended_actions: List[ActionRecommendation] = []
     analyst_feedback: Optional[bool] = None
 
 class RejectedLog(BaseModel):
@@ -258,3 +267,9 @@ class AnomalyReport(BaseModel):
 class FullTraceResponse(BaseModel):
     timeseries: TimeSeriesResponse
     reports: List[AnomalyReport]
+
+class RegenerateRequest(BaseModel):
+    anomaly_window: AnomalyWindow
+    decomposition: DecompositionResult
+    retrieved_logs: List[LogDocument]
+    persona: str = "analyst"

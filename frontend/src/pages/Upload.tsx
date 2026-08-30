@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Upload as UploadIcon, CheckCircle, Database, Menu, X, AlertTriangle } from 'lucide-react';
 import { auth } from '../firebase';
 import { Sidebar } from '../components/Sidebar';

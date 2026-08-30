@@ -28,5 +28,167 @@
     "input_tokens": 449,
     "output_tokens": 1140,
     "cost_usd": 0.00037567499999999996
+  },
+  {
+    "timestamp": "2026-08-30T12:08:54.350624",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 10928,
+    "input_tokens": 357,
+    "output_tokens": 1079,
+    "cost_usd": 0.000350475,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:09:12.794982",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 6983,
+    "input_tokens": 356,
+    "output_tokens": 836,
+    "cost_usd": 0.00027749999999999997,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:09:38.890157",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 12713,
+    "input_tokens": 360,
+    "output_tokens": 913,
+    "cost_usd": 0.0003009,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:10:03.249489",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 13291,
+    "input_tokens": 357,
+    "output_tokens": 923,
+    "cost_usd": 0.00030367499999999994,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:10:24.867304",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 9178,
+    "input_tokens": 358,
+    "output_tokens": 822,
+    "cost_usd": 0.00027344999999999995,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:10:41.663906",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 8757,
+    "input_tokens": 473,
+    "output_tokens": 953,
+    "cost_usd": 0.00032137499999999994,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:11:09.293007",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 11719,
+    "input_tokens": 473,
+    "output_tokens": 1125,
+    "cost_usd": 0.000372975,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:11:28.550389",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 11396,
+    "input_tokens": 420,
+    "output_tokens": 1183,
+    "cost_usd": 0.00038639999999999996,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:11:48.936184",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 13346,
+    "input_tokens": 417,
+    "output_tokens": 837,
+    "cost_usd": 0.00028237499999999997,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:12:08.889904",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 12373,
+    "input_tokens": 467,
+    "output_tokens": 1204,
+    "cost_usd": 0.000396225,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:12:29.780022",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 13088,
+    "input_tokens": 408,
+    "output_tokens": 1191,
+    "cost_usd": 0.0003879,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:12:54.145402",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 16985,
+    "input_tokens": 473,
+    "output_tokens": 1221,
+    "cost_usd": 0.000401775,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T12:13:15.043246",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 13306,
+    "input_tokens": 473,
+    "output_tokens": 1144,
+    "cost_usd": 0.000378675,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T13:02:18.492897",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 15175,
+    "input_tokens": 358,
+    "output_tokens": 978,
+    "cost_usd": 0.00032024999999999995,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T13:02:47.418190",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 17398,
+    "input_tokens": 415,
+    "output_tokens": 1040,
+    "cost_usd": 0.000343125,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T13:03:17.996598",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 19069,
+    "input_tokens": 355,
+    "output_tokens": 699,
+    "cost_usd": 0.000236325,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T13:03:44.072756",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 14091,
+    "input_tokens": 359,
+    "output_tokens": 940,
+    "cost_usd": 0.00030892500000000004,
+    "persona": "analyst"
+  },
+  {
+    "timestamp": "2026-08-30T13:04:11.296855",
+    "model": "gemini-3.5-flash",
+    "latency_ms": 17341,
+    "input_tokens": 473,
+    "output_tokens": 1400,
+    "cost_usd": 0.000455475,
+    "persona": "analyst"
   }
 ]

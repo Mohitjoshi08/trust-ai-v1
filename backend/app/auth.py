@@ -45,6 +45,7 @@ def verify_firebase_token(credentials: HTTPAuthorizationCredentials = Security(s
         return {"uid": "demo-user", "email": "demo@trace.ai"}
 
     if credentials is None:
+        with open("auth_debug.txt", "a") as f: f.write("Missing credentials\n")
         raise HTTPException(status_code=401, detail="Missing authorization token")
 
     _ensure_firebase()
@@ -52,8 +53,10 @@ def verify_firebase_token(credentials: HTTPAuthorizationCredentials = Security(s
         from firebase_admin import auth
         token = credentials.credentials
         decoded_token = auth.verify_id_token(token)
+        with open("auth_debug.txt", "a") as f: f.write("Success\n")
         return decoded_token
     except Exception as e:
+        with open("auth_debug.txt", "a") as f: f.write(f"Error: {e}\n")
         logger.error(f"Firebase token verification failed: {str(e)}")
         raise HTTPException(
             status_code=401,

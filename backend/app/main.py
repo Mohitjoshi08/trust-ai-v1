@@ -1,25 +1,35 @@
 import os
 import json
 import logging
+import asyncio
+import pandas as pd
+from datetime import datetime
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException, Request
+
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.config import settings
-from app.models.schemas import FullTraceResponse, TimeSeriesResponse, AnomalyReport, AnomalyWindow, DecompositionResult, RAGResult, HypothesisResult, HypothesisResultV1
-from app.cache.golden_path import cache_manager
 from pydantic import BaseModel
-from fastapi import Depends
 from sqlalchemy.orm import Session
+from google import genai
+
+from app.config import settings
+from app.models.schemas import (
+    FullTraceResponse, TimeSeriesResponse, AnomalyReport, 
+    AnomalyWindow, DecompositionResult, RAGResult, 
+    HypothesisResult, HypothesisResultV1
+)
+from app.cache.golden_path import cache_manager
 from app.database import get_db, engine, Base
+from app.database_utils import save_anomaly_report_to_db
 from app.auth import get_current_user
-from app.models.db_models import Dataset, User
-import pandas as pd
-import asyncio
+from app.models.db_models import Dataset, User, HypothesisModel
+
 from app.engine.bsts import detect_anomalies
 from app.engine.decomposer import run_decomposition
 from app.engine.hypothesis import generate_hypotheses
-from app.engine.rag import build_rag_queries
+from app.engine.rag import build_rag_queries, adaptive_search
+from app.routers import integration_router, dataset_router
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -29,23 +39,14 @@ class ChatRequest(BaseModel):
 
 app = FastAPI(title="Trace.ai Engine API")
 
-# Create tables on startup (SQLite auto-creates the DB file)
-@app.on_event("startup")
-def on_startup():
-    try:
-        Base.metadata.create_all(bind=engine)
-    except Exception as e:
-        logger.warning(f"Database init race condition skipped: {e}")
-    logger.info(f"Trace.ai started — DEMO_MODE={settings.DEMO_MODE}")
+# Ensure database tables exist
+Base.metadata.create_all(bind=engine)
 
-from app.routers import integration_router, dataset_router
-app.include_router(integration_router.router, prefix="/api/v1")
-app.include_router(dataset_router.router, prefix="/api/v1")
-
-# --- THE FIX: Explicit Origins List ---
+# --- 1. CORS MIDDLEWARE (Must be before routers) ---
 origins = [
     "http://localhost",
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://trace-ai-demo-git-main-mohitjoshi08s-projects.vercel.app"
 ]
 
@@ -56,7 +57,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# --------------------------------------
+
+# --- 2. ROUTERS ---
+app.include_router(integration_router.router, prefix="/api/v1")
+app.include_router(dataset_router.router, prefix="/api/v1")
+
+# --- 3. STARTUP EVENT ---
+@app.on_event("startup")
+def on_startup():
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        logger.warning(f"Database init race condition skipped: {e}")
+    logger.info(f"Trace.ai started — DEMO_MODE={settings.DEMO_MODE}")
+
 
 def load_cache(filename: str):
     path = os.path.join(settings.CACHE_DIR, filename)
@@ -75,15 +89,12 @@ async def get_full_trace(
 
     if not dataset_id:
         logger.info("Serving trace from synthetic golden cache (live processing disabled).")
-        # Fallback to cache (always used in demo mode if no dataset is selected)
         ts_data = load_cache("timeseries.json")
         reports_data = load_cache("anomaly_reports.json")
 
         reports_list = []
         for r in reports_data:
-            # Parse new Phase 2 hypotheses (structured evidence matrix)
             new_hypotheses = [HypothesisResult(**h) for h in r.get("hypotheses", [])]
-            # Parse old V1 hypothesis wrapper (backward compat)
             old_hypothesis = HypothesisResultV1(**r["hypothesis"]) if r.get("hypothesis") else None
 
             report = AnomalyReport(
@@ -126,7 +137,6 @@ async def get_full_trace(
         ts_points, anomaly_windows, method = detect_anomalies(df, metric_col, timestamp_col)
         
         if not anomaly_windows:
-            # Return empty reports
             ts_res = TimeSeriesResponse(
                 data=ts_points,
                 anomalies=[],
@@ -138,10 +148,6 @@ async def get_full_trace(
         # Process top 5 worst anomalies
         top_anomalies = sorted(anomaly_windows, key=lambda x: abs(x.aggregate_deviation_pct), reverse=True)[:5]
         reports_list = []
-        
-        from app.engine.rag import build_rag_queries, adaptive_search
-        from datetime import datetime
-        from app.database_utils import save_anomaly_report_to_db
         
         for aw in top_anomalies:
             # 3. Decomposition
@@ -164,7 +170,7 @@ async def get_full_trace(
             )
             
             # 5. Hypotheses
-            hypotheses_tuple = await generate_hypotheses(aw, decomp, logs, model="gemini-3.5-flash")
+            hypotheses_tuple = await generate_hypotheses(aw, decomp, logs, model="gemini-2.0-flash")
             
             if isinstance(hypotheses_tuple, tuple):
                 hypotheses = hypotheses_tuple[0]
@@ -207,8 +213,6 @@ def get_costs():
 
 @app.post("/api/v1/chat")
 def chat(req: ChatRequest):
-    from google import genai
-
     # Load context
     reports_data = load_cache("anomaly_reports.json")
 
@@ -245,9 +249,7 @@ def chat(req: ChatRequest):
 def health_check():
     return {"status": "ok", "demo_mode": settings.DEMO_MODE}
 
-
 # --- Request Models for Individual Endpoints ---
-
 class DecomposeRequest(BaseModel):
     anomaly_start: str
     anomaly_end: str
@@ -260,9 +262,7 @@ class RootCauseRequest(BaseModel):
     metric: str = "revenue"
     primary_driver: Optional[dict] = None
 
-
 # --- Individual API Endpoints (Phase 6) ---
-
 @app.get("/api/v1/metrics/timeseries")
 def get_timeseries(metric: str = "revenue", granularity: str = "daily"):
     """Get time-series data with anomaly detection results."""
@@ -271,7 +271,6 @@ def get_timeseries(metric: str = "revenue", granularity: str = "daily"):
     except Exception as e:
         logger.error(f"Timeseries endpoint failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to load time-series data.")
-
 
 @app.post("/api/v1/analyze/decompose")
 def analyze_decompose(req: DecomposeRequest):
@@ -282,7 +281,6 @@ def analyze_decompose(req: DecomposeRequest):
         logger.error(f"Decompose endpoint failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to run decomposition analysis.")
 
-
 @app.post("/api/v1/analyze/root_cause")
 def analyze_root_cause(req: RootCauseRequest):
     """Get LLM-generated root cause hypotheses for an anomaly."""
@@ -291,7 +289,6 @@ def analyze_root_cause(req: RootCauseRequest):
     except Exception as e:
         logger.error(f"Root cause endpoint failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate root cause analysis.")
-
 
 @app.post("/api/v1/analyze/full")
 def analyze_full(req: DecomposeRequest):
@@ -302,9 +299,7 @@ def analyze_full(req: DecomposeRequest):
         logger.error(f"Full analysis endpoint failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to run full analysis pipeline.")
 
-
 # --- Write-Back Pipeline (Phase 8) ---
-
 class FeedbackRequest(BaseModel):
     is_correct: bool
 
@@ -315,8 +310,6 @@ def submit_analyst_feedback(
     db: Session = Depends(get_db)
 ):
     """Saves analyst feedback (Approve/Reject) for a specific hypothesis back to the database."""
-    from app.models.db_models import HypothesisModel
-    
     hyp = db.query(HypothesisModel).filter(HypothesisModel.id == hypothesis_id).first()
     if not hyp:
         raise HTTPException(status_code=404, detail="Hypothesis not found in database.")
@@ -326,17 +319,24 @@ def submit_analyst_feedback(
     
     return {"status": "success", "message": f"Feedback updated for {hypothesis_id}", "is_correct": req.is_correct}
 
-
 # --- Global Exception Handler for Graceful Degradation ---
-
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     """Catch-all handler ensures the frontend never sees a raw error."""
     logger.error(f"Unhandled exception on {request.url.path}: {exc}")
+    
+    # Identify the origin to return it in the headers
+    origin = request.headers.get("origin", "http://localhost:5173")
+    
     return JSONResponse(
         status_code=500,
         content={
             "detail": "Internal server error. The system is operating in degraded mode.",
-            "fallback": True
+            "fallback": True,
+            "actual_error": str(exc) # Expose the real error for debugging
+        },
+        headers={
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
         }
     )

@@ -89,6 +89,7 @@ class HypothesisModel(Base):
     description = Column(String)
     evidence_strength = Column(String)
     analyst_feedback = Column(Boolean, nullable=True)
+    recommended_actions = Column(JSON, nullable=True)
 
     report = relationship("AnomalyReportModel", back_populates="hypotheses")
     evidence_matrix = relationship("EvidenceModel", back_populates="hypothesis", cascade="all, delete-orphan")
