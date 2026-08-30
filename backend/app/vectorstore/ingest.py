@@ -21,13 +21,14 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
     def __call__(self, input: Documents) -> Embeddings:
         from google import genai
         client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        # Use gemini-embedding-2 which is the standard Gemini embedding model
-        response = client.models.embed_content(
-            model='gemini-embedding-2',
-            contents=input
-        )
-        # Return a list of embeddings
-        return [e.values for e in response.embeddings]
+        embeddings = []
+        for text in input:
+            response = client.models.embed_content(
+                model='gemini-embedding-2',
+                contents=text
+            )
+            embeddings.append(response.embeddings[0].values)
+        return embeddings
 
 def get_collection(dataset_id: str, client=None):
     if not client:
@@ -64,8 +65,8 @@ def ingest_logs(dataset_id: str, logs_path: str) -> int:
         
     collection = get_collection(dataset_id)
     
-    # Process in batches of 500 to avoid memory spikes with large log sets
-    BATCH_SIZE = 500
+    # Process in very small batches of 20 to avoid Gemini API batch and safety limits
+    BATCH_SIZE = 20
     total = len(logs)
     
     for i in range(0, total, BATCH_SIZE):

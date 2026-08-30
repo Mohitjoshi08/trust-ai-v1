@@ -154,7 +154,8 @@ async def get_full_trace(
             st = datetime.fromisoformat(aw.start_time) if isinstance(aw.start_time, str) else aw.start_time
             et = datetime.fromisoformat(aw.end_time) if isinstance(aw.end_time, str) else aw.end_time
             
-            logs, window = await adaptive_search(dataset_id, query, st, et)
+            logs, window, retrieval_path = await adaptive_search(dataset_id, query, st, et)
+            logger.info(f"RAG retrieval path for anomaly: {retrieval_path}")
             
             rag_result = RAGResult(
                 decomposition=decomp,
@@ -163,7 +164,7 @@ async def get_full_trace(
             )
             
             # 5. Hypotheses
-            hypotheses_tuple = await generate_hypotheses(aw, decomp, logs)
+            hypotheses_tuple = await generate_hypotheses(aw, decomp, logs, model="gemini-3.5-flash")
             
             if isinstance(hypotheses_tuple, tuple):
                 hypotheses = hypotheses_tuple[0]

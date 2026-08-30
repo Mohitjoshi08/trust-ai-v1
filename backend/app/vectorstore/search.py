@@ -28,7 +28,7 @@ async def search_logs(
     # Note: ChromaDB $gte / $lte only support int/float, so we fetch more and filter locally
     results = collection.query(
         query_texts=[query],
-        n_results=top_k * 3,
+        n_results=500,
     )
     
     documents: List[LogDocument] = []

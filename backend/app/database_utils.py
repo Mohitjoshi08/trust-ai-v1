@@ -38,7 +38,7 @@ def save_anomaly_report_to_db(db: Session, dataset_id: str, report: AnomalyRepor
         # Save Evidence
         for ev in hyp.evidence_matrix:
             db_ev = EvidenceModel(
-                id=ev.id,
+                id=f"{hyp.id}-{ev.id}",
                 hypothesis_id=hyp.id,
                 log_id=ev.log_id,
                 checkpoint=ev.checkpoint,

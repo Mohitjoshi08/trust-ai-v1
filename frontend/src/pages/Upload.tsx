@@ -1,7 +1,33 @@
-import { useState } from 'react';
-import { Upload as UploadIcon, CheckCircle, Database, Menu } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Upload as UploadIcon, CheckCircle, Database, Menu, X, AlertTriangle } from 'lucide-react';
 import { auth } from '../firebase';
 import { Sidebar } from '../components/Sidebar';
+
+// ── Toast Notification System ────────────────────────────────────
+interface ToastItem {
+  id: number
+  type: 'success' | 'error'
+  message: string
+  exiting?: boolean
+}
+
+let toastCounter = 0
+
+function ToastContainer({ toasts, onDismiss }: { toasts: ToastItem[], onDismiss: (id: number) => void }) {
+  return (
+    <div className="toast-container">
+      {toasts.map(t => (
+        <div key={t.id} className={`toast toast-${t.type} ${t.exiting ? 'exiting' : ''}`}>
+          {t.type === 'success' ? <CheckCircle size={16} /> : <AlertTriangle size={16} />}
+          <span>{t.message}</span>
+          <button className="toast-dismiss" onClick={() => onDismiss(t.id)}>
+            <X size={14} />
+          </button>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function Upload() {
   const [file, setFile] = useState<File | null>(null);
@@ -15,6 +41,26 @@ export default function Upload() {
   });
   const [success, setSuccess] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+
+  const addToast = useCallback((type: 'success' | 'error', message: string) => {
+    const id = ++toastCounter
+    setToasts(prev => [...prev, { id, type, message }])
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => {
+      setToasts(prev => prev.map(t => t.id === id ? { ...t, exiting: true } : t))
+      setTimeout(() => {
+        setToasts(prev => prev.filter(t => t.id !== id))
+      }, 250) // match toast-slide-out duration
+    }, 4000)
+  }, [])
+
+  const dismissToast = useCallback((id: number) => {
+    setToasts(prev => prev.map(t => t.id === id ? { ...t, exiting: true } : t))
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id))
+    }, 250)
+  }, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -45,9 +91,10 @@ export default function Upload() {
       const data = await res.json();
       setColumns(data.columns);
       setDatasetId(data.dataset_id);
+      addToast('success', 'Dataset uploaded successfully! Now map your columns.');
     } catch (err) {
       console.error(err);
-      alert('Failed to upload ZIP file. Ensure it contains metrics.csv and logs.json.');
+      addToast('error', 'Failed to upload ZIP file. Ensure it contains metrics.csv and logs.json.');
     } finally {
       setUploading(false);
     }
@@ -67,9 +114,10 @@ export default function Upload() {
 
       if (!res.ok) throw new Error('Failed to save mapping');
       setSuccess(true);
+      addToast('success', 'Column mapping saved! Your dataset is ready for analysis.');
     } catch (err) {
       console.error(err);
-      alert('Failed to save column mapping');
+      addToast('error', 'Failed to save column mapping. Please try again.');
     }
   };
 
@@ -182,6 +230,9 @@ export default function Upload() {
         </div>
       )}
     </div>
+
+    {/* Toast Notifications */}
+    <ToastContainer toasts={toasts} onDismiss={dismissToast} />
   </div>
   );
 }

@@ -6,7 +6,8 @@ import {
 import {
   GitCommit, BrainCircuit, RefreshCw,
   ChevronRight, AlertTriangle, TrendingDown, Search,
-  Menu, X, Database
+  Menu, X, Database, Sun, Moon, Activity, Server, Cpu,
+  CheckCircle, XCircle, HelpCircle
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -103,7 +104,7 @@ interface TraceData {
 function getConfidenceClass(strength: string): string {
   if (strength === 'HIGH') return 'badge-success'
   if (strength === 'MEDIUM') return 'badge-warning'
-  if (strength === 'LOW') return 'badge-warning' // or orange if available
+  if (strength === 'LOW') return 'badge-warning'
   return 'badge-critical' // INSUFFICIENT
 }
 
@@ -117,6 +118,187 @@ function formatDateTime(dateStr: string): string {
   return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
+// ── Evidence Status Icon Component ───────────────────────────────
+function EvidenceIcon({ status }: { status: EvidenceStatus }) {
+  if (status === 'PASS') return <span className="evidence-icon pass"><CheckCircle size={14} /></span>
+  if (status === 'FAIL') return <span className="evidence-icon fail"><XCircle size={14} /></span>
+  return <span className="evidence-icon unknown"><HelpCircle size={14} /></span>
+}
+
+// ── Loading Skeleton Component ───────────────────────────────────
+function LoadingSkeleton() {
+  return (
+    <div className="app-layout">
+      <div className="dashboard-content">
+        {/* Feed skeleton */}
+        <div className="anomaly-feed">
+          <div className="feed-header flex items-center gap-3" style={{ height: 56 }}>
+            <div className="skeleton skeleton-line short" />
+          </div>
+          <div className="feed-list">
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="skeleton skeleton-feed-item" />
+            ))}
+          </div>
+        </div>
+
+        {/* Main workspace skeleton */}
+        <main className="main-workspace">
+          <div className="skeleton skeleton-line medium" style={{ height: 24, marginBottom: 8 }} />
+          <div className="skeleton skeleton-line short" style={{ height: 14 }} />
+
+          <div className="card">
+            <div className="skeleton skeleton-line short" style={{ height: 16, marginBottom: 16 }} />
+            <div className="skeleton skeleton-chart" />
+          </div>
+
+          <div className="card">
+            <div className="skeleton skeleton-line short" style={{ height: 16, marginBottom: 16 }} />
+            <div className="skeleton skeleton-card" />
+          </div>
+        </main>
+
+        {/* Intelligence panel skeleton */}
+        <aside className="intelligence-panel">
+          <div className="skeleton skeleton-line medium" style={{ height: 18, marginBottom: 16 }} />
+          <div className="skeleton skeleton-card" />
+          <div className="skeleton skeleton-card" />
+          <div className="skeleton skeleton-line long" />
+          <div className="skeleton skeleton-line medium" />
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+// ── Investigation Timeline Component ─────────────────────────────
+function InvestigationTimeline({ report }: { report: AnomalyReport }) {
+  const aw = report.anomaly_window
+
+  // Metrics lane events
+  const metricsEvents = [
+    { title: 'Anomaly Start', time: aw.start_time, color: 'var(--error)' },
+    { title: `Peak Deviation (${Math.abs(aw.aggregate_deviation_pct).toFixed(1)}%)`, time: aw.start_time, color: 'var(--error)' },
+    { title: 'Anomaly End', time: aw.end_time, color: 'var(--warning)' },
+  ]
+  if (report.recovery_validation?.metric_recovered) {
+    metricsEvents.push({
+      title: 'Recovery Detected',
+      time: report.recovery_validation.recovery_event_timestamp || aw.end_time,
+      color: 'var(--success)'
+    })
+  }
+
+  // Ops events from RAG logs
+  const opsEvents = report.rag.retrieved_logs
+    .filter(log => ['deploy', 'deployment', 'config', 'error', 'incident', 'ops'].some(
+      kw => log.source.toLowerCase().includes(kw) || log.text_content.toLowerCase().includes(kw)
+    ))
+    .slice(0, 5)
+    .map(log => ({
+      title: log.text_content.length > 60 ? log.text_content.substring(0, 60) + '...' : log.text_content,
+      time: log.timestamp,
+      color: 'var(--primary)'
+    }))
+
+  // If no ops events matched the keyword filter, show all RAG logs as ops events
+  const finalOpsEvents = opsEvents.length > 0 ? opsEvents : report.rag.retrieved_logs.slice(0, 4).map(log => ({
+    title: log.text_content.length > 60 ? log.text_content.substring(0, 60) + '...' : log.text_content,
+    time: log.timestamp,
+    color: 'var(--primary)'
+  }))
+
+  // AI analysis events from hypotheses
+  const aiEvents = report.hypotheses.map((h, idx) => ({
+    title: `H${idx + 1}: ${h.title}`,
+    time: aw.start_time, // hypotheses are formed at analysis time
+    color: idx === 0 ? 'var(--success)' : 'var(--on-surface-variant)'
+  }))
+
+  const renderLane = (
+    label: string,
+    icon: React.ReactNode,
+    dotColor: string,
+    events: { title: string; time: string; color: string }[]
+  ) => (
+    <div className="timeline-lane">
+      <div className="timeline-lane-header">
+        <div className="timeline-lane-dot" style={{ background: dotColor }} />
+        <span className="label-md">{label}</span>
+        {icon}
+      </div>
+      {events.length > 0 ? events.map((evt, i) => (
+        <div key={i} className="timeline-event">
+          <div className="timeline-event-dot" style={{ background: evt.color }} />
+          <div className="timeline-event-content">
+            <div className="timeline-event-title">{evt.title}</div>
+            <div className="timeline-event-time">{formatDateTime(evt.time)}</div>
+          </div>
+        </div>
+      )) : (
+        <div className="text-muted" style={{ fontSize: '11px', padding: '8px', fontStyle: 'italic' }}>No events</div>
+      )}
+    </div>
+  )
+
+  return (
+    <div className="timeline-container">
+      <div className="timeline-lanes">
+        {renderLane('Metrics', <Activity size={12} className="text-muted" />, 'var(--error)', metricsEvents)}
+        {renderLane('Ops Events', <Server size={12} className="text-muted" />, 'var(--primary)', finalOpsEvents)}
+        {renderLane('AI Analysis', <Cpu size={12} className="text-muted" />, 'var(--success)', aiEvents)}
+      </div>
+    </div>
+  )
+}
+
+// ── Cross-Hypothesis Evidence Grid ───────────────────────────────
+function EvidenceComparisonGrid({ hypotheses }: { hypotheses: HypothesisResult[] }) {
+  if (!hypotheses || hypotheses.length === 0) return null
+
+  // Collect all unique checkpoints across all hypotheses
+  const allCheckpoints = new Map<string, Map<string, EvidenceStatus>>()
+
+  hypotheses.forEach(h => {
+    h.evidence_matrix?.forEach(ev => {
+      if (!allCheckpoints.has(ev.checkpoint)) {
+        allCheckpoints.set(ev.checkpoint, new Map())
+      }
+      allCheckpoints.get(ev.checkpoint)!.set(h.id, ev.status)
+    })
+  })
+
+  if (allCheckpoints.size === 0) return null
+
+  return (
+    <div className="evidence-grid">
+      <table>
+        <thead>
+          <tr>
+            <th style={{ minWidth: '160px' }}>Evidence Check</th>
+            {hypotheses.map((h, idx) => (
+              <th key={h.id}>H{idx + 1}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from(allCheckpoints.entries()).map(([checkpoint, statusMap]) => (
+            <tr key={checkpoint}>
+              <td>{checkpoint}</td>
+              {hypotheses.map(h => (
+                <td key={h.id}>
+                  <EvidenceIcon status={statusMap.get(h.id) || 'UNKNOWN'} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
 const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true'
 
@@ -128,6 +310,17 @@ export default function Dashboard() {
   const [activeTab] = useState('dashboard')
   const [costs, setCosts] = useState<any>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Theme state
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('trace-theme') as 'light' | 'dark') || 'light'
+    }
+    return 'light'
+  })
+
+  // Hypothesis tab state
+  const [activeHypothesisTab, setActiveHypothesisTab] = useState(0)
   
   // UI Features
   const [showEvents, setShowEvents] = useState(false)
@@ -146,6 +339,16 @@ export default function Dashboard() {
 
   const [datasets, setDatasets] = useState<any[]>(DEMO_MODE ? ['demo'] : []);
   const navigate = useNavigate();
+
+  // Apply theme on mount and change
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('trace-theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light')
+  }
 
   const fetchTrace = async () => {
     setLoading(true)
@@ -224,19 +427,13 @@ export default function Dashboard() {
     fetchCosts()
   }, [])
 
+  // Reset hypothesis tab when selected report changes
+  useEffect(() => {
+    setActiveHypothesisTab(0)
+  }, [selectedIdx])
+
   if (loading) {
-    return (
-      <div className="app-layout">
-        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-        <div className="dashboard-content flex flex-col justify-center items-center h-full">
-          <div className="loading-container text-center">
-            <div className="loading-spinner mx-auto" />
-            <h2 className="title-lg">Trace.ai Engine Running...</h2>
-            <p className="text-muted body-md mt-2">Analyzing metrics and operational logs</p>
-          </div>
-        </div>
-      </div>
-    )
+    return <LoadingSkeleton />
   }
 
   if (error) {
@@ -314,6 +511,7 @@ export default function Dashboard() {
   const report = reports[selectedIdx]
   const decomp = report.decomposition
   const primary = decomp.primary_driver
+  const activeHypothesis = report.hypotheses?.[activeHypothesisTab]
 
   // Chart data
   const chartData = timeseries.data.map((d) => ({
@@ -346,9 +544,14 @@ export default function Dashboard() {
               </button>
               <h2 className="title-lg">Detected Issues</h2>
             </div>
-            <button className="btn-icon" onClick={fetchTrace}>
-              <RefreshCw size={14} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+                {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+              </button>
+              <button className="btn-icon" onClick={fetchTrace}>
+                <RefreshCw size={14} />
+              </button>
+            </div>
           </div>
           <div className="feed-list">
             {reports.map((r, idx) => {
@@ -583,6 +786,23 @@ export default function Dashboard() {
               </div>
             )}
           </motion.section>
+
+          {/* Step 3: Investigation Timeline */}
+          <motion.section
+            className="card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            <div className="section-title">
+              <span className="badge badge-step">Step 3</span>
+              <span className="title-lg">Investigation Timeline</span>
+            </div>
+            <p className="text-muted body-md mb-4">
+              Multi-lane temporal view of metrics, operational events, and AI analysis.
+            </p>
+            <InvestigationTimeline report={report} />
+          </motion.section>
         </main>
 
         {/* 4. Right-side Causal Intelligence Panel */}
@@ -593,181 +813,218 @@ export default function Dashboard() {
           transition={{ duration: 0.5, delay: 0.5 }}
         >
           <div className="section-title">
-            <span className="badge badge-step">Steps 3 & 4</span>
+            <span className="badge badge-step">Step 4</span>
             <span className="title-lg">Causal Intelligence</span>
           </div>
 
-          {/* Multi-Hypothesis UI */}
-          <div className="hypotheses-container flex flex-col gap-4 mb-6">
-            {report.hypotheses?.map((h, idx) => (
-              <div key={h.id} className="hypothesis-box" style={{ padding: '16px', background: 'var(--surface-container-low)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--outline-variant)' }}>
-                {idx === 0 && decomp.is_ambiguous && (
-                  <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#fffbeb', borderRadius: 'var(--radius-md)', color: '#92400e', border: '1px solid #fcd34d' }}>
-                    <AlertTriangle size={18} />
-                    <span className="label-md">AMBIGUOUS: Human review recommended.</span>
-                  </div>
-                )}
-                
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      {idx === 0 && (
-                        <span className="badge" style={{ background: 'var(--primary)', color: 'var(--on-primary)', borderColor: 'var(--primary)' }}>
-                          PRIMARY HYPOTHESIS
-                        </span>
-                      )}
-                      <span className={`badge ${getConfidenceClass(h.evidence_strength)}`}>
-                        {h.evidence_strength} EVIDENCE
-                      </span>
-                    </div>
-                    <div className="title-lg">{h.title}</div>
-                  </div>
-                  {/* Analyst Feedback Toggles */}
-                  <div className="flex items-center gap-2">
-                    <button 
-                      className="btn" 
-                      style={{ 
-                        padding: '4px 8px', fontSize: '11px', 
-                        background: h.analyst_feedback === true ? 'var(--success-container)' : 'transparent',
-                        color: h.analyst_feedback === true ? 'var(--on-success-container)' : 'var(--on-surface-variant)',
-                        border: h.analyst_feedback === true ? '1px solid #86efac' : '1px solid var(--outline-variant)'
-                      }}
-                      onClick={() => {
-                        const previousState = h.analyst_feedback;
-                        // Optimistic UI Update
-                        const newTrace = {...trace!};
-                        newTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = true;
-                        setTrace(newTrace);
-                        
-                        // Fire async request to backend
-                        fetch(`${API_BASE_URL}/api/v1/analyze/feedback/${h.id}`, {
-                          method: 'PUT',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ is_correct: true })
-                        }).catch(err => {
-                          console.error("Failed to save feedback", err);
-                          // Revert on failure
-                          const revertTrace = {...trace!};
-                          revertTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = previousState;
-                          setTrace(revertTrace);
-                        });
-                      }}
-                    >
-                      Approve
-                    </button>
-                    <button 
-                      className="btn" 
-                      style={{ 
-                        padding: '4px 8px', fontSize: '11px',
-                        background: h.analyst_feedback === false ? 'var(--error-container)' : 'transparent',
-                        color: h.analyst_feedback === false ? 'var(--on-error-container)' : 'var(--on-surface-variant)',
-                        border: h.analyst_feedback === false ? '1px solid #fca5a5' : '1px solid var(--outline-variant)'
-                      }}
-                      onClick={() => {
-                        const previousState = h.analyst_feedback;
-                        // Optimistic UI Update
-                        const newTrace = {...trace!};
-                        newTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = false;
-                        setTrace(newTrace);
-                        
-                        // Fire async request to backend
-                        fetch(`${API_BASE_URL}/api/v1/analyze/feedback/${h.id}`, {
-                          method: 'PUT',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ is_correct: false })
-                        }).catch(err => {
-                          console.error("Failed to save feedback", err);
-                          // Revert on failure
-                          const revertTrace = {...trace!};
-                          revertTrace.reports[selectedIdx].hypotheses[idx].analyst_feedback = previousState;
-                          setTrace(revertTrace);
-                        });
-                      }}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-                
-                <p className="body-md text-muted mb-4" style={{ lineHeight: '1.5' }}>{h.description}</p>
-                
-                {/* Evidence Matrix Data Table */}
-                {h.evidence_matrix && h.evidence_matrix.length > 0 && (
-                  <div className="evidence-matrix">
-                    <div className="label-md text-muted mb-2">Evidence Matrix</div>
-                    <div style={{ border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
-                        <thead style={{ background: 'var(--surface-container)' }}>
-                          <tr>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Checkpoint</th>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Status</th>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Timestamp</th>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Details</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {h.evidence_matrix.map((ev) => (
-                            <tr key={ev.id} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top', fontWeight: 500 }}>{ev.checkpoint}</td>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top' }}>
-                                <span className={`badge ${ev.status === 'PASS' ? 'badge-success' : ev.status === 'FAIL' ? 'badge-critical' : 'badge-warning'}`}>
-                                  {ev.status}
-                                </span>
-                              </td>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>
-                                {ev.timestamp ? formatDateTime(ev.timestamp) : '-'}
-                              </td>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>{ev.details}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Red Herrings */}
-                {idx === 0 && report.rejected_logs && report.rejected_logs.length > 0 && (
-                  <div className="evidence-matrix mt-4">
-                    <div className="label-md text-muted mb-2">Rejected Evidence (Red Herrings)</div>
-                    <div style={{ border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left', opacity: 0.7 }}>
-                        <thead style={{ background: 'var(--surface-container)' }}>
-                          <tr>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Log ID</th>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Timestamp</th>
-                            <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Rejection Reason</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {report.rejected_logs.map((rl, i) => (
-                            <tr key={i} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top', fontWeight: 500, textDecoration: 'line-through' }}>{rl.log_id}</td>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>{formatDateTime(rl.timestamp)}</td>
-                              <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--error)' }}>{rl.rejection_reason}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Recovery Validation (Only on top hypothesis) */}
-                {idx === 0 && report.recovery_validation && (
-                  <div style={{ marginTop: '16px', padding: '12px', background: report.recovery_validation.metric_recovered ? '#f0fdf4' : '#fff1f2', borderRadius: 'var(--radius-md)', border: `1px solid ${report.recovery_validation.metric_recovered ? '#86efac' : '#fecdd3'}` }}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <RefreshCw size={14} color={report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)'} />
-                      <span className="label-md" style={{ color: report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)' }}>
-                        {report.recovery_validation.metric_recovered ? 'RECOVERY DETECTED' : 'NO RECOVERY YET'}
-                      </span>
-                    </div>
-                    <p className="body-md text-muted" style={{ fontSize: '11px' }}>{report.recovery_validation.recovery_summary || 'Monitoring post-incident trajectory.'}</p>
-                  </div>
-                )}
+          {/* Ambiguity Warning */}
+          {decomp.is_ambiguous && (
+            <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: 'var(--warning)', borderRadius: 'var(--radius-md)', color: 'var(--on-warning)', border: '1px solid var(--warning)', opacity: 0.9 }}>
+              <AlertTriangle size={18} />
+              <span className="label-md" style={{ color: 'inherit' }}>AMBIGUOUS: Human review recommended.</span>
+            </div>
+          )}
+
+          {/* Ranking Rationale */}
+          {report.hypotheses?.length > 1 && report.hypotheses[0] && (
+            <div className="ranking-rationale">
+              <strong>Ranking Rationale</strong>
+              H1 "{report.hypotheses[0].title}" ranked above{' '}
+              {report.hypotheses.slice(1).map((h, i) => (
+                <span key={h.id}>{i > 0 ? ', ' : ''}H{i + 2} "{h.title}"</span>
+              ))}{' '}
+              based on evidence strength ({report.hypotheses[0].evidence_strength}) and deterministic checkpoint evaluation.
+              {report.hypotheses[0].description && (
+                <span style={{ display: 'block', marginTop: '4px', opacity: 0.85 }}>
+                  {report.hypotheses[0].description.length > 200
+                    ? report.hypotheses[0].description.substring(0, 200) + '...'
+                    : report.hypotheses[0].description}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Cross-Hypothesis Evidence Comparison Grid */}
+          {report.hypotheses?.length > 1 && (
+            <div style={{ marginBottom: '16px' }}>
+              <div className="label-md text-muted mb-2">Evidence Comparison Matrix</div>
+              <EvidenceComparisonGrid hypotheses={report.hypotheses} />
+            </div>
+          )}
+
+          {/* Hypothesis Tabs */}
+          {report.hypotheses && report.hypotheses.length > 0 && (
+            <>
+              <div className="hypothesis-tabs">
+                {report.hypotheses.map((h, idx) => (
+                  <button
+                    key={h.id}
+                    className={`hypothesis-tab ${idx === activeHypothesisTab ? 'active' : ''}`}
+                    onClick={() => setActiveHypothesisTab(idx)}
+                  >
+                    H{idx + 1} · {h.evidence_strength}
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {/* Active Hypothesis Detail */}
+              {activeHypothesis && (
+                <div className="hypothesis-box" style={{ padding: '16px', background: 'var(--surface-container-low)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--outline-variant)' }}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        {activeHypothesisTab === 0 && (
+                          <span className="badge" style={{ background: 'var(--primary)', color: 'var(--on-primary)', borderColor: 'var(--primary)' }}>
+                            PRIMARY HYPOTHESIS
+                          </span>
+                        )}
+                        <span className={`badge ${getConfidenceClass(activeHypothesis.evidence_strength)}`}>
+                          {activeHypothesis.evidence_strength} EVIDENCE
+                        </span>
+                      </div>
+                      <div className="title-lg">{activeHypothesis.title}</div>
+                    </div>
+                    {/* Analyst Feedback Toggles */}
+                    <div className="flex items-center gap-2">
+                      <button 
+                        className="btn" 
+                        style={{ 
+                          padding: '4px 8px', fontSize: '11px', 
+                          background: activeHypothesis.analyst_feedback === true ? 'var(--success-container)' : 'transparent',
+                          color: activeHypothesis.analyst_feedback === true ? 'var(--on-success-container)' : 'var(--on-surface-variant)',
+                          border: activeHypothesis.analyst_feedback === true ? '1px solid #86efac' : '1px solid var(--outline-variant)'
+                        }}
+                        onClick={() => {
+                          const previousState = activeHypothesis.analyst_feedback;
+                          const newTrace = {...trace!};
+                          newTrace.reports[selectedIdx].hypotheses[activeHypothesisTab].analyst_feedback = true;
+                          setTrace(newTrace);
+                          
+                          fetch(`${API_BASE_URL}/api/v1/analyze/feedback/${activeHypothesis.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ is_correct: true })
+                          }).catch(err => {
+                            console.error("Failed to save feedback", err);
+                            const revertTrace = {...trace!};
+                            revertTrace.reports[selectedIdx].hypotheses[activeHypothesisTab].analyst_feedback = previousState;
+                            setTrace(revertTrace);
+                          });
+                        }}
+                      >
+                        Approve
+                      </button>
+                      <button 
+                        className="btn" 
+                        style={{ 
+                          padding: '4px 8px', fontSize: '11px',
+                          background: activeHypothesis.analyst_feedback === false ? 'var(--error-container)' : 'transparent',
+                          color: activeHypothesis.analyst_feedback === false ? 'var(--on-error-container)' : 'var(--on-surface-variant)',
+                          border: activeHypothesis.analyst_feedback === false ? '1px solid #fca5a5' : '1px solid var(--outline-variant)'
+                        }}
+                        onClick={() => {
+                          const previousState = activeHypothesis.analyst_feedback;
+                          const newTrace = {...trace!};
+                          newTrace.reports[selectedIdx].hypotheses[activeHypothesisTab].analyst_feedback = false;
+                          setTrace(newTrace);
+                          
+                          fetch(`${API_BASE_URL}/api/v1/analyze/feedback/${activeHypothesis.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ is_correct: false })
+                          }).catch(err => {
+                            console.error("Failed to save feedback", err);
+                            const revertTrace = {...trace!};
+                            revertTrace.reports[selectedIdx].hypotheses[activeHypothesisTab].analyst_feedback = previousState;
+                            setTrace(revertTrace);
+                          });
+                        }}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <p className="body-md text-muted mb-4" style={{ lineHeight: '1.5' }}>{activeHypothesis.description}</p>
+                  
+                  {/* Evidence Matrix Data Table */}
+                  {activeHypothesis.evidence_matrix && activeHypothesis.evidence_matrix.length > 0 && (
+                    <div className="evidence-matrix">
+                      <div className="label-md text-muted mb-2">Evidence Matrix</div>
+                      <div style={{ border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left' }}>
+                          <thead style={{ background: 'var(--surface-container)' }}>
+                            <tr>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Checkpoint</th>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Status</th>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Timestamp</th>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {activeHypothesis.evidence_matrix.map((ev) => (
+                              <tr key={ev.id} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top', fontWeight: 500 }}>{ev.checkpoint}</td>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top' }}>
+                                  <span className={`badge ${ev.status === 'PASS' ? 'badge-success' : ev.status === 'FAIL' ? 'badge-critical' : 'badge-warning'}`}>
+                                    {ev.status}
+                                  </span>
+                                </td>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>
+                                  {ev.timestamp ? formatDateTime(ev.timestamp) : '-'}
+                                </td>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>{ev.details}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Red Herrings */}
+                  {activeHypothesisTab === 0 && report.rejected_logs && report.rejected_logs.length > 0 && (
+                    <div className="evidence-matrix mt-4">
+                      <div className="label-md text-muted mb-2">Rejected Evidence (Red Herrings)</div>
+                      <div style={{ border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left', opacity: 0.7 }}>
+                          <thead style={{ background: 'var(--surface-container)' }}>
+                            <tr>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Log ID</th>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Timestamp</th>
+                              <th style={{ padding: '8px 12px', borderBottom: '1px solid var(--outline-variant)', fontWeight: 600 }}>Rejection Reason</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {report.rejected_logs.map((rl, i) => (
+                              <tr key={i} style={{ borderBottom: '1px solid var(--outline-variant)' }}>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top', fontWeight: 500, textDecoration: 'line-through' }}>{rl.log_id}</td>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--on-surface-variant)' }}>{formatDateTime(rl.timestamp)}</td>
+                                <td style={{ padding: '8px 12px', verticalAlign: 'top', color: 'var(--error)' }}>{rl.rejection_reason}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Recovery Validation (Only on top hypothesis) */}
+                  {activeHypothesisTab === 0 && report.recovery_validation && (
+                    <div style={{ marginTop: '16px', padding: '12px', background: report.recovery_validation.metric_recovered ? '#f0fdf4' : '#fff1f2', borderRadius: 'var(--radius-md)', border: `1px solid ${report.recovery_validation.metric_recovered ? '#86efac' : '#fecdd3'}` }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <RefreshCw size={14} color={report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)'} />
+                        <span className="label-md" style={{ color: report.recovery_validation.metric_recovered ? 'var(--success)' : 'var(--error)' }}>
+                          {report.recovery_validation.metric_recovered ? 'RECOVERY DETECTED' : 'NO RECOVERY YET'}
+                        </span>
+                      </div>
+                      <p className="body-md text-muted" style={{ fontSize: '11px' }}>{report.recovery_validation.recovery_summary || 'Monitoring post-incident trajectory.'}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
 
           {/* Timeline Sequence */}
           {report.timeline && report.timeline.length > 0 && (

@@ -37,8 +37,9 @@ def evaluate_evidence(anomaly_timestamp: str, logs: List[LogDocument]) -> Tuple[
             "details": f"Found deployment log: {deployment_log.text_content[:50]}..."
         })
     else:
+        import uuid
         evidence_list.append({
-            "id": "ev-deploy-missing",
+            "id": f"ev-deploy-missing-{uuid.uuid4()}",
             "log_id": None,
             "checkpoint": "Deployment preceded anomaly",
             "status": EvidenceStatus.UNKNOWN,
@@ -59,8 +60,9 @@ def evaluate_evidence(anomaly_timestamp: str, logs: List[LogDocument]) -> Tuple[
             "details": f"Found error log: {error_log.text_content[:50]}..."
         })
     else:
+        import uuid
         evidence_list.append({
-            "id": "ev-error-missing",
+            "id": f"ev-error-missing-{uuid.uuid4()}",
             "log_id": None,
             "checkpoint": "Error rate spiked in segment",
             "status": EvidenceStatus.UNKNOWN,
@@ -107,6 +109,30 @@ async def generate_hypotheses(
     
     for attempt in range(max_retries + 1):
         try:
+            import time
+            rate_limit_file = os.path.join(os.path.dirname(__file__), "rate_limit.json")
+            state = {"minute_timestamps": [], "day_timestamps": []}
+            if os.path.exists(rate_limit_file):
+                try:
+                    with open(rate_limit_file, "r") as f:
+                        state = json.load(f)
+                except Exception:
+                    pass
+                    
+            now = time.time()
+            state["minute_timestamps"] = [ts for ts in state["minute_timestamps"] if now - ts < 60]
+            state["day_timestamps"] = [ts for ts in state["day_timestamps"] if now - ts < 86400]
+            
+            if len(state["minute_timestamps"]) >= 4 or len(state["day_timestamps"]) >= 18:
+                logger.error(f"Rate limit exceeded locally! RPM: {len(state['minute_timestamps'])}/4, RPD: {len(state['day_timestamps'])}/18")
+                raise Exception("Rate limit exceeded locally: 4RPM or 18RPD reached")
+                
+            state["minute_timestamps"].append(now)
+            state["day_timestamps"].append(now)
+            
+            with open(rate_limit_file, "w") as f:
+                json.dump(state, f)
+
             response = client.models.generate_content(
                 model=model,
                 contents=prompt,
